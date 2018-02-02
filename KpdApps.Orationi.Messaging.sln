@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging", "KpdApps.Orationi.Messaging\KpdApps.Orationi.Messaging.csproj", "{BD1AEAF2-F94B-457E-A2C4-2B8FCB4DB680}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj", "{77E366C4-0698-4F9A-8302-38667761C173}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD1AEAF2-F94B-457E-A2C4-2B8FCB4DB680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD1AEAF2-F94B-457E-A2C4-2B8FCB4DB680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD1AEAF2-F94B-457E-A2C4-2B8FCB4DB680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD1AEAF2-F94B-457E-A2C4-2B8FCB4DB680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E366C4-0698-4F9A-8302-38667761C173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E366C4-0698-4F9A-8302-38667761C173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E366C4-0698-4F9A-8302-38667761C173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E366C4-0698-4F9A-8302-38667761C173}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB5D1CE4-14F8-486E-9DEE-32E4DB9C9C1F}
+	EndGlobalSection
+EndGlobal
