@@ -1,4 +1,6 @@
-﻿using System.ServiceModel;
+﻿using KpdApps.Orationi.Messaging.Models;
+using System;
+using System.ServiceModel;
 
 namespace KpdApps.Orationi.Messaging
 {
@@ -6,6 +8,18 @@ namespace KpdApps.Orationi.Messaging
     interface IMessagingService
     {
         [OperationContract]
-        string Ping(string msg);
+        Response GetResponse(Guid requestId);
+
+        //[OperationContract]
+        //ResponseStatus GetStatus(Guid requestId);
+
+        [OperationContract]
+        Response ExecuteRequest(Request request);
+
+        [OperationContract]
+        ResponseId SendRequest(Request request);
+
+        [OperationContract]
+        ResponseId SendRequestAsync(Request request);
     }
 }

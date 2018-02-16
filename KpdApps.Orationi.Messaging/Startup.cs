@@ -5,34 +5,47 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SoapCore;
 
 namespace KpdApps.Orationi.Messaging
 {
     public class Startup
     {
+        public IHostingEnvironment HostingEnvironment { get; }
+        public IConfiguration Configuration { get; }
+
+        public Startup(IHostingEnvironment env, IConfiguration config)
+        {
+            HostingEnvironment = env;
+            Configuration = config;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<OrationiMessagingContext>(options => options.UseSqlServer(Program.Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<OrationiMessagingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSingleton(new MessagingService());
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseSoapEndpoint<MessagingService>(path: "/MessagingService.svc", binding: new BasicHttpBinding());
-            app.UseMvc();
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
 
-            /*if (env.IsDevelopment())
+            app.UseMvc();
+            app.UseSoapEndpoint<MessagingService>(path: "/api/soap/Messaging", binding: new BasicHttpBinding());
+
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            /*app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
             });
