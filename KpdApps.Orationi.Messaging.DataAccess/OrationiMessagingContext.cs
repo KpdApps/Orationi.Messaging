@@ -14,9 +14,15 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<RequestCode> RequestCodes { get; set; }
+
+        public DbSet<RequestCodeAlias> RequestCodeAliases { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>().ToTable("Messages");
+            modelBuilder.Entity<RequestCode>().ToTable("RequestCodes");
+            modelBuilder.Entity<RequestCodeAlias>().ToTable("RequestCodeAliases");
         }
     }
 }

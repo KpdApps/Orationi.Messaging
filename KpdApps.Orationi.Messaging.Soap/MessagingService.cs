@@ -11,17 +11,17 @@ namespace KpdApps.Orationi.Messaging
             throw new NotImplementedException();
         }
 
+        public ResponseId ExecuteRequestAsync(Request request)
+        {
+            throw new NotImplementedException();
+        }
+
         public Response GetResponse(Guid requestId)
         {
             throw new NotImplementedException();
         }
 
         public ResponseId SendRequest(Request request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ResponseId SendRequestAsync(Request request)
         {
             throw new NotImplementedException();
         }

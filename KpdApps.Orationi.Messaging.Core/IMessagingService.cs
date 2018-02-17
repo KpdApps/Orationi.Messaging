@@ -5,7 +5,7 @@ using System.ServiceModel;
 namespace KpdApps.Orationi.Messaging
 {
     [ServiceContract]
-    interface IMessagingService
+    public interface IMessagingService
     {
         [OperationContract]
         Response GetResponse(Guid requestId);
@@ -17,9 +17,9 @@ namespace KpdApps.Orationi.Messaging
         Response ExecuteRequest(Request request);
 
         [OperationContract]
-        ResponseId SendRequest(Request request);
+        Response ExecuteRequestAsync(Request request);
 
         [OperationContract]
-        ResponseId SendRequestAsync(Request request);
+        ResponseId SendRequest(Request request);
     }
 }
