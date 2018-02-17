@@ -5,13 +5,15 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj", "{77E366C4-0698-4F9A-8302-38667761C173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Core", "KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj", "{2164DF0F-850A-4EDD-A0CA-7CF7F86C3FA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Core", "KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj", "{2164DF0F-850A-4EDD-A0CA-7CF7F86C3FA0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Endpoints", "Endpoints", "{4761BF27-601E-43A2-AF74-4003D39FECC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Soap", "KpdApps.Orationi.Messaging.Soap\KpdApps.Orationi.Messaging.Soap.csproj", "{AE239068-A023-4684-969D-6D31D0C04FB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Rest", "KpdApps.Orationi.Messaging.Rest\KpdApps.Orationi.Messaging.Rest.csproj", "{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Rest", "KpdApps.Orationi.Messaging.Rest\KpdApps.Orationi.Messaging.Rest.csproj", "{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "KpdApps.Orationi.Messaging.Database", "KpdApps.Orationi.Messaging.Database\KpdApps.Orationi.Messaging.Database.sqlproj", "{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,12 @@ Global
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
