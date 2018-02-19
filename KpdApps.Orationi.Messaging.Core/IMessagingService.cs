@@ -8,6 +8,9 @@ namespace KpdApps.Orationi.Messaging
     public interface IMessagingService
     {
         [OperationContract]
+        string GetVersion();
+
+        [OperationContract]
         Response GetResponse(Guid requestId);
 
         //[OperationContract]
@@ -17,7 +20,7 @@ namespace KpdApps.Orationi.Messaging
         Response ExecuteRequest(Request request);
 
         [OperationContract]
-        Response ExecuteRequestAsync(Request request);
+        ResponseId ExecuteRequestAsync(Request request);
 
         [OperationContract]
         ResponseId SendRequest(Request request);

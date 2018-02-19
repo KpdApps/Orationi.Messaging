@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Models;
@@ -19,8 +20,8 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet]
-        public string Index()
+        [HttpGet("version")]
+        public string GetVersion()
         {
             return "v.1.0";
         }
@@ -40,100 +41,35 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [HttpPost]
         public Response ExecuteRequest([FromBody] Request request)
         {
-            try
+            //Если указали алиас типа запроса, но не указали код - получаем код запроса
+            if (!string.IsNullOrEmpty(request.RequestType) && request.RequestCode == 0)
             {
-                int requestCode = 0;
-                if (!string.IsNullOrEmpty(request.RequestType))
+                RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
+                if (requestCodeAlias == null)
                 {
-                    RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
-                    requestCode = requestCodeAlias.RequestCode;
+                    return new Response() { Id = Guid.Empty, IsError = true, Error = "Invalid request type." };
                 }
-                requestCode = request.RequestCode;
-
-                Message message = new Message
-                {
-                    RequestBody = request.RequestBody,
-                    RequestCode = requestCode,
-                    RequestSystem = request.RequestSystemName,
-                    RequestUser = request.RequestUserName,
-                    IsSyncRequest = true
-                };
-
-                _dbContext.Messages.Attach(message);
-                _dbContext.SaveChanges();
-
-                return new Response() { Id = message.Id };
+                request.RequestCode = requestCodeAlias.RequestCode;
             }
-            catch (Exception ex)
-            {
-                return new Response() { IsError = true, Error = ex.Message };
-            }
+
+            // Отдаем запрос в процессор, дальше он сам
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            Response response = imp.Execute(request);
+            return response;
         }
 
         [HttpPost("request")]
         public ResponseId SendRequest(Request request)
         {
-            try
-            {
-                int requestCode = 0;
-                if (!string.IsNullOrEmpty(request.RequestType))
-                {
-                    RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
-                    requestCode = requestCodeAlias.RequestCode;
-                }
-                requestCode = request.RequestCode;
-
-                Message message = new Message
-                {
-                    RequestBody = request.RequestBody,
-                    RequestCode = requestCode,
-                    RequestSystem = request.RequestSystemName,
-                    RequestUser = request.RequestUserName,
-                    IsSyncRequest = true
-                };
-
-                _dbContext.Messages.Attach(message);
-                _dbContext.SaveChanges();
-
-                return new Response() { Id = message.Id };
-            }
-            catch (Exception ex)
-            {
-                return new Response() { IsError = true, Error = ex.Message };
-            }
+            throw new NotImplementedException();
         }
 
         [HttpPost("async")]
-        public Response ExecuteRequestAsync(Request request)
+        public ResponseId ExecuteRequestAsync(Request request)
         {
-            try
-            {
-                int requestCode = 0;
-                if (!string.IsNullOrEmpty(request.RequestType))
-                {
-                    RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
-                    requestCode = requestCodeAlias.RequestCode;
-                }
-                requestCode = request.RequestCode;
-
-                Message message = new Message
-                {
-                    RequestBody = request.RequestBody,
-                    RequestCode = requestCode,
-                    RequestSystem = request.RequestSystemName,
-                    RequestUser = request.RequestUserName,
-                    IsSyncRequest = true
-                };
-
-                _dbContext.Messages.Attach(message);
-                _dbContext.SaveChanges();
-
-                return new Response() { Id = message.Id };
-            }
-            catch (Exception ex)
-            {
-                return new Response() { IsError = true, Error = ex.Message };
-            }
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            ResponseId response = imp.ExecuteAsync(request);
+            return response;
         }
     }
 }

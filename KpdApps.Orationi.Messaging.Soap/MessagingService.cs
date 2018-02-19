@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Linq;
+using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.Models;
 
 namespace KpdApps.Orationi.Messaging
 {
     public class MessagingService : IMessagingService
     {
-        public Response ExecuteRequest(Request request)
+        OrationiMessagingContext _dbContext;
+
+        public MessagingService(OrationiMessagingContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public ResponseId ExecuteRequestAsync(Request request)
+        public Response ExecuteRequest(Request request)
         {
             throw new NotImplementedException();
         }
@@ -24,6 +27,16 @@ namespace KpdApps.Orationi.Messaging
         public ResponseId SendRequest(Request request)
         {
             throw new NotImplementedException();
+        }
+
+        public ResponseId ExecuteRequestAsync(Request request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetVersion()
+        {
+            return "v.1.0";
         }
     }
 }

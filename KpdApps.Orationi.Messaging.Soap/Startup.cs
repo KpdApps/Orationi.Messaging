@@ -25,9 +25,12 @@ namespace KpdApps.Orationi.Messaging
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<OrationiMessagingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
-            services.AddSingleton(new MessagingService());
+            OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options);
+
+            services.AddSingleton(new MessagingService(dbContext));
             services.AddMvc();
         }
 
@@ -44,12 +47,6 @@ namespace KpdApps.Orationi.Messaging
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            /*app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
-            */
         }
     }
 }
