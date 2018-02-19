@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{5eaebb5b-ba9c-4570-a1e0-b55e06a37120}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql140DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -69,5 +69,8 @@
     <Build Include="dbo\Tables\RequestCodes.sql" />
     <Build Include="dbo\Tables\RequestCodeAliases.sql" />
     <Build Include="dbo\Views\MessagesView.sql" />
+    <Build Include="dbo\Tables\RegisteredSteps.sql" />
+    <Build Include="dbo\Tables\PipelineSteps.sql" />
+    <Build Include="dbo\Tables\PipelineAssemblies.sql" />
   </ItemGroup>
 </Project>
