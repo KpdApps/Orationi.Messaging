@@ -29,29 +29,14 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [HttpGet("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            Message message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
-            if (message == null)
-            {
-                return new Response() { Id = requestId, IsError = true, Error = $"Request {requestId} not found" };
-            }
-
-            return new Response() { Id = requestId, IsError = false, Error = null, ResponseBody = message.ResponseBody };
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            Response response = imp.GetResponse(requestId);
+            return response;
         }
 
         [HttpPost]
         public Response ExecuteRequest([FromBody] Request request)
         {
-            //Если указали алиас типа запроса, но не указали код - получаем код запроса
-            if (!string.IsNullOrEmpty(request.RequestType) && request.RequestCode == 0)
-            {
-                RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
-                if (requestCodeAlias == null)
-                {
-                    return new Response() { Id = Guid.Empty, IsError = true, Error = "Invalid request type." };
-                }
-                request.RequestCode = requestCodeAlias.RequestCode;
-            }
-
             // Отдаем запрос в процессор, дальше он сам
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
             Response response = imp.Execute(request);
