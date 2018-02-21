@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
-    public class PipelineStep
+    public class PluginType
     {
         public Guid Id { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace KpdApps.Orationi.Messaging.DataAccess
 {
@@ -18,11 +17,20 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<RequestCodeAlias> RequestCodeAliases { get; set; }
 
+        public DbSet<PluginAssembly> PluginAsseblies { get; set; }
+
+        public DbSet<PluginType> PluginTypes { get; set; }
+
+        public DbSet<PluginRegisteredStep> PluginRegisteredSteps { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>().ToTable("Messages");
             modelBuilder.Entity<RequestCode>().ToTable("RequestCodes");
             modelBuilder.Entity<RequestCodeAlias>().ToTable("RequestCodeAliases");
+            modelBuilder.Entity<PluginAssembly>().ToTable("PluginAssemblies");
+            modelBuilder.Entity<PluginType>().ToTable("PluginTypes");
+            modelBuilder.Entity<PluginRegisteredStep>().ToTable("PluginRegisteredSteps");
         }
     }
 }

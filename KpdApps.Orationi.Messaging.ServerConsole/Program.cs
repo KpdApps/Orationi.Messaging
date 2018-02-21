@@ -38,7 +38,10 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
                         var message = Encoding.UTF8.GetString(body);
                         RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
                         Random r = new Random();
-                        Thread.Sleep(r.Next(100,2000));
+
+                        Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
+                        pipeline.Run();
+
                         Console.WriteLine(" [.] ({0})", message);
                         rabbitRequest.RequestCode++;
                         response = JsonConvert.SerializeObject(rabbitRequest);
