@@ -6,9 +6,9 @@ using System.Text;
 using System.Linq;
 using System.IO;
 
-namespace KpdApps.Orationi.Messaging.ServerConsole
+namespace KpdApps.Orationi.Messaging.ServerCore
 {
-    public static class AssemblyPreLoader
+    public static class AssembliesPreLoader
     {
         public static void Execute()
         {

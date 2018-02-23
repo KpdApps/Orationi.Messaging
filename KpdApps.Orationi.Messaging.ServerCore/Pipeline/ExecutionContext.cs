@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
+namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     internal class ExecuteContext : IExecuteContext
     {

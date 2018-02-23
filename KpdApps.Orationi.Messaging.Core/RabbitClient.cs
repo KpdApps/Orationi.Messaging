@@ -73,11 +73,14 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: $"queue-{requestCode}-a",
+                    channel.QueueDeclare(queue: $"queue-{requestCode}-0",
                                          durable: true,
                                          exclusive: false,
                                          autoDelete: false,
                                          arguments: null);
+
+                    var properties = channel.CreateBasicProperties();
+                    properties.Persistent = true;
 
                     RabbitRequest request = new RabbitRequest()
                     {
@@ -90,8 +93,8 @@ namespace KpdApps.Orationi.Messaging.Core
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(exchange: "",
-                                         routingKey: $"{requestCode}",
-                                         basicProperties: null,
+                                         routingKey: $"queue-{requestCode}-0",
+                                         basicProperties: properties,
                                          body: body);
                     Console.WriteLine(" [x] Sent {0}", message);
                 }

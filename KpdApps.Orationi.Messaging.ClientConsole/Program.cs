@@ -5,6 +5,7 @@ using KpdApps.Orationi.Messaging.DummyPlugins;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.ClientConsole
 {
@@ -36,8 +37,19 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
                     dbContext.SaveChanges();
                 }
 
-                Console.WriteLine($"{count}){message.Id}");
-                Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
+                if (count % 2 == 0)
+                {
+                    Task.Run(() =>
+                    {
+                        Console.WriteLine($"{count}){message.Id}");
+                        Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"{count}) A {message.Id}");
+                    client.PullMessage(1, message.Id);
+                }
 
                 if (count % 100 == 0)
                 {

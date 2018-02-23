@@ -3,15 +3,13 @@ using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk.Plugins;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
+namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     public class Pipeline : IDisposable
     {
@@ -86,7 +84,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
 
                 if (!File.Exists(asseblyName))
                 {
-                    AssemblyPreLoader.Execute(stepDescription.AssemblyId);
+                    AssembliesPreLoader.Execute(stepDescription.AssemblyId);
                 }
 
                 Assembly assembly = Assembly.LoadFrom(asseblyName);

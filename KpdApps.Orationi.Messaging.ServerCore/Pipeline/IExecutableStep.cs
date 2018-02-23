@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
+﻿namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     public interface IExecutableStep
     {

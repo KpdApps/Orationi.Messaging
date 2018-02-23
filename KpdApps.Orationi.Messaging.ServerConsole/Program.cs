@@ -1,75 +1,68 @@
-﻿using KpdApps.Orationi.Messaging.Core.Models;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+﻿using KpdApps.Orationi.Messaging.ServerCore;
+using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
 {
     class Program
     {
+        public static ConcurrentDictionary<string, IPluginHost> hostsDictionary = new ConcurrentDictionary<string, IPluginHost>();
+
         static void Main(string[] args)
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-            AssemblyPreLoader.Execute();
+            AssembliesPreLoader.Execute();
 
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "orationi", Password = "orationi" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            SynchronousPluginHost sph = new SynchronousPluginHost("localhost", "orationi", "orationi", 1);
+            IPluginHost host = hostsDictionary.GetOrAdd(sph.QueryCode, sph);
+            host.Run();
+            AsynchronousPluginHost aph = new AsynchronousPluginHost("localhost", "orationi", "orationi", 1);
+            host = hostsDictionary.GetOrAdd(aph.QueryCode, aph);
+            host.Run();
+
+            Task.Run(() =>
             {
-                channel.QueueDeclare(queue: "rpc_queue", durable: false,
-                  exclusive: false, autoDelete: false, arguments: null);
-                channel.BasicQos(0, 1, false);
-                var consumer = new EventingBasicConsumer(channel);
-                channel.BasicConsume(queue: "rpc_queue",
-                  autoAck: false, consumer: consumer);
-                Console.WriteLine(" [x] Awaiting RPC requests");
-
-                consumer.Received += (model, ea) =>
+                while (true)
                 {
-                    string response = null;
-
-                    var body = ea.Body;
-                    var props = ea.BasicProperties;
-                    var replyProps = channel.CreateBasicProperties();
-                    replyProps.CorrelationId = props.CorrelationId;
-
-                    try
+                    foreach (var hostKey in hostsDictionary.Keys)
                     {
-                        var message = Encoding.UTF8.GetString(body);
-                        RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
-                        Random r = new Random();
+                        IPluginHost checkedHost = hostsDictionary[hostKey];
+                        if (checkedHost.CloseReason != null)
+                        {
+                            Console.WriteLine($"{checkedHost.IsSynchronous} Remove host. (Reason:{checkedHost.CloseReason})");
+                            if (hostsDictionary.TryRemove(hostKey, out checkedHost))
+                            {
+                                Thread.Sleep(10000);
+                                Console.WriteLine("Attach new host");
+                                BasePluginHost bph;
+                                if (checkedHost.IsSynchronous)
+                                {
+                                    bph = new SynchronousPluginHost("localhost", "orationi", "orationi", 1);
+                                    host = hostsDictionary.GetOrAdd(bph.QueryCode, bph);
+                                }
+                                else
+                                {
+                                    Thread.Sleep(10000);
+                                    bph = new AsynchronousPluginHost("localhost", "orationi", "orationi", 1);
+                                    host = hostsDictionary.GetOrAdd(bph.QueryCode, bph);
+                                }
 
-                        Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                        pipeline.Init();
-                        pipeline.Run();
+                                Thread.Sleep(1000);
+                                host.Run();
+                            }
+                        }
+                    }
+                    Thread.Sleep(5000);
+                }
+            });
 
-                        Console.WriteLine(" [.] ({0})", message);
-                        rabbitRequest.RequestCode++;
-                        response = JsonConvert.SerializeObject(rabbitRequest);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(" [.] " + e.Message);
-                        response = "";
-                    }
-                    finally
-                    {
-                        var responseBytes = Encoding.UTF8.GetBytes(response);
-                        channel.BasicPublish(exchange: "", routingKey: props.ReplyTo,
-                          basicProperties: replyProps, body: responseBytes);
-                        channel.BasicAck(deliveryTag: ea.DeliveryTag,
-                          multiple: false);
-                    }
-                };
-
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
-            }
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
     }
 }
