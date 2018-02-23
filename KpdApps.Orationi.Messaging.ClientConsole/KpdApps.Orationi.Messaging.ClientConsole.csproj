@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj" />
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DummyPlugins\KpdApps.Orationi.Messaging.DummyPlugins.csproj" />
   </ItemGroup>
 
 </Project>

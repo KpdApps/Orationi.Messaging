@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -12,6 +14,9 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     {
         static void Main(string[] args)
         {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            AssemblyPreLoader.Execute();
+
             var factory = new ConnectionFactory() { HostName = "localhost", UserName = "orationi", Password = "orationi" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -40,6 +45,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
                         Random r = new Random();
 
                         Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
+                        pipeline.Init();
                         pipeline.Run();
 
                         Console.WriteLine(" [.] ({0})", message);

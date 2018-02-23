@@ -9,6 +9,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
 {
@@ -42,12 +43,14 @@ namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
 
         public void Init()
         {
-            //ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString
+            //string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
             DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True");
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True");//);
 
             _dbContext = new OrationiMessagingContext(optionsBuilder.Options);
             _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
+            _message.AttemptCount++;
+            _dbContext.SaveChanges();
 
             ExecuteContext context = new ExecuteContext
             {
@@ -63,33 +66,52 @@ namespace KpdApps.Orationi.Messaging.ServerConsole.Pipeline
                                   orderby prs.Order
                                   select new PipelineStepDescription
                                   {
-                                      Assembly = pa.Assembly,
+                                      AssemblyId = pa.Id,
                                       Class = pt.Class,
                                       Order = prs.Order,
-                                      IsAsynchronous = prs.IsAsynchronous
+                                      IsAsynchronous = prs.IsAsynchronous,
+                                      ModifiedOn = pa.ModifiedOn
                                   }).AsEnumerable();
         }
 
-        public void Run()
+        public async void Run()
         {
+            List<Task> tasks = new List<Task>();
+
             foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
             {
-                string fileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}.dll");
+                string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
+                long unixTimeSec = ((DateTimeOffset)stepDescription.ModifiedOn).ToUnixTimeSeconds();
+                string asseblyName = Path.Combine(tmpAssembliesPath, $"{stepDescription.AssemblyId}-{unixTimeSec}.dll");
 
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(fileName)))
+                if (!File.Exists(asseblyName))
                 {
-                    writer.Write(stepDescription.Assembly, 0, stepDescription.Assembly.Length);
+                    AssemblyPreLoader.Execute(stepDescription.AssemblyId);
                 }
 
-                Assembly assembly = Assembly.LoadFrom(fileName);
-                AppDomain.CurrentDomain.Load(stepDescription.Assembly);
+                Assembly assembly = Assembly.LoadFrom(asseblyName);
                 Type type = assembly.GetType(stepDescription.Class);
-                IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
-                plugin.BeforeExecution();
-                plugin.Execute();
-                plugin.AfterExecution();
-                File.Delete(fileName);
+
+                if (stepDescription.IsAsynchronous)
+                {
+                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
+                    plugin.BeforeExecution();
+                    plugin.Execute();
+                    plugin.AfterExecution();
+                }
+                else
+                {
+                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
+                    tasks.Add(Task.Run(() =>
+                    {
+                        plugin.BeforeExecution();
+                        plugin.Execute();
+                        plugin.AfterExecution();
+                    }));
+                }
             }
+
+            await Task.WhenAll(tasks);
 
             _message.ResponseBody = _context.ResponseBody;
             _message.ResponseSystem = "test";

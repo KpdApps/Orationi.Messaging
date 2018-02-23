@@ -7,5 +7,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public Guid Id { get; set; }
 
         public byte[] Assembly { get; set; }
+
+        public DateTime ModifiedOn { get; set; }
     }
 }

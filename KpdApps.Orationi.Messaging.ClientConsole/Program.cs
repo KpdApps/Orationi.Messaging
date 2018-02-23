@@ -1,4 +1,8 @@
 ﻿using KpdApps.Orationi.Messaging.Core;
+using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.DummyPlugins;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 
@@ -13,11 +17,32 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
             while (true)
             {
                 count++;
-                Random r = new Random();
-                Thread.Sleep(r.Next(10, 1000));
-                Guid guid = Guid.NewGuid();
-                Console.WriteLine($"{count}){guid}");
-                Console.WriteLine($"{count}){client.Execute(1, guid)}");
+
+                DummyRequest request = new DummyRequest();
+                request.MessageId = Guid.NewGuid().ToString();
+                request.RequestCode = 1;
+
+                DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
+                optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");//);
+
+                Message message = new Message();
+                using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
+                {
+                    message.RequestCode = 1;
+                    message.RequestSystem = "ClientConsole";
+                    message.RequestUser = "orationi";
+                    message.RequestBody = request.Serialize();
+                    dbContext.Messages.Attach(message);
+                    dbContext.SaveChanges();
+                }
+
+                Console.WriteLine($"{count}){message.Id}");
+                Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
+
+                if (count % 100 == 0)
+                {
+                    Console.Clear();
+                }
             }
         }
     }

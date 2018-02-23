@@ -8,10 +8,10 @@ using System.Linq;
 namespace KpdApps.Orationi.Messaging.ServerTests
 {
     [TestClass]
-    public class LoadAssemblyTest
+    public class LoadAssemblyTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void LoadAssemblyTest()
         {
             byte[] bytes;
             string fileName = "KpdApps.Orationi.Messaging.DummyPlugins.dll";
@@ -26,6 +26,11 @@ namespace KpdApps.Orationi.Messaging.ServerTests
             using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
             {
                 PluginAssembly pa = dbContext.PluginAsseblies.FirstOrDefault();
+                if (pa == null)
+                {
+                    pa = new PluginAssembly();
+                    dbContext.Add(pa);
+                }
                 pa.Assembly = bytes;
                 dbContext.SaveChanges();
             }

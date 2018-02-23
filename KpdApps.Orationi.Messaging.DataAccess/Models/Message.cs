@@ -15,6 +15,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public int RequestCode { get; set; }
 
+        [Column(TypeName = "xml not null")]
         public string RequestBody { get; set; }
 
         public string RequestUser { get; set; }
