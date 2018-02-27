@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj" />
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj" />
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj" />
+  </ItemGroup>
+
+</Project>
