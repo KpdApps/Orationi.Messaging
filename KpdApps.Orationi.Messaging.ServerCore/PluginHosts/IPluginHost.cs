@@ -8,7 +8,7 @@
 
         string CloseReason { get; }
 
-        string QueryCode { get; }
+        string QueueCode { get; }
 
         void Run();
     }

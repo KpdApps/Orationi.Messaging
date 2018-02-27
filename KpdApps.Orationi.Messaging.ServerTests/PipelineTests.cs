@@ -1,5 +1,5 @@
 ﻿using KpdApps.Orationi.Messaging.DummyPlugins;
-using KpdApps.Orationi.Messaging.ServerConsole.Pipeline;
+using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

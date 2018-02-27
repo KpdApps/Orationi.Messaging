@@ -34,7 +34,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
 
         public abstract bool IsSynchronous { get; }
 
-        public abstract string QueryCode { get; }
+        public abstract string QueueCode { get; }
 
         protected IConnection connection;
         protected IModel channel;
