@@ -13,5 +13,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public int Order { get; set; }
 
         public bool IsAsynchronous { get; set; }
+
+        public string Configuration { get; set; }
     }
 }

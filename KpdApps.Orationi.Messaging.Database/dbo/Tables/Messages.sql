@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Messages] (
-    [Id]             UNIQUEIDENTIFIER NOT NULL,
+    [Id]             UNIQUEIDENTIFIER CONSTRAINT [DF_Messages_Id] DEFAULT (newid()) NOT NULL,
     [Created]        DATETIME         CONSTRAINT [DF__Messages__Create__45F365D3] DEFAULT (getdate()) NOT NULL,
     [Modified]       DATETIME         CONSTRAINT [DF__Messages__Modifi__46E78A0C] DEFAULT (getdate()) NOT NULL,
     [RequestCode]    INT              NOT NULL,
@@ -18,4 +18,6 @@
     CONSTRAINT [FK_Messages_MessageStatusCode] FOREIGN KEY ([StatusCode]) REFERENCES [dbo].[MessageStatusCode] ([Id]),
     CONSTRAINT [FK_Messages_RequestCodes] FOREIGN KEY ([RequestCode]) REFERENCES [dbo].[RequestCodes] ([Id])
 );
+
+
 

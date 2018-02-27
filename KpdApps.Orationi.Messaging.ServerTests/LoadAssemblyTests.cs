@@ -14,7 +14,7 @@ namespace KpdApps.Orationi.Messaging.ServerTests
         public void LoadAssemblyTest()
         {
             byte[] bytes;
-            string fileName = "KpdApps.Orationi.Messaging.DummyPlugins.dll";
+            string fileName = "KpdApps.Orationi.Messaging.TelegramPlugins.dll";
             using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
             {
                 bytes = ReadAllBytes(reader);
@@ -25,12 +25,13 @@ namespace KpdApps.Orationi.Messaging.ServerTests
 
             using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
             {
-                PluginAssembly pa = dbContext.PluginAsseblies.FirstOrDefault();
+                PluginAssembly pa = dbContext.PluginAsseblies.FirstOrDefault(p => p.Name == fileName);
                 if (pa == null)
                 {
                     pa = new PluginAssembly();
                     dbContext.Add(pa);
                 }
+                pa.Name = fileName;
                 pa.Assembly = bytes;
                 dbContext.SaveChanges();
             }

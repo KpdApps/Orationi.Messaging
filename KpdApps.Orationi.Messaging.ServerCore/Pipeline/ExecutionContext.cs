@@ -12,6 +12,10 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public IDictionary PipelineValues { get; }
 
+        public IDictionary GlobalSettings { get; set; }
+
+        public IDictionary PluginStepSettings { get; set; }
+
         internal ExecuteContext()
         {
             PipelineValues = new Dictionary<string, object>();

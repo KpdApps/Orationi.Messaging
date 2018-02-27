@@ -15,6 +15,29 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
         {
             RabbitClient client = new RabbitClient();
             int count = 0;
+
+            DummyRequest request = new DummyRequest();
+            request.MessageId = Guid.NewGuid().ToString();
+            request.RequestCode = 1;
+
+            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");//);
+
+            Message message = new Message();
+            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
+            {
+                message.RequestCode = 1;
+                message.RequestSystem = "ClientConsole";
+                message.RequestUser = "orationi";
+                message.RequestBody = request.Serialize();
+                dbContext.Messages.Attach(message);
+                dbContext.SaveChanges();
+            }
+
+            Console.WriteLine($"{count}){message.Id}");
+            Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
+            Console.ReadKey();
+            /*
             while (true)
             {
                 count++;
@@ -55,7 +78,7 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
                 {
                     Console.Clear();
                 }
-            }
+            }*/
         }
     }
 }

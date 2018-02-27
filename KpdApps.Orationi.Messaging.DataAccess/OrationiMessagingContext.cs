@@ -23,6 +23,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<PluginRegisteredStep> PluginRegisteredSteps { get; set; }
 
+        public DbSet<GlobalSetting> GlobalSettings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>().ToTable("Messages");
@@ -31,6 +33,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Entity<PluginAssembly>().ToTable("PluginAssemblies");
             modelBuilder.Entity<PluginType>().ToTable("PluginTypes");
             modelBuilder.Entity<PluginRegisteredStep>().ToTable("PluginRegisteredSteps");
+            modelBuilder.Entity<GlobalSetting>().ToTable("GlobalSettings");
         }
     }
 }

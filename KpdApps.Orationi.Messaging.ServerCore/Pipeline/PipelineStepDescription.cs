@@ -15,5 +15,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public DateTime ModifiedOn { get; set; }
 
         public bool IsAsynchronous { get; set; }
+
+        public string ConfigurationString { get; set; }
     }
 }

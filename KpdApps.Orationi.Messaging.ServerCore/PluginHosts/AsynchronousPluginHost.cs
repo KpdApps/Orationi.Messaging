@@ -50,12 +50,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                     var message = Encoding.UTF8.GetString(body);
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
-                    Random r = new Random(DateTime.Now.Millisecond);
-                    if (r.Next(1, 100) == 8)
-                    {
-                        Dispose();
-                    }
-
                     Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
                     pipeline.Init();
                     pipeline.Run();
@@ -68,6 +62,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                 {
                     Console.WriteLine($" [{QueueCode}] " + e.Message);
                     response = "";
+                    return;
                 }
                 finally
                 {

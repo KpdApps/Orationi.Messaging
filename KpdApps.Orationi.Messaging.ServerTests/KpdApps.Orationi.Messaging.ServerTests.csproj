@@ -30,6 +30,7 @@
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj" />
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DummyPlugins\KpdApps.Orationi.Messaging.DummyPlugins.csproj" />
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.ServerConsole\KpdApps.Orationi.Messaging.ServerConsole.csproj" />
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.TelegramPlugins\KpdApps.Orationi.Messaging.TelegramPlugins.csproj" />
   </ItemGroup>
 
   <ItemGroup>

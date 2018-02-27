@@ -2,6 +2,7 @@
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk.Plugins;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,8 +69,26 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                                       Class = pt.Class,
                                       Order = prs.Order,
                                       IsAsynchronous = prs.IsAsynchronous,
-                                      ModifiedOn = pa.ModifiedOn
+                                      ModifiedOn = pa.ModifiedOn,
+                                      ConfigurationString = prs.Configuration
                                   }).AsEnumerable();
+
+            foreach (PipelineStepDescription psd in _stepsDescriptions)
+            {
+                if (string.IsNullOrEmpty(psd.ConfigurationString))
+                {
+                    continue;
+                }
+
+                _context.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
+            }
+
+            IList<GlobalSetting> globalSettings = _dbContext.GlobalSettings.ToList();
+            _context.GlobalSettings = new Dictionary<string, string>();
+            foreach (GlobalSetting globalSetting in globalSettings)
+            {
+                _context.GlobalSettings.Add(globalSetting.Name, globalSetting.Value);
+            }
         }
 
         public async void Run()
@@ -92,20 +111,21 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
                 if (stepDescription.IsAsynchronous)
                 {
-                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
-                    plugin.BeforeExecution();
-                    plugin.Execute();
-                    plugin.AfterExecution();
-                }
-                else
-                {
-                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
                     tasks.Add(Task.Run(() =>
                     {
+                        IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
                         plugin.BeforeExecution();
                         plugin.Execute();
                         plugin.AfterExecution();
                     }));
+                }
+                else
+                {
+                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
+
+                    plugin.BeforeExecution();
+                    plugin.Execute();
+                    plugin.AfterExecution();
                 }
             }
 

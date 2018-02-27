@@ -9,5 +9,9 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
         string ResponseBody { get; set; }
 
         IDictionary PipelineValues { get; }
+
+        IDictionary GlobalSettings { get; set; }
+
+        IDictionary PluginStepSettings { get; set; }
     }
 }

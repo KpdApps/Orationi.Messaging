@@ -72,5 +72,6 @@
     <Build Include="dbo\Tables\PluginTypes.sql" />
     <Build Include="dbo\Tables\PluginRegisteredSteps.sql" />
     <Build Include="dbo\Tables\PluginAssemblies.sql" />
+    <Build Include="dbo\Tables\GlobalSettings.sql" />
   </ItemGroup>
 </Project>
