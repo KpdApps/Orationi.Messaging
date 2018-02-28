@@ -28,7 +28,7 @@ namespace KpdApps.Orationi.Messaging.Core
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _replyQueueName = _channel.QueueDeclare($"queue-{requestCode}-{Convert.ToInt32(isSynchronous)}-rpc").QueueName;
+            _replyQueueName = _channel.QueueDeclare().QueueName;
             _consumer = new EventingBasicConsumer(_channel);
 
             _props = _channel.CreateBasicProperties();

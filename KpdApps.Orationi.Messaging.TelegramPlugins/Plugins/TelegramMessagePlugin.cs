@@ -91,7 +91,7 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
                 {
                     Telegram.Bot.Types.Message message = await client.SendTextMessageAsync(_chatId, messageText);
                 }
-            });
+            }).Wait();
         }
 
         public void AfterExecution()

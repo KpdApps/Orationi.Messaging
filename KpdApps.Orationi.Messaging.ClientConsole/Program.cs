@@ -2,7 +2,9 @@
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.DummyPlugins;
+using KpdApps.Orationi.Messaging.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,72 +15,32 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
     {
         static void Main(string[] args)
         {
-            RabbitClient client = new RabbitClient(1, true);
-            int count = 0;
-
-            DummyRequest request = new DummyRequest();
-            request.MessageId = Guid.NewGuid().ToString();
-            request.RequestCode = 1;
-
             DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");//);
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");
+            OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options);
 
-            Message message = new Message();
-            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
-            {
-                message.RequestCode = 1;
-                message.RequestSystem = "ClientConsole";
-                message.RequestUser = "orationi";
-                message.RequestBody = request.Serialize();
-                dbContext.Messages.Attach(message);
-                dbContext.SaveChanges();
-            }
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(dbContext);
 
-            Console.WriteLine($"{count}){message.Id}");
-            Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
-            Console.ReadKey();
-            /*
             while (true)
             {
-                count++;
+                DummyRequest dummyRequest = new DummyRequest();
+                dummyRequest.MessageId = Guid.NewGuid().ToString();
+                dummyRequest.RequestCode = 1;
 
-                DummyRequest request = new DummyRequest();
-                request.MessageId = Guid.NewGuid().ToString();
-                request.RequestCode = 1;
-
-                DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-                optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");//);
-
-                Message message = new Message();
-                using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
+                Request request = new Request()
                 {
-                    message.RequestCode = 1;
-                    message.RequestSystem = "ClientConsole";
-                    message.RequestUser = "orationi";
-                    message.RequestBody = request.Serialize();
-                    dbContext.Messages.Attach(message);
-                    dbContext.SaveChanges();
-                }
+                    RequestBody = dummyRequest.Serialize(),
+                    RequestCode = 1,
+                    RequestSystemName = "Dummy",
+                    RequestUserName = "Dummy"
+                };
 
-                if (count % 2 == 0)
-                {
-                    Task.Run(() =>
-                    {
-                        Console.WriteLine($"{count}){message.Id}");
-                        Console.WriteLine($"{count}){client.Execute(1, message.Id)}");
-                    });
-                }
-                else
-                {
-                    Console.WriteLine($"{count}) A {message.Id}");
-                    client.PullMessage(1, message.Id);
-                }
+                Console.WriteLine($" ==> {JsonConvert.SerializeObject(request)}");
+                Response response = imp.Execute(request);
 
-                if (count % 100 == 0)
-                {
-                    Console.Clear();
-                }
-            }*/
+                Console.WriteLine($" <== {JsonConvert.SerializeObject(response)}");
+                Thread.Sleep(1000);
+            }
         }
     }
 }
