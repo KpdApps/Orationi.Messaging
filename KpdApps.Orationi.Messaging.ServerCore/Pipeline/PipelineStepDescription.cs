@@ -12,7 +12,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public int Order { get; set; }
 
-        public DateTime ModifiedOn { get; set; }
+        public DateTime Modified { get; set; }
 
         public bool IsAsynchronous { get; set; }
 

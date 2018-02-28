@@ -8,6 +8,10 @@
 
         string ResponseContractUri { get; }
 
+        string[] GlobalSettingsList { get; }
+
+        string[] LocalSettingsList { get; }
+
         void BeforeExecution();
 
         void Execute();

@@ -14,6 +14,10 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 
         public virtual string ResponseContractUri { get; protected set; }
 
+        public virtual string[] GlobalSettingsList => new string[] { };
+
+        public virtual string[] LocalSettingsList => new string[] { };
+
         public BasePipelinePlugin(IExecuteContext context)
         {
             Context = context;

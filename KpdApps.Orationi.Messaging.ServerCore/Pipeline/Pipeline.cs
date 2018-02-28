@@ -25,6 +25,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         {
             _messageId = messageId;
             _requestCode = requestCode;
+            Init();
         }
 
         ~Pipeline()
@@ -69,8 +70,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                                       Class = pt.Class,
                                       Order = prs.Order,
                                       IsAsynchronous = prs.IsAsynchronous,
-                                      ModifiedOn = pa.ModifiedOn,
-                                      ConfigurationString = prs.Configuration
+                                      Modified = pa.Modified,
+                                      ConfigurationString = prs.Configuration,
+
                                   }).AsEnumerable();
 
             foreach (PipelineStepDescription psd in _stepsDescriptions)
@@ -91,51 +93,69 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
         }
 
+        IList<Task> _tasks = new List<Task>();
         public async void Run()
         {
-            List<Task> tasks = new List<Task>();
+            _message.StatusCode = (int)StatusCodeEnum.OnTheAnvil;
+            _dbContext.SaveChanges();
 
             foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
             {
-                string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
-                long unixTimeSec = ((DateTimeOffset)stepDescription.ModifiedOn).ToUnixTimeSeconds();
-                string asseblyName = Path.Combine(tmpAssembliesPath, $"{stepDescription.AssemblyId}-{unixTimeSec}.dll");
+                string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
 
-                if (!File.Exists(asseblyName))
-                {
-                    AssembliesPreLoader.Execute(stepDescription.AssemblyId);
-                }
-
-                Assembly assembly = Assembly.LoadFrom(asseblyName);
+                Assembly assembly = Assembly.LoadFrom(assemblyName);
                 Type type = assembly.GetType(stepDescription.Class);
 
                 if (stepDescription.IsAsynchronous)
                 {
-                    tasks.Add(Task.Run(() =>
+                    _tasks.Add(new Task(() => { ExecutePlugin(type, stepDescription); }));
+                    continue;
+                }
+
+                ExecutePlugin(type, stepDescription);
+            }
+
+            Parallel.ForEach(_tasks, (task) => task.RunSynchronously());
+            await Task.WhenAll(_tasks);
+
+            _message.ResponseBody = _context.ResponseBody;
+            _message.ResponseSystem = _context.ResponseSystem;
+            _message.ResponseUser = _context.ResponseUser;
+            _message.StatusCode = _context.StatusCode ?? (int)StatusCodeEnum.Processed;
+
+            _dbContext.SaveChanges();
+        }
+
+        private void ExecutePlugin(Type type, PipelineStepDescription stepDescription)
+        {
+            try
+            {
+                IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
+                plugin.BeforeExecution();
+                plugin.Execute();
+                plugin.AfterExecution();
+            }
+            catch (Exception ex)
+            {
+                if (stepDescription.IsAsynchronous)
+                {
+                    _message.ErrorCode = 100001;
+                    ProcessingError pe = new ProcessingError
                     {
-                        IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
-                        plugin.BeforeExecution();
-                        plugin.Execute();
-                        plugin.AfterExecution();
-                    }));
+                        MessageId = _messageId,
+                        StackTrace = ex.StackTrace,
+                        Error = ex.Message
+                    };
+                    _dbContext.ProcessingErrors.Add(pe);
+                    _dbContext.SaveChanges();
                 }
                 else
                 {
-                    IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
-
-                    plugin.BeforeExecution();
-                    plugin.Execute();
-                    plugin.AfterExecution();
+                    _message.ErrorMessage = ex.Message;
+                    _message.ErrorCode = 100000;
                 }
+                _dbContext.SaveChanges();
             }
-
-            await Task.WhenAll(tasks);
-
-            _message.ResponseBody = _context.ResponseBody;
-            _message.ResponseSystem = "test";
-            _message.ResponseUser = "test";
-
-            _dbContext.SaveChanges();
         }
     }
 }

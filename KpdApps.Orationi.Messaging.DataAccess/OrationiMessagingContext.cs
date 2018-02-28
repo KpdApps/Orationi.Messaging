@@ -25,6 +25,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<GlobalSetting> GlobalSettings { get; set; }
 
+        public DbSet<ProcessingError> ProcessingErrors { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>().ToTable("Messages");
@@ -34,6 +36,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Entity<PluginType>().ToTable("PluginTypes");
             modelBuilder.Entity<PluginRegisteredStep>().ToTable("PluginRegisteredSteps");
             modelBuilder.Entity<GlobalSetting>().ToTable("GlobalSettings");
+            modelBuilder.Entity<ProcessingError>().ToTable("ProcessingErrors");
         }
     }
 }

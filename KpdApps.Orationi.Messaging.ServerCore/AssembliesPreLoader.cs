@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.IO;
+using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 
 namespace KpdApps.Orationi.Messaging.ServerCore
 {
     public static class AssembliesPreLoader
     {
+        const string AssembliesTempFolderName = "tmp";
+
         public static void Execute()
         {
             DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
@@ -24,7 +27,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               {
                                   Id = pa.Id,
                                   AssemblyBinary = pa.Assembly,
-                                  ModifiedOn = pa.ModifiedOn
+                                  Modified = pa.Modified
                               }
                              ).ToList().Distinct();
 
@@ -45,7 +48,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
             foreach (var assembly in assemblies)
             {
-                long unixTimeSec = ((DateTimeOffset)assembly.ModifiedOn).ToUnixTimeSeconds();
+                long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
                 string asseblyName = Path.Combine(tmpAssembliesPath, $"{assembly.Id}-{unixTimeSec}.dll");
                 using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(asseblyName)))
                 {
@@ -67,7 +70,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               {
                                   Id = pa.Id,
                                   AssemblyBinary = pa.Assembly,
-                                  ModifiedOn = pa.ModifiedOn
+                                  Modified = pa.Modified
                               }
                              ).ToList().Distinct();
 
@@ -75,13 +78,27 @@ namespace KpdApps.Orationi.Messaging.ServerCore
             Directory.CreateDirectory(tmpAssembliesPath);
             foreach (var assembly in assemblies)
             {
-                long unixTimeSec = ((DateTimeOffset)assembly.ModifiedOn).ToUnixTimeSeconds();
+                long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
                 string asseblyName = Path.Combine(tmpAssembliesPath, $"{assembly.Id}-{unixTimeSec}.dll");
                 using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(asseblyName)))
                 {
                     writer.Write(assembly.AssemblyBinary, 0, assembly.AssemblyBinary.Length);
                 }
             }
+        }
+
+        internal static string WarmupAssembly(PipelineStepDescription stepDescription)
+        {
+            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
+            long unixTimeSec = ((DateTimeOffset)stepDescription.Modified).ToUnixTimeSeconds();
+            string assemblyName = Path.Combine(tmpAssembliesPath, $"{stepDescription.AssemblyId}-{unixTimeSec}.dll");
+
+            if (!File.Exists(assemblyName))
+            {
+                Execute(stepDescription.AssemblyId);
+            }
+
+            return assemblyName;
         }
     }
 }

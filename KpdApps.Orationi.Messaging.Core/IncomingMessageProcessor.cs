@@ -34,7 +34,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Attach(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
+                RabbitClient client = new RabbitClient(request.RequestCode, true);
                 client.Execute(message.RequestCode, message.Id);
 
                 message = _dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
@@ -87,7 +87,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Attach(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
+                RabbitClient client = new RabbitClient(request.RequestCode, false);
                 client.PullMessage(message.RequestCode, message.Id);
 
                 ResponseId response = new ResponseId();

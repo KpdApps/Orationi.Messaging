@@ -26,11 +26,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: "rpc_queue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(queue: QueueCode, durable: false, exclusive: false, autoDelete: false, arguments: null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
-            channel.BasicConsume(queue: "rpc_queue", autoAck: false, consumer: consumer);
-            Console.WriteLine($"{QueueCode} [x] Awaiting RPC requests");
+            channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
+            Console.WriteLine($"{QueueCode} [x] Awaiting sync requests");
             consumer.Received += Consumer_Received;
         }
 
@@ -51,18 +51,15 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
                     Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                    pipeline.Init();
                     pipeline.Run();
 
                     Console.WriteLine($" [{QueueCode}] ({message})");
-                    rabbitRequest.RequestCode++;
-                    response = JsonConvert.SerializeObject(rabbitRequest);
+                    response = JsonConvert.SerializeObject("Success");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($" [{QueueCode}] " + e.Message);
-                    response = "";
-                    return;
+                    response = JsonConvert.SerializeObject("Error");
                 }
                 finally
                 {

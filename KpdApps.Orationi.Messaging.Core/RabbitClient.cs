@@ -18,13 +18,17 @@ namespace KpdApps.Orationi.Messaging.Core
         private readonly BlockingCollection<string> _respQueue = new BlockingCollection<string>();
         private readonly IBasicProperties _props;
 
-        public RabbitClient()
+        private bool _isSynchronous;
+
+        public RabbitClient(int requestCode, bool isSynchronous)
         {
+            _isSynchronous = isSynchronous;
+
             var factory = new ConnectionFactory() { HostName = "localhost", UserName = "orationi", Password = "orationi" };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _replyQueueName = _channel.QueueDeclare().QueueName;
+            _replyQueueName = _channel.QueueDeclare($"queue-{requestCode}-{Convert.ToInt32(isSynchronous)}-rpc").QueueName;
             _consumer = new EventingBasicConsumer(_channel);
 
             _props = _channel.CreateBasicProperties();
@@ -54,7 +58,7 @@ namespace KpdApps.Orationi.Messaging.Core
             var messageBytes = Encoding.UTF8.GetBytes(message);
             _channel.BasicPublish(
                 exchange: "",
-                routingKey: "rpc_queue",
+                routingKey: $"queue-{requestCode}-1",
                 basicProperties: _props,
                 body: messageBytes);
 

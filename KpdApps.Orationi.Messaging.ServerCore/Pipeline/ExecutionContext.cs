@@ -1,6 +1,8 @@
 ﻿using KpdApps.Orationi.Messaging.Sdk.Plugins;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
@@ -9,6 +11,12 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public string RequestBody { get; internal set; }
 
         public string ResponseBody { get; set; }
+
+        public string ResponseUser { get; set; }
+
+        public string ResponseSystem { get; set; }
+
+        public int? StatusCode { get; set; }
 
         public IDictionary PipelineValues { get; }
 
@@ -19,6 +27,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         internal ExecuteContext()
         {
             PipelineValues = new Dictionary<string, object>();
+            GlobalSettings = new Dictionary<string, string>();
+            PluginStepSettings = new Dictionary<string, object>();
         }
     }
 }

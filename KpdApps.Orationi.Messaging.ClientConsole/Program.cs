@@ -13,7 +13,7 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
     {
         static void Main(string[] args)
         {
-            RabbitClient client = new RabbitClient();
+            RabbitClient client = new RabbitClient(1, true);
             int count = 0;
 
             DummyRequest request = new DummyRequest();

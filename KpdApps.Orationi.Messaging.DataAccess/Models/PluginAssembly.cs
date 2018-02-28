@@ -10,6 +10,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public byte[] Assembly { get; set; }
 
-        public DateTime ModifiedOn { get; set; }
+        public DateTime Modified { get; set; }
     }
 }

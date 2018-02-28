@@ -30,7 +30,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
             channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
-            Console.WriteLine($"{QueueCode} [x] Awaiting RPC requests");
+            Console.WriteLine($"{QueueCode} [x] Awaiting async requests");
             consumer.Received += Consumer_Received;
         }
 
@@ -38,8 +38,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
         {
             Task.Run(() =>
             {
-                string response = null;
-
                 var body = ea.Body;
                 var props = ea.BasicProperties;
                 var replyProps = channel.CreateBasicProperties();
@@ -51,17 +49,14 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
                     Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                    pipeline.Init();
                     pipeline.Run();
 
                     Console.WriteLine($" [{QueueCode}] ({message})");
                     rabbitRequest.RequestCode++;
-                    response = JsonConvert.SerializeObject(rabbitRequest);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($" [{QueueCode}] " + e.Message);
-                    response = "";
                     return;
                 }
                 finally

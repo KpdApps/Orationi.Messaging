@@ -6,7 +6,7 @@
     [RequestBody]    XML              NOT NULL,
     [RequestUser]    NVARCHAR (50)    NOT NULL,
     [RequestSystem]  NVARCHAR (50)    NOT NULL,
-    [ResponseBody]   XML              NULL,
+    [ResponseBody]   NVARCHAR (MAX)   NULL,
     [ResponseUser]   NVARCHAR (50)    NULL,
     [ResponseSystem] NVARCHAR (50)    NULL,
     [StatusCode]     INT              CONSTRAINT [DF__Messages__Status__47DBAE45] DEFAULT ((0)) NOT NULL,
@@ -21,3 +21,18 @@
 
 
 
+
+
+
+
+
+GO
+CREATE TRIGGER [dbo].[MessagesModified] ON [dbo].[Messages]
+AFTER INSERT, UPDATE 
+AS
+  UPDATE m set [Modified] = GETDATE()
+  FROM 
+  dbo.Messages AS m
+  INNER JOIN inserted
+  AS i
+  ON m.Id = i.Id;

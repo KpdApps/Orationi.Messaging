@@ -15,6 +15,7 @@ namespace KpdApps.Orationi.Messaging.ServerTests
         {
             byte[] bytes;
             string fileName = "KpdApps.Orationi.Messaging.TelegramPlugins.dll";
+            //string fileName = "KpdApps.Orationi.Messaging.DummyPlugins.dll";
             using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
             {
                 bytes = ReadAllBytes(reader);
