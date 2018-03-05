@@ -15,9 +15,7 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
     {
         static void Main(string[] args)
         {
-            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;");
-            OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options);
+            OrationiMessagingContext dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
 
             IncomingMessageProcessor imp = new IncomingMessageProcessor(dbContext);
 

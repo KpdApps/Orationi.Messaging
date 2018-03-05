@@ -21,10 +21,7 @@ namespace KpdApps.Orationi.Messaging.ServerTests
                 bytes = ReadAllBytes(reader);
             }
 
-            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True");
-
-            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(optionsBuilder.Options))
+            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions()))
             {
                 PluginAssembly pa = dbContext.PluginAsseblies.FirstOrDefault(p => p.Name == fileName);
                 if (pa == null)

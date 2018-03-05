@@ -8,10 +8,10 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public Guid Id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public Nullable<DateTime> Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public Nullable<DateTime> Modified { get; set; }
+        public DateTime? Modified { get; set; }
 
         public int RequestCode { get; set; }
 
@@ -31,7 +31,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int StatusCode { get; set; }
 
-        public Nullable<int> ErrorCode { get; set; }
+        public int? ErrorCode { get; set; }
 
         public string ErrorMessage { get; set; }
 
