@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+
+namespace KpdApps.Orationi.Messaging.DataAccess
+{
+	public static class OrationiMessagingContextExtension
+	{
+		public static DbContextOptions<OrationiMessagingContext> DefaultDbContextOptions()
+		{
+			var connectionBuilder = new SqlConnectionStringBuilder
+			{
+				ApplicationName = "KpdApps.Orationi.Messaging",	// для профилирования БД
+				DataSource = @"localhost",
+				InitialCatalog = @"OrationiMessageBus",
+				IntegratedSecurity = true,
+				MultipleActiveResultSets = true
+			};
+
+			DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
+			optionsBuilder.UseSqlServer(connectionBuilder.ToString());
+			return optionsBuilder.Options;
+		}
+	}
+}

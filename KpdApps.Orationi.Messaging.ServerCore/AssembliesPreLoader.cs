@@ -15,10 +15,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute()
         {
-            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True");
-
-            OrationiMessagingContext _dbContext = new OrationiMessagingContext(optionsBuilder.Options);
+            OrationiMessagingContext _dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
 
             var assemblies = (from prs in _dbContext.PluginRegisteredSteps
                               join pt in _dbContext.PluginTypes on prs.PluginTypeId equals pt.Id
@@ -59,10 +56,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute(Guid assemblyId)
         {
-            DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True");
-
-            OrationiMessagingContext _dbContext = new OrationiMessagingContext(optionsBuilder.Options);
+            OrationiMessagingContext _dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
 
             var assemblies = (from pa in _dbContext.PluginAsseblies
                               where pa.Id == assemblyId

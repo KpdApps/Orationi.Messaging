@@ -14,7 +14,7 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 
         string ResponseSystem { get; set; }
 
-        Nullable<int> StatusCode { get; set; }
+	    Nullable<int> StatusCode { get; set; }
 
         IDictionary PipelineValues { get; }
 

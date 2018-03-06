@@ -57,11 +57,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                 catch (Exception e)
                 {
                     Console.WriteLine($" [{QueueCode}] " + e.Message);
-                    return;
                 }
                 finally
                 {
-                    //var responseBytes = Encoding.UTF8.GetBytes(response);
                     if (CloseReason == null)
                     {
                         channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
