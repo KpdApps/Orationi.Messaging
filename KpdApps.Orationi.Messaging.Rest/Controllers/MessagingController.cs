@@ -57,7 +57,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             return response;
         }
 
-        [HttpGet("xsd?{requestCode}")]
+        [HttpGet("xsd/{requestCode}")]
         public IActionResult GetXsd(int requestCode)
         {
             string result = "test";

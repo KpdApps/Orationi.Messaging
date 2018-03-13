@@ -84,7 +84,7 @@ namespace KpdApps.Orationi.Messaging.Core
                     IsSyncRequest = true
                 };
 
-                _dbContext.Messages.Attach(message);
+                _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.RequestCode, false);
@@ -97,7 +97,7 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new ResponseId() { IsError = true, Error = ex.Message };
+                return new ResponseId() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
             }
         }
 

@@ -13,13 +13,13 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 			var connectionBuilder = new SqlConnectionStringBuilder
 			{
 				ApplicationName = "KpdApps.Orationi.Messaging",	// для профилирования БД
-				DataSource = @"localhost",
+				DataSource = @"hq-vm-tstsql.exiar.ru\insttst02",
 				InitialCatalog = @"OrationiMessageBus",
 				IntegratedSecurity = true,
 				MultipleActiveResultSets = true
 			};
 
-			DbContextOptionsBuilder<OrationiMessagingContext> optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
+			var optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
 			optionsBuilder.UseSqlServer(connectionBuilder.ToString());
 			return optionsBuilder.Options;
 		}

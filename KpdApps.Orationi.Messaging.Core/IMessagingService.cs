@@ -1,5 +1,6 @@
 ﻿using KpdApps.Orationi.Messaging.Models;
 using System;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 
 namespace KpdApps.Orationi.Messaging
@@ -12,9 +13,6 @@ namespace KpdApps.Orationi.Messaging
 
         [OperationContract]
         Response GetResponse(Guid requestId);
-
-        //[OperationContract]
-        //ResponseStatus GetStatus(Guid requestId);
 
         [OperationContract]
         Response ExecuteRequest(Request request);

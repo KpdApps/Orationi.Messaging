@@ -1,26 +1,21 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
-namespace KpdApps.Orationi.Messaging.Models
+namespace KpdApps.Orationi.Messaging
 {
     [DataContract]
     public class Request
     {
-        [DataMember]
-        public int RequestCode { get; set; }
+        [DataMember] public int RequestCode { set; get; }
 
-        [DataMember]
-        public string RequestType { get; set; }
+        [DataMember] public string RequestType { set; get; }
 
-        [DataMember]
-        public string RequestBody { get; set; }
+        [DataMember] public string RequestBody { set; get; }
 
-        [DataMember]
-        public string RequestSystemName { get; set; }
+        [DataMember] public string RequestSystemName { set; get; }
 
-        [DataMember]
-        public string RequestUserName { get; set; }
+        [DataMember] public string RequestUserName { set; get; }
 
-        [DataMember]
-        public string RequestSecureKey { get; set; }
+        [DataMember] public string RequestSecureKey { set; get; }
     }
 }
