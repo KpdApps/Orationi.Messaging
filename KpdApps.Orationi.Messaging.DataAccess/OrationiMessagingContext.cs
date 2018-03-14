@@ -1,12 +1,13 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace KpdApps.Orationi.Messaging.DataAccess
 {
     public class OrationiMessagingContext : DbContext
     {
-        public OrationiMessagingContext(DbContextOptions<OrationiMessagingContext> options)
-            : base(options)
+        public OrationiMessagingContext(IContextOptionsBuilder optionsBuilder)
+            : base(optionsBuilder.GetThroughSettings())
         {
 
         }

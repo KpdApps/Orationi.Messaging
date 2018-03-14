@@ -1,13 +1,17 @@
 ﻿using System;
+using System.ServiceModel;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace KpdApps.Orationi.Messaging
 {
     public class MessagingService : IMessagingService
     {
-        OrationiMessagingContext _dbContext;
+        private OrationiMessagingContext _dbContext;
 
         public MessagingService(OrationiMessagingContext dbContext)
         {

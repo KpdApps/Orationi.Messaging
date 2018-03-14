@@ -6,8 +6,12 @@ using KpdApps.Orationi.Messaging.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace KpdApps.Orationi.Messaging.ClientConsole
 {
@@ -15,9 +19,14 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
     {
         static void Main(string[] args)
         {
-            OrationiMessagingContext dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(dbContext);
+            var dbContext = new OrationiMessagingContext(new OrationiContextOptionsBuilder(configuration));
+
+            var imp = new IncomingMessageProcessor(dbContext);
 
             while (true)
             {

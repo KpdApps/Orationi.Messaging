@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,20 +11,12 @@ namespace KpdApps.Orationi.Messaging
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration config)
-        {
-            Configuration = config;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<OrationiMessagingContext>();
-            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            var dbContext = new OrationiMessagingContext(optionsBuilder.Options);
+            services.AddSingleton<IContextOptionsBuilder, OrationiContextOptionsBuilder>();
+            services.AddTransient<OrationiMessagingContext>();
+            services.AddSingleton<MessagingService>();
 
-            services.AddSingleton(new MessagingService(dbContext));
             services.AddMvc();
         }
 
