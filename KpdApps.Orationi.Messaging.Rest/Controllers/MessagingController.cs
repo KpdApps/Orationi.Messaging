@@ -29,17 +29,24 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [HttpGet("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
-            Response response = imp.GetResponse(requestId);
+            var imp = new IncomingMessageProcessor(_dbContext, HttpContext);
+            var response = imp.GetResponse(requestId);
             return response;
         }
 
-        [HttpPost]
-        public Response ExecuteRequest([FromBody] Request request)
+        [HttpPost("sync")]
+        public Response ExecuteRequest(Request request)
         {
-            // Отдаем запрос в процессор, дальше он сам
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
-            Response response = imp.Execute(request);
+            var imp = new IncomingMessageProcessor(_dbContext, HttpContext);
+            var response = imp.Execute(request);
+            return response;
+        }
+
+        [HttpPost("async")]
+        public ResponseId ExecuteRequestAsync(Request request)
+        {
+            var imp = new IncomingMessageProcessor(_dbContext, HttpContext);
+            var response = imp.ExecuteAsync(request);
             return response;
         }
 
@@ -49,19 +56,16 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPost("async")]
-        public ResponseId ExecuteRequestAsync(Request request)
-        {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
-            ResponseId response = imp.ExecuteAsync(request);
-            return response;
-        }
-
         [HttpGet("xsd/{requestCode}")]
-        public IActionResult GetXsd(int requestCode)
+        public Response GetXsd(int requestCode)
         {
-            string result = "test";
-            return Content(result);
+            var response = new Response();
+            if (!HttpContext.IsAuthorized(_dbContext, requestCode, response, out var externalSystem))
+                return response;
+
+            response.ResponseBody = "test";
+
+            return response;
         }
     }
 }

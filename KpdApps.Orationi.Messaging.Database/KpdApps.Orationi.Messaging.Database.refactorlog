@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="4914c7d3-386a-4f94-ad13-03734dd6d693" ChangeDateTime="03/14/2018 06:45:36">
+    <Property Name="ElementName" Value="[dbo].[StaffAvailableRequestCodes].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[StaffAvailableRequestCodes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StaffId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="be991940-c044-46b8-9db3-ac0f3a77140d" ChangeDateTime="03/14/2018 08:56:10">
+    <Property Name="ElementName" Value="[dbo].[Staff].[UserName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Staff]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SystemName" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1a8da417-d5cb-4cf7-9d17-1c08f63310ed" ChangeDateTime="03/14/2018 08:56:13">
+    <Property Name="ElementName" Value="[dbo].[Staff].[SecureKey]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Staff]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Token" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1054ed53-68a5-4d0f-96ff-6b1e9439794c" ChangeDateTime="03/14/2018 09:01:00">
+    <Property Name="ElementName" Value="[dbo].[StaffAvailableRequestCodes].[StaffId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[StaffAvailableRequestCodes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ExternalSystemId" />
+  </Operation>
+</Operations>

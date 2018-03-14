@@ -30,11 +30,13 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
 
             while (true)
             {
-                DummyRequest dummyRequest = new DummyRequest();
-                dummyRequest.MessageId = Guid.NewGuid().ToString();
-                dummyRequest.RequestCode = 1;
+                var dummyRequest = new DummyRequest
+                {
+                    MessageId = Guid.NewGuid().ToString(),
+                    RequestCode = 1
+                };
 
-                Request request = new Request()
+                var request = new Request()
                 {
                     RequestBody = dummyRequest.Serialize(),
                     RequestCode = 1,
@@ -43,7 +45,7 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
                 };
 
                 Console.WriteLine($" ==> {JsonConvert.SerializeObject(request)}");
-                Response response = imp.Execute(request);
+                var response = imp.Execute(request);
 
                 Console.WriteLine($" <== {JsonConvert.SerializeObject(response)}");
                 Thread.Sleep(1000);
