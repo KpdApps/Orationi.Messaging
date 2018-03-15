@@ -24,7 +24,7 @@ namespace KpdApps.Orationi.Messaging
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMvc();
-            app.UseSoapEndpoint<MessagingService>(path: "/api/soap/Messaging", binding: new BasicHttpBinding());
+            app.UseSoapEndpoint<MessagingService>(path: "/api/soap/Messaging", binding: new BasicHttpBinding(), serializer: SoapSerializer.XmlSerializer);
         }
     }
 }
