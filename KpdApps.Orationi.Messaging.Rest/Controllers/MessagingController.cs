@@ -69,7 +69,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             if (!HttpContext.IsAuthorized(_dbContext, requestCode, response, out var externalSystem))
                 return response;
 
-            response.ResponseBody = "test";
+            response.Body = "test";
 
             return response;
         }

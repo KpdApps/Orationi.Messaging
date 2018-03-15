@@ -49,7 +49,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 message = _dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
 
                 response.Id = message.Id;
-                response.ResponseBody = message.ResponseBody;
+                response.Body = message.ResponseBody;
 
                 if (!string.IsNullOrEmpty(message.ErrorMessage))
                 {
@@ -82,7 +82,7 @@ namespace KpdApps.Orationi.Messaging.Core
             //TODO: Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
             return !_httpContext.IsAuthorized(_dbContext, message.RequestCode, response, out var externalSystem)
                 ? response
-                : new Response() {Id = requestId, IsError = false, Error = null, ResponseBody = message.ResponseBody};
+                : new Response() {Id = requestId, IsError = false, Error = null, Body = message.ResponseBody};
         }
 
         public ResponseId ExecuteAsync(Request request)
