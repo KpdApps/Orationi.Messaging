@@ -21,6 +21,11 @@ namespace KpdApps.Orationi.Messaging
             _httpContext = httpContext.HttpContext;
         }
 
+        public Response GetStatus(Guid requestId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Response ExecuteRequest(Request request)
         {
             var imp = new IncomingMessageProcessor(_dbContext, _httpContext);
