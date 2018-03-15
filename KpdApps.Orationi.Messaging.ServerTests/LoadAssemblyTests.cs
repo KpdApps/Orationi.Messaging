@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace KpdApps.Orationi.Messaging.ServerTests
 {
@@ -21,7 +23,15 @@ namespace KpdApps.Orationi.Messaging.ServerTests
                 bytes = ReadAllBytes(reader);
             }
 
-            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions()))
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "ConnectionStrings:DefaultConnection", "Data Source=hq-vm-tstsql.exiar.ru\\insttst02;Initial Catalog=OrationiMessageBus;Integrated Security=True;MultipleActiveResultSets=True;Application Name=KpdApps.Orationi.Messaging" }
+
+                })
+                .Build();
+
+            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(new OrationiContextOptionsBuilder(configuration)))
             {
                 PluginAssembly pa = dbContext.PluginAsseblies.FirstOrDefault(p => p.Name == fileName);
                 if (pa == null)
