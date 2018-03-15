@@ -1,7 +1,7 @@
 ﻿CREATE VIEW dbo.MessagesView
 AS
 SELECT        dbo.Messages.Id AS MessageId, dbo.Messages.Created, dbo.Messages.Modified, dbo.Messages.RequestCode, dbo.RequestCodes.Name AS RequestCodeName, dbo.Messages.RequestBody, dbo.Messages.RequestUser, 
-                         dbo.Messages.RequestSystem, dbo.Messages.ResponseBody, dbo.Messages.ResponseUser, dbo.Messages.ExternalSystemId, dbo.Messages.StatusCode, dbo.MessageStatusCode.Name AS StatusCodeName, 
+                         dbo.Messages.ExternalSystemId, dbo.Messages.ResponseBody, dbo.Messages.ResponseUser, dbo.Messages.ResponseSystem, dbo.Messages.StatusCode, dbo.MessageStatusCode.Name AS StatusCodeName, 
                          dbo.Messages.ErrorCode, dbo.Messages.ErrorMessage, dbo.Messages.IsSyncRequest, dbo.Messages.AttemptCount
 FROM            dbo.Messages INNER JOIN
                          dbo.MessageStatusCode ON dbo.MessageStatusCode.Id = dbo.Messages.StatusCode INNER JOIN

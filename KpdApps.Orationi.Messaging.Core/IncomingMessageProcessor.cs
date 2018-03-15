@@ -79,7 +79,7 @@ namespace KpdApps.Orationi.Messaging.Core
             }
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            //TODO Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
+            //TODO: Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
             return !_httpContext.IsAuthorized(_dbContext, message.RequestCode, response, out var externalSystem)
                 ? response
                 : new Response() {Id = requestId, IsError = false, Error = null, ResponseBody = message.ResponseBody};

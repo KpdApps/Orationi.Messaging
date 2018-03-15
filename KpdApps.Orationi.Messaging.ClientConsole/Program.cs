@@ -1,17 +1,13 @@
 ﻿using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.DummyPlugins;
 using KpdApps.Orationi.Messaging.Models;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.DataAccess.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 
 namespace KpdApps.Orationi.Messaging.ClientConsole
 {
@@ -26,7 +22,10 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
 
             var dbContext = new OrationiMessagingContext(new OrationiContextOptionsBuilder(configuration));
 
-            var imp = new IncomingMessageProcessor(dbContext);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["Token"] = "Secure";
+
+            var imp = new IncomingMessageProcessor(dbContext, httpContext);
 
             while (true)
             {
@@ -38,10 +37,9 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
 
                 var request = new Request()
                 {
-                    RequestBody = dummyRequest.Serialize(),
-                    RequestCode = 1,
-                    RequestSystemName = "Dummy",
-                    RequestUserName = "Dummy"
+                    Body = dummyRequest.Serialize(),
+                    Code = 1,
+                    UserName = "Dummy"
                 };
 
                 Console.WriteLine($" ==> {JsonConvert.SerializeObject(request)}");

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.ServiceModel;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace KpdApps.Orationi.Messaging
