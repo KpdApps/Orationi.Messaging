@@ -6,21 +6,15 @@ namespace KpdApps.Orationi.Messaging.Models
     public class Request
     {
         [DataMember]
-        public int RequestCode { get; set; }
+        public int Code { get; set; }
 
         [DataMember]
-        public string RequestType { get; set; }
+        public string Type { get; set; }
 
         [DataMember]
-        public string RequestBody { get; set; }
+        public string Body { get; set; }
 
         [DataMember]
-        public string RequestSystemName { get; set; }
-
-        [DataMember]
-        public string RequestUserName { get; set; }
-
-        [DataMember]
-        public string RequestSecureKey { get; set; }
+        public string UserName { get; set; }
     }
 }
