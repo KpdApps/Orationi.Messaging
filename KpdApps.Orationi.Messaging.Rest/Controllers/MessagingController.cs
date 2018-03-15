@@ -29,17 +29,31 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [HttpGet("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
             Response response = imp.GetResponse(requestId);
             return response;
         }
 
-        [HttpPost]
-        public Response ExecuteRequest([FromBody] Request request)
+        [HttpGet("status/{requestId}")]
+        public Response GetStatus(Guid requestId)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("sync")]
+        public Response ExecuteRequest(Request request)
         {
             // Отдаем запрос в процессор, дальше он сам
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
             Response response = imp.Execute(request);
+            return response;
+        }
+
+        [HttpPost("async")]
+        public ResponseId ExecuteRequestAsync(Request request)
+        {
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
+            ResponseId response = imp.ExecuteAsync(request);
             return response;
         }
 
@@ -49,19 +63,16 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPost("async")]
-        public ResponseId ExecuteRequestAsync(Request request)
+        [HttpGet("xsd/{requestCode}")]
+        public Response GetXsd(int requestCode)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
-            ResponseId response = imp.ExecuteAsync(request);
-            return response;
-        }
+            var response = new Response();
+            if (!HttpContext.IsAuthorized(_dbContext, requestCode, response, out var externalSystem))
+                return response;
 
-        [HttpGet("xsd?{requestCode}")]
-        public IActionResult GetXsd(int requestCode)
-        {
-            string result = "test";
-            return Content(result);
+            response.Body = "test";
+
+            return response;
         }
     }
 }
