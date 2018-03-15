@@ -5,41 +5,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
     public class IncomingMessageProcessor
     {
-        private OrationiMessagingContext _dbContext;
+        private readonly OrationiMessagingContext _dbContext;
+        private readonly HttpContext _httpContext;
 
-        public IncomingMessageProcessor(OrationiMessagingContext dbContext)
+        public IncomingMessageProcessor(OrationiMessagingContext dbContext, HttpContext httpContext)
         {
             _dbContext = dbContext;
+            _httpContext = httpContext;
         }
 
         public Response Execute(Request request)
         {
             try
             {
+                var response = new Response();
+
+                if (!_httpContext.IsAuthorized(_dbContext, request.Code, response, out var externalSystem))
+                    return response;
+
                 SetRequestCode(request);
-                Message message = new Message
+                var message = new Message
                 {
-                    RequestBody = request.RequestBody,
-                    RequestCode = request.RequestCode,
-                    RequestSystem = request.RequestSystemName,
-                    RequestUser = request.RequestUserName,
+                    RequestBody = request.Body,
+                    RequestCode = request.Code,
+                    RequestUser = request.UserName,
+                    ExternalSystemId = externalSystem.ExternalSystemId,
                     IsSyncRequest = true
                 };
 
                 _dbContext.Messages.Attach(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient(request.RequestCode, true);
+                var client = new RabbitClient(request.Code, true);
                 client.Execute(message.RequestCode, message.Id);
 
                 message = _dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
 
-                Response response = new Response();
                 response.Id = message.Id;
                 response.ResponseBody = message.ResponseBody;
 
@@ -53,44 +61,55 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = ex.Message };
+                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
             }
         }
 
         public Response GetResponse(Guid requestId)
         {
-            Message message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
-            if (message == null)
+            var response = new Response();
+            var message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+            if (message is null)
             {
-                return new Response() { Id = requestId, IsError = true, Error = $"Request {requestId} not found" };
+                _httpContext.Response.StatusCode = 400;
+                response.Id = requestId;
+                response.IsError = true;
+                response.Error = $"Request {requestId} not found";
+                return response;
             }
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-
-            return new Response() { Id = requestId, IsError = false, Error = null, ResponseBody = message.ResponseBody };
+            //TODO Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
+            return !_httpContext.IsAuthorized(_dbContext, message.RequestCode, response, out var externalSystem)
+                ? response
+                : new Response() {Id = requestId, IsError = false, Error = null, ResponseBody = message.ResponseBody};
         }
 
         public ResponseId ExecuteAsync(Request request)
         {
             try
             {
+                var response = new ResponseId();
+
+                if (!_httpContext.IsAuthorized(_dbContext, request.Code, response, out var externalSystem))
+                    return response;
+
                 SetRequestCode(request);
-                Message message = new Message
+                var message = new Message
                 {
-                    RequestBody = request.RequestBody,
-                    RequestCode = request.RequestCode,
-                    RequestSystem = request.RequestSystemName,
-                    RequestUser = request.RequestUserName,
-                    IsSyncRequest = true
+                    RequestBody = request.Body,
+                    RequestCode = request.Code,
+                    RequestUser = request.UserName,
+                    ExternalSystemId = externalSystem.ExternalSystemId,
+                    IsSyncRequest = false
                 };
 
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient(request.RequestCode, false);
+                var client = new RabbitClient(request.Code, false);
                 client.PullMessage(message.RequestCode, message.Id);
 
-                ResponseId response = new ResponseId();
                 response.Id = message.Id;
 
                 return response;
@@ -104,14 +123,14 @@ namespace KpdApps.Orationi.Messaging.Core
         public void SetRequestCode(Request request)
         {
             //Если указали алиас типа запроса, но не указали код - получаем код запроса
-            if (!string.IsNullOrEmpty(request.RequestType) && request.RequestCode == 0)
+            if (!string.IsNullOrEmpty(request.Type) && request.Code == 0)
             {
-                RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.RequestType);
+                RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.Type);
                 if (requestCodeAlias == null)
                 {
                     throw new InvalidOperationException("Invalid request type.");
                 }
-                request.RequestCode = requestCodeAlias.RequestCode;
+                request.Code = requestCodeAlias.RequestCode;
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +16,10 @@ namespace KpdApps.Orationi.Messaging.Rest
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddDbContext<OrationiMessagingContext>(options => options
-                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IContextOptionsBuilder, OrationiContextOptionsBuilder>();
+            services.AddSingleton<OrationiMessagingContext>();
 
             services.AddMvc();
         }

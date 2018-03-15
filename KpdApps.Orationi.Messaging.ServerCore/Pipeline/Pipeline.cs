@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.ServerCore.Helpers;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
@@ -35,7 +36,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Dispose()
         {
-            if (_dbContext != null)
+            if (_dbContext is null)
             {
                 _dbContext.Dispose();
             }
@@ -43,7 +44,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Init()
         {
-            _dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
+            _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
             _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
             _message.AttemptCount++;
             _dbContext.SaveChanges();
