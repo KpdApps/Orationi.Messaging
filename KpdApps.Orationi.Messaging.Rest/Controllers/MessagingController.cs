@@ -34,6 +34,12 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             return response;
         }
 
+        [HttpGet("status/{requestId}")]
+        public Response GetStatus(Guid requestId)
+        {
+            throw new NotImplementedException();
+        }
+
         [HttpPost]
         public Response ExecuteRequest([FromBody] Request request)
         {
