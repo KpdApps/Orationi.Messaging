@@ -4,7 +4,7 @@
     [Modified]       DATETIME         CONSTRAINT [DF__Messages__Modifi__46E78A0C] DEFAULT (getdate()) NOT NULL,
     [RequestCode]    INT              NOT NULL,
     [RequestBody]    XML              NOT NULL,
-    [RequestUser]    NVARCHAR (50)    NOT NULL,
+    [RequestUser]    NVARCHAR (50)    NULL,
     [ExternalSystemId] INT            NOT NULL,
     [ResponseBody]   NVARCHAR (MAX)   NULL,
     [ResponseUser]   NVARCHAR (50)    NULL,
