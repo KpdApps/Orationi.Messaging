@@ -1,8 +1,10 @@
-﻿namespace KpdApps.Orationi.Messaging.DataAccess.Models
+﻿using System;
+
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class ExternalSystemRequestCode
     {
-        public int ExternalSystemId { get; set; }
+        public Guid ExternalSystemId { get; set; }
 
         public ExternalSystem ExternalSystem { get; set; }
 
