@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ExternalSystemsRequestCodes]
 (
-	[ExternalSystemId] INT NOT NULL,
+	[ExternalSystemId] UNIQUEIDENTIFIER NOT NULL,
 	[RequestCodeId] INT NOT NULL,
 	CONSTRAINT [FK_ExternalSystemsRequestCodes_RequestCode] FOREIGN KEY ([RequestCodeId]) REFERENCES [dbo].[RequestCodes]([Id]), 
 	CONSTRAINT [FK_ExternalSystemsRequestCodes_ExternalSystems] FOREIGN KEY ([ExternalSystemId]) REFERENCES [dbo].[ExternalSystems]([Id]), 

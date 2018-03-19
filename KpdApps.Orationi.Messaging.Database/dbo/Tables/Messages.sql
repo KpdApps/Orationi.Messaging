@@ -5,7 +5,7 @@
     [RequestCode]    INT              NOT NULL,
     [RequestBody]    XML              NOT NULL,
     [RequestUser]    NVARCHAR (50)    NULL,
-    [ExternalSystemId] INT            NOT NULL,
+    [ExternalSystemId] UNIQUEIDENTIFIER            NOT NULL,
     [ResponseBody]   NVARCHAR (MAX)   NULL,
     [ResponseUser]   NVARCHAR (50)    NULL,
     [ResponseSystem] NVARCHAR (50)    NULL,

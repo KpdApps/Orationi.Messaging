@@ -41,7 +41,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         }
 
         [HttpPost("sync")]
-        public Response ExecuteRequest(Request request)
+        public Response ExecuteRequest([FromBody]Request request)
         {
             // Отдаем запрос в процессор, дальше он сам
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
@@ -50,7 +50,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         }
 
         [HttpPost("async")]
-        public ResponseId ExecuteRequestAsync(Request request)
+        public ResponseId ExecuteRequestAsync([FromBody]Request request)
         {
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
             ResponseId response = imp.ExecuteAsync(request);
@@ -58,7 +58,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         }
 
         [HttpPost("request")]
-        public ResponseId SendRequest(Request request)
+        public ResponseId SendRequest([FromBody]Request request)
         {
             throw new NotImplementedException();
         }
