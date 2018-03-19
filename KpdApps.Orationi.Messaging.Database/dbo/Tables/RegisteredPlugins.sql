@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[PluginTypes] (
+﻿CREATE TABLE [dbo].[RegisteredPlugins] (
     [Id]         UNIQUEIDENTIFIER CONSTRAINT [DF_PipelineSteps_Id] DEFAULT (newid()) NOT NULL,
     [AssemblyId] UNIQUEIDENTIFIER NOT NULL,
     [Class]      NVARCHAR (250)   NOT NULL,
