@@ -20,9 +20,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<PluginAssembly> PluginAsseblies { get; set; }
 
-        public DbSet<PluginType> PluginTypes { get; set; }
+        public DbSet<RegisteredPlugin> PluginTypes { get; set; }
 
-        public DbSet<PluginRegisteredStep> PluginRegisteredSteps { get; set; }
+        public DbSet<PluginActionSetItem> PluginRegisteredSteps { get; set; }
 
         public DbSet<GlobalSetting> GlobalSettings { get; set; }
 
@@ -35,53 +35,65 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder
                 .Entity<Message>()
                 .ToTable("Messages");
-            
+
             modelBuilder
                 .Entity<RequestCode>()
                 .ToTable("RequestCodes")
                 .Property(p => p.RequestCodeId).HasColumnName("Id");
-            
+
             modelBuilder
                 .Entity<RequestCodeAlias>()
                 .ToTable("RequestCodeAliases");
-            
+
             modelBuilder
                 .Entity<PluginAssembly>()
                 .ToTable("PluginAssemblies");
-            
+
             modelBuilder
-                .Entity<PluginType>()
-                .ToTable("PluginTypes");
-            
+                .Entity<RegisteredPlugin>()
+                .ToTable("RegisteredPlugins");
+
             modelBuilder
-                .Entity<PluginRegisteredStep>()
-                .ToTable("PluginRegisteredSteps");
-            
+                .Entity<PluginActionSet>()
+                .ToTable("PluginActionSets");
+
+            modelBuilder
+                .Entity<PluginActionSetItem>()
+                .ToTable("PluginActionSetItems");
+
             modelBuilder
                 .Entity<GlobalSetting>()
                 .ToTable("GlobalSettings");
-            
+
             modelBuilder
                 .Entity<ProcessingError>()
                 .ToTable("ProcessingErrors");
-            
+
             modelBuilder
                 .Entity<ExternalSystem>()
                 .ToTable("ExternalSystems")
                 .Property(p => p.ExternalSystemId)
                 .HasColumnName("Id");
-            
+
+            modelBuilder
+                .Entity<Workflow>()
+                .ToTable("Workflows");
+
+            modelBuilder
+                .Entity<WorkflowAction>()
+                .ToTable("WorkflowActions");
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .ToTable("ExternalSystemsRequestCodes")
                 .HasKey(entity => new { entity.ExternalSystemId, entity.RequestCodeId });
-            
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .HasOne(entity => entity.ExternalSystem)
                 .WithMany(entity => entity.EsternalsSystemRequestCodes)
                 .HasForeignKey(entity => entity.ExternalSystemId);
-            
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .HasOne(entity => entity.RequestCode)

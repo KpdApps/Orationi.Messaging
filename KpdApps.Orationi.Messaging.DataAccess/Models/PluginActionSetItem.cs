@@ -2,13 +2,17 @@
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
-    public class PluginRegisteredStep
+    public class PluginActionSetItem
     {
         public Guid Id { get; set; }
 
         public int RequestCode { get; set; }
 
         public Guid PluginTypeId { get; set; }
+
+        public Guid PluginActionSetId { get; set; }
+
+        public PluginActionSet GetPluginActionSet { get; set; }
 
         public int Order { get; set; }
 
