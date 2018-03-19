@@ -13,8 +13,8 @@ namespace KpdApps.Orationi.Messaging
         [OperationContract]
         Response GetResponse(Guid requestId);
 
-        //[OperationContract]
-        //ResponseStatus GetStatus(Guid requestId);
+        [OperationContract]
+        Response GetStatus(Guid requestId);
 
         [OperationContract]
         Response ExecuteRequest(Request request);

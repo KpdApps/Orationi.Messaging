@@ -20,7 +20,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string RequestUser { get; set; }
 
-        public string RequestSystem { get; set; }
+        public Guid ExternalSystemId { get; set; }
 
         public string ResponseBody { get; set; }
 

@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.DataAccess.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace KpdApps.Orationi.Messaging.ClientConsole
 {
@@ -15,22 +18,31 @@ namespace KpdApps.Orationi.Messaging.ClientConsole
     {
         static void Main(string[] args)
         {
-            OrationiMessagingContext dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(dbContext);
+            var dbContext = new OrationiMessagingContext(new OrationiContextOptionsBuilder(configuration));
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["Token"] = "Secure";
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(dbContext, httpContext);
 
             while (true)
             {
-                DummyRequest dummyRequest = new DummyRequest();
-                dummyRequest.MessageId = Guid.NewGuid().ToString();
-                dummyRequest.RequestCode = 1;
+                DummyRequest dummyRequest = new DummyRequest
+                {
+                    MessageId = Guid.NewGuid().ToString(),
+                    RequestCode = 1
+                };
 
                 Request request = new Request()
                 {
-                    RequestBody = dummyRequest.Serialize(),
-                    RequestCode = 1,
-                    RequestSystemName = "Dummy",
-                    RequestUserName = "Dummy"
+                    Body = dummyRequest.Serialize(),
+                    Code = 1,
+                    UserName = "Dummy"
                 };
 
                 Console.WriteLine($" ==> {JsonConvert.SerializeObject(request)}");

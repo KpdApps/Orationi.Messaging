@@ -1,10 +1,8 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.IO;
+using KpdApps.Orationi.Messaging.ServerCore.Helpers;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 
 namespace KpdApps.Orationi.Messaging.ServerCore
@@ -15,7 +13,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute()
         {
-            OrationiMessagingContext _dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
+            OrationiMessagingContext _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
 
             var assemblies = (from prs in _dbContext.PluginRegisteredSteps
                               join pt in _dbContext.PluginTypes on prs.PluginTypeId equals pt.Id
@@ -56,7 +54,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute(Guid assemblyId)
         {
-            OrationiMessagingContext _dbContext = new OrationiMessagingContext(OrationiMessagingContextExtension.DefaultDbContextOptions());
+            OrationiMessagingContext _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
 
             var assemblies = (from pa in _dbContext.PluginAsseblies
                               where pa.Id == assemblyId

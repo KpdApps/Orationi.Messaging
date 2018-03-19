@@ -6,6 +6,6 @@ namespace KpdApps.Orationi.Messaging.Models
     public class Response : ResponseId
     {
         [DataMember]
-        public string ResponseBody { get; set; }
+        public string Body { get; set; }
     }
 }

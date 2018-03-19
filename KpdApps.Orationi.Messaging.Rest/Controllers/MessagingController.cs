@@ -29,39 +29,50 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [HttpGet("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
             Response response = imp.GetResponse(requestId);
             return response;
         }
 
-        [HttpPost]
-        public Response ExecuteRequest([FromBody] Request request)
-        {
-            // Отдаем запрос в процессор, дальше он сам
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
-            Response response = imp.Execute(request);
-            return response;
-        }
-
-        [HttpPost("request")]
-        public ResponseId SendRequest(Request request)
+        [HttpGet("status/{requestId}")]
+        public Response GetStatus(Guid requestId)
         {
             throw new NotImplementedException();
         }
 
-        [HttpPost("async")]
-        public ResponseId ExecuteRequestAsync(Request request)
+        [HttpPost("sync")]
+        public Response ExecuteRequest([FromBody]Request request)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext);
+            // Отдаем запрос в процессор, дальше он сам
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
+            Response response = imp.Execute(request);
+            return response;
+        }
+
+        [HttpPost("async")]
+        public ResponseId ExecuteRequestAsync([FromBody]Request request)
+        {
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
             ResponseId response = imp.ExecuteAsync(request);
             return response;
         }
 
-        [HttpGet("xsd?{requestCode}")]
-        public IActionResult GetXsd(int requestCode)
+        [HttpPost("request")]
+        public ResponseId SendRequest([FromBody]Request request)
         {
-            string result = "test";
-            return Content(result);
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("xsd/{requestCode}")]
+        public Response GetXsd(int requestCode)
+        {
+            var response = new Response();
+            if (!HttpContext.IsAuthorized(_dbContext, requestCode, response, out var externalSystem))
+                return response;
+
+            response.Body = "test";
+
+            return response;
         }
     }
 }
