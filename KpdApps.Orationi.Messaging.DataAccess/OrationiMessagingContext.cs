@@ -6,8 +6,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 {
     public class OrationiMessagingContext : DbContext
     {
-        public OrationiMessagingContext(IContextOptionsBuilder optionsBuilder)
-            : base(optionsBuilder.GetThroughSettings())
+        public OrationiMessagingContext(IContextOptionsBuilder optionsBuilder) : base(optionsBuilder.GetThroughSettings())
         {
 
         }
@@ -20,15 +19,23 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<PluginAssembly> PluginAsseblies { get; set; }
 
-        public DbSet<RegisteredPlugin> PluginTypes { get; set; }
+        public DbSet<PluginActionSet> PluginActionSets { get; set; }
 
-        public DbSet<PluginActionSetItem> PluginRegisteredSteps { get; set; }
+        public DbSet<PluginActionSetItem> PluginActionSetItems { get; set; }
 
         public DbSet<GlobalSetting> GlobalSettings { get; set; }
 
         public DbSet<ProcessingError> ProcessingErrors { get; set; }
 
         public DbSet<ExternalSystem> ExternalSystems { get; set; }
+
+        public DbSet<Workflow> Workflows { get; set; }
+
+        public DbSet<WorkflowAction> WorkflowActions { get; set; }
+
+        public DbSet<RegisteredPlugin> RegisteredPlugins { get; set; }
+
+        public DbSet<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -82,6 +89,10 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder
                 .Entity<WorkflowAction>()
                 .ToTable("WorkflowActions");
+
+            modelBuilder
+                .Entity<WorkflowExecutionStep>()
+                .ToTable("WorkflowExecutionSteps");
 
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()

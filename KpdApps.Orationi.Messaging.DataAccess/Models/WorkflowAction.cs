@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
@@ -10,11 +8,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public Guid WorkflowId { get; set; }
 
-        public Workflow Workflow { get; set; }
-
         public Guid PluginActionSetId { get; set; }
-
-        public PluginActionSet PluginActionSet { get; set; }
 
         public string Description { get; set; }
 

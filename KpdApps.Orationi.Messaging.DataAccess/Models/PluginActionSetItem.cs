@@ -8,11 +8,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public int RequestCode { get; set; }
 
-        public Guid PluginTypeId { get; set; }
+        public Guid RegisteredPluginId { get; set; }
 
         public Guid PluginActionSetId { get; set; }
-
-        public PluginActionSet GetPluginActionSet { get; set; }
 
         public int Order { get; set; }
 
