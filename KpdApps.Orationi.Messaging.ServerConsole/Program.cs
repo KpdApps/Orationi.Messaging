@@ -15,7 +15,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            PluginsHostManager phm = new PluginsHostManager("localhost", "orationi", "orationi");
+            ProcessHostManager phm = new ProcessHostManager("localhost", "orationi", "orationi");
             phm.Add(1, true);
             phm.Add(1, false);
 

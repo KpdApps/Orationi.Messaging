@@ -15,9 +15,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore
         {
             OrationiMessagingContext _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
 
-            var assemblies = (from prs in _dbContext.PluginRegisteredSteps
-                              join pt in _dbContext.PluginTypes on prs.PluginTypeId equals pt.Id
-                              join pa in _dbContext.PluginAsseblies on pt.AssemblyId equals pa.Id
+            var assemblies = (from pasi in _dbContext.PluginActionSetItems
+                              join rp in _dbContext.RegisteredPlugins on pasi.PluginActionSetId equals rp.Id
+                              join pa in _dbContext.PluginAsseblies on rp.AssemblyId equals pa.Id
                               select new
                               {
                                   Id = pa.Id,

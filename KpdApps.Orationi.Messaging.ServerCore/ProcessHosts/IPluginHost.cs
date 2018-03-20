@@ -1,6 +1,6 @@
-﻿namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
+﻿namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
-    public interface IPluginHost
+    public interface IProcessHost
     {
         int RequestCode { get; }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
 {
-    public class PluginsHostManager : IDisposable
+    public class ProcessHostManager : IDisposable
     {
         private object _locker = new object();
 
-        public static ConcurrentDictionary<string, IPluginHost> _hostsDictionary = new ConcurrentDictionary<string, IPluginHost>();
+        public static ConcurrentDictionary<string, IProcessHost> _hostsDictionary = new ConcurrentDictionary<string, IProcessHost>();
         private List<ManagedPlugin> _managedPlugins = new List<ManagedPlugin>();
 
         private string _hostname;
@@ -23,7 +24,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
         private readonly TimeSpan _pingInterval = TimeSpan.FromSeconds(10);
         private readonly CancellationTokenSource _shutdown = new CancellationTokenSource();
 
-        public PluginsHostManager(string hostname, string username, string password)
+        public ProcessHostManager(string hostname, string username, string password)
         {
             _hostname = hostname;
             _username = username;
@@ -41,10 +42,10 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                         {
                             foreach (ManagedPlugin managedPlugin in _managedPlugins)
                             {
-                                IPluginHost host = _hostsDictionary.GetValueOrDefault(managedPlugin.QueueCode);
+                                IProcessHost host = _hostsDictionary.GetValueOrDefault(managedPlugin.QueueCode);
                                 if (host == null)
                                 {
-                                    host = PluginHostsFactory.GetPluginHost(_hostname, _username, _password, managedPlugin.RequestCode, managedPlugin.IsSynchronous);
+                                    host = ProcessHostFactory.GetPluginHost(_hostname, _username, _password, managedPlugin.RequestCode, managedPlugin.IsSynchronous);
                                     host.Run();
                                     _hostsDictionary.GetOrAdd(managedPlugin.QueueCode, host);
                                     continue;
@@ -63,7 +64,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                             {
                                 if (!_managedPlugins.Any(m => m.QueueCode == key))
                                 {
-                                    IPluginHost host;
+                                    IProcessHost host;
                                     _hostsDictionary.TryRemove(key, out host);
                                 }
                             }

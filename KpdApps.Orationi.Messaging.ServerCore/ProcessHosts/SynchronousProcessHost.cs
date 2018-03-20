@@ -6,15 +6,15 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
+namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
-    public class SynchronousPluginHost : BasePluginHost
+    public class SynchronousProcessHost : ProcessHostBase, IProcessHost
     {
         public override bool IsSynchronous => true;
 
         public override string QueueCode => $"queue-{RequestCode}-{Convert.ToInt32(IsSynchronous)}";
 
-        public SynchronousPluginHost(string hostname, string username, string password, int requestcode)
+        public SynchronousProcessHost(string hostname, string username, string password, int requestcode)
             : base(hostname, username, password, requestcode)
         {
 
@@ -50,8 +50,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                     var message = Encoding.UTF8.GetString(body);
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
-                    Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                    pipeline.Run();
+                    Workflow.WorkflowProcessor processor = new Workflow.WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
+                    processor.Run();
 
                     Console.WriteLine($" [{QueueCode}] ({message})");
                     response = JsonConvert.SerializeObject("Success");
