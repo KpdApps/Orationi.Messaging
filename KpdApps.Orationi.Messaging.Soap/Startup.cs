@@ -17,7 +17,7 @@ namespace KpdApps.Orationi.Messaging
         {
             services.AddSingleton<IContextOptionsBuilder, OrationiContextOptionsBuilder>();
             services.AddTransient<OrationiMessagingContext>();
-            services.AddSingleton<MessagingService>();
+            services.AddTransient<MessagingService>();
             services.AddMvc();
         }
 
