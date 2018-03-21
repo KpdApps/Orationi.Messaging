@@ -8,30 +8,31 @@ using System.Linq;
 using System.Reflection;
 using KpdApps.Orationi.Messaging.ServerCore.Helpers;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
+using KpdApps.Orationi.Messaging.Sdk;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
-    public class Pipeline : IDisposable
+    public class PipelineProcessor : IDisposable
     {
         private Guid _messageId;
         private int _requestCode;
         private Guid _pluginActionSetId;
 
-        private IExecuteContext _context;
+        private IPipelineExecutionContext _pipelineExecutionContext;
+        private IWorkflowExecutionContext _workflowExecutionContext;
+
         private OrationiMessagingContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
         private Message _message;
-
-        private IWorkflowExecutionContext _workflowExecutionContext;
-
-        public Pipeline(Guid messageId, int requestCode)
+        
+        public PipelineProcessor(Guid messageId, int requestCode)
         {
             _messageId = messageId;
             _requestCode = requestCode;
             Init();
         }
 
-        public Pipeline(IWorkflowExecutionContext workflowExecutionContext, Guid pluginActionSetId)
+        public PipelineProcessor(IWorkflowExecutionContext workflowExecutionContext, Guid pluginActionSetId)
         {
             _messageId = workflowExecutionContext.MessageId;
             _requestCode = workflowExecutionContext.RequestCode;
@@ -39,7 +40,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             _pluginActionSetId = pluginActionSetId;
         }
 
-        ~Pipeline()
+        ~PipelineProcessor()
         {
             Dispose();
         }
@@ -59,7 +60,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             _message.AttemptCount++;
             _dbContext.SaveChanges();
 
-            _context = new ExecuteContext
+            _pipelineExecutionContext = new PipelineExecutionContext
             {
                 RequestBody = _message.RequestBody
             };
@@ -87,15 +88,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             {
                 if (!string.IsNullOrEmpty(psd.ConfigurationString))
                 {
-                    _context.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
+                    _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
                 }
-            });
-
-            var globalSettings = _dbContext.GlobalSettings.ToList();
-
-            globalSettings.ForEach(globalSetting =>
-            {
-                _context.GlobalSettings = _workflowExecutionContext.GlobalSettings;
             });
         }
 
@@ -114,10 +108,10 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                 ExecutePlugin(type, stepDescription);
             }
 
-            _message.ResponseBody = _context.ResponseBody;
-            _message.ResponseSystem = _context.ResponseSystem;
-            _message.ResponseUser = _context.ResponseUser;
-            _message.StatusCode = _context.StatusCode ?? (int)StatusCodeEnum.Processed;
+            _message.ResponseBody = _pipelineExecutionContext.ResponseBody;
+            _message.ResponseSystem = _pipelineExecutionContext.ResponseSystem;
+            _message.ResponseUser = _pipelineExecutionContext.ResponseUser;
+            _message.StatusCode = _pipelineExecutionContext.StatusCode ?? (int)StatusCodeEnum.Processed;
 
             _dbContext.SaveChanges();
         }
@@ -126,7 +120,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         {
             try
             {
-                IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _context);
+                IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _pipelineExecutionContext);
                 plugin.BeforeExecution();
                 plugin.Execute();
                 plugin.AfterExecution();

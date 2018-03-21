@@ -1,4 +1,6 @@
-﻿using KpdApps.Orationi.Messaging.Sdk.Plugins;
+﻿using KpdApps.Orationi.Messaging.Sdk;
+using KpdApps.Orationi.Messaging.Sdk.Plugins;
+using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,9 +8,9 @@ using System.Collections.ObjectModel;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
-    internal class ExecuteContext : IExecuteContext
+    internal class PipelineExecutionContext : IPipelineExecutionContext
     {
-        public string RequestBody { get; internal set; }
+        public string RequestBody { get; set; }
 
         public string ResponseBody { get; set; }
 
@@ -20,14 +22,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public IDictionary PipelineValues { get; }
 
-        public IDictionary GlobalSettings { get; set; }
-
         public IDictionary PluginStepSettings { get; set; }
 
-        internal ExecuteContext()
+        public IWorkflowExecutionContext WorkflowExecutionContext { get; set; }
+
+        internal PipelineExecutionContext()
         {
             PipelineValues = new Dictionary<string, object>();
-            GlobalSettings = new Dictionary<string, string>();
             PluginStepSettings = new Dictionary<string, object>();
         }
     }
