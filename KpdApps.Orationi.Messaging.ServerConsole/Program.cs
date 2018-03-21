@@ -17,12 +17,12 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
 
             ProcessHostManager phm = new ProcessHostManager("localhost", "orationi", "orationi");
             phm.Add(1, true);
-            phm.Add(1, false);
+            //phm.Add(1, false);
 
             Console.WriteLine(" Press [enter] to stop.");
             Console.ReadLine();
             phm.Remove(1, true);
-            phm.Remove(1, false);
+            //phm.Remove(1, false);
 
             Console.WriteLine(" Press [enter] to exit.");
             Console.ReadLine();
