@@ -23,14 +23,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private OrationiMessagingContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
-        private Message _message;
-        
-        public PipelineProcessor(Guid messageId, int requestCode)
-        {
-            _messageId = messageId;
-            _requestCode = requestCode;
-            Init();
-        }
 
         public PipelineProcessor(IWorkflowExecutionContext workflowExecutionContext, Guid pluginActionSetId)
         {
@@ -38,6 +30,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             _requestCode = workflowExecutionContext.RequestCode;
             _workflowExecutionContext = workflowExecutionContext;
             _pluginActionSetId = pluginActionSetId;
+            Init();
         }
 
         ~PipelineProcessor()
@@ -56,14 +49,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public void Init()
         {
             _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
-            _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
-            _message.AttemptCount++;
-            _dbContext.SaveChanges();
 
-            _pipelineExecutionContext = new PipelineExecutionContext
-            {
-                RequestBody = _message.RequestBody
-            };
+            _pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
 
             _stepsDescriptions = (from pas in _dbContext.PluginActionSets
                                   join pasi in _dbContext.PluginActionSetItems
@@ -76,7 +63,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                                   orderby pasi.Order
                                   select new PipelineStepDescription
                                   {
-                                      AssemblyId = rp.Id,
+                                      AssemblyId = pa.Id,
                                       Class = rp.Class,
                                       Order = pasi.Order,
                                       IsAsynchronous = false,
@@ -95,9 +82,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Run()
         {
-            _message.StatusCode = (int)StatusCodeEnum.OnTheAnvil;
-            _dbContext.SaveChanges();
-
             foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
             {
                 string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
@@ -107,13 +91,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
                 ExecutePlugin(type, stepDescription);
             }
-
-            _message.ResponseBody = _pipelineExecutionContext.ResponseBody;
-            _message.ResponseSystem = _pipelineExecutionContext.ResponseSystem;
-            _message.ResponseUser = _pipelineExecutionContext.ResponseUser;
-            _message.StatusCode = _pipelineExecutionContext.StatusCode ?? (int)StatusCodeEnum.Processed;
-
-            _dbContext.SaveChanges();
         }
 
         private void ExecutePlugin(Type type, PipelineStepDescription stepDescription)
@@ -127,9 +104,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
             catch (Exception ex)
             {
-                _message.ErrorCode = 100000;
-                _message.ErrorMessage = ex.Message;
-
                 ProcessingError pe = new ProcessingError
                 {
                     MessageId = _messageId,

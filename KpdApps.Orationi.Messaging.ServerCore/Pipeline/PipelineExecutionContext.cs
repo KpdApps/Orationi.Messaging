@@ -26,10 +26,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public IWorkflowExecutionContext WorkflowExecutionContext { get; set; }
 
-        internal PipelineExecutionContext()
+        internal PipelineExecutionContext(IWorkflowExecutionContext workflowExecutionContext)
         {
             PipelineValues = new Dictionary<string, object>();
             PluginStepSettings = new Dictionary<string, object>();
+            WorkflowExecutionContext = workflowExecutionContext;
         }
     }
 }

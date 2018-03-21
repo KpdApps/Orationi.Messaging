@@ -39,11 +39,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                     LoadWorkflowActions();
 
                     List<GlobalSetting> globalSettings = dbContext.GlobalSettings.ToList();
-                    globalSettings.ForEach(globalSetting =>
-                    {
-                        _workflowExecutionContext.GlobalSettings.Add(globalSetting.Name, globalSetting.Value);
-                    });
-
                     _workflowExecutionContext = new WorkflowExecutionContext(_message, globalSettings);
                 }
 
