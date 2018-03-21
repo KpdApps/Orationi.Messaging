@@ -8,7 +8,7 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 {
     public abstract class BasePipelinePlugin : IPipelinePlugin
     {
-        public IExecuteContext Context { get; set; }
+        public IPipelineExecutionContext Context { get; set; }
 
         public virtual string RequestContractUri { get; protected set; }
 
@@ -18,7 +18,7 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 
         public virtual string[] LocalSettingsList => new string[] { };
 
-        public BasePipelinePlugin(IExecuteContext context)
+        public BasePipelinePlugin(IPipelineExecutionContext context)
         {
             Context = context;
         }

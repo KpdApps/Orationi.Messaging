@@ -2,7 +2,7 @@
 {
     public interface IPipelinePlugin
     {
-        IExecuteContext Context { get; }
+        IPipelineExecutionContext Context { get; }
 
         string RequestContractUri { get; }
 

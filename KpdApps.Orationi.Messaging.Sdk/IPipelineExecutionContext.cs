@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 
-namespace KpdApps.Orationi.Messaging.Sdk.Plugins
+namespace KpdApps.Orationi.Messaging.Sdk
 {
-    public interface IExecuteContext
+    public interface IPipelineExecutionContext
     {
-        string RequestBody { get; }
+        string RequestBody { get; set; }
 
         string ResponseBody { get; set; }
 
@@ -18,8 +17,8 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 
         IDictionary PipelineValues { get; }
 
-        IDictionary GlobalSettings { get; set; }
-
         IDictionary PluginStepSettings { get; set; }
+
+        IWorkflowExecutionContext WorkflowExecutionContext { get; set; }
     }
 }
