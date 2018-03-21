@@ -19,9 +19,9 @@ namespace KpdApps.Orationi.Messaging.ServerTests
             dummyRequest = new DummyRequest();
             dummyRequest = DummyRequest.Deserialize(request);*/
 
-            PipelineProcessor pipeline = new PipelineProcessor(Guid.Parse("E3F6F3EC-792F-494F-92C4-2E7E02708E4B"), 1);
-            pipeline.Init();
-            pipeline.Run();
+            //PipelineProcessor pipeline = new PipelineProcessor(Guid.Parse("E3F6F3EC-792F-494F-92C4-2E7E02708E4B"), 1);
+            //pipeline.Init();
+            //pipeline.Run();
         }
     }
 }
