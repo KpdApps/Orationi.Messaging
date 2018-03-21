@@ -8,7 +8,12 @@ namespace KpdApps.Orationi.Messaging.DummyPlugins.Plugins
         public DummyRequestPlugin(IPipelineExecutionContext context)
             : base(context)
         {
-            int dummyValue = (int)Context.PipelineValues["DummyValue"]; //.Add("DummyValue", 1);
+            
+        }
+
+        public override void Execute()
+        {
+            int dummyValue = (int)Context.PipelineValues["DummyValue"];
             dummyValue++;
             Context.PipelineValues["DummyValue"] = dummyValue;
         }
