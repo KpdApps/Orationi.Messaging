@@ -14,6 +14,8 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         const string TelegramMessageKey = "TelegramMessages";
 
+        const string _MessageContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageRequest.xsd";
+
         const string _RequestContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageRequest.xsd";
 
         const string _ResponseContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageResponse.xsd";
@@ -32,6 +34,7 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         public string RequestContractUri => _RequestContractUri;
         public string ResponseContractUri => _ResponseContractUri;
+        public string MessageContractUri => _MessageContractUri;
 
         private bool _isInitialised = false;
         private long _chatId;
