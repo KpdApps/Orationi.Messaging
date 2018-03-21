@@ -4,6 +4,8 @@
     {
         IPipelineExecutionContext Context { get; }
 
+        string MessageContractUri { get; }
+
         string RequestContractUri { get; }
 
         string ResponseContractUri { get; }

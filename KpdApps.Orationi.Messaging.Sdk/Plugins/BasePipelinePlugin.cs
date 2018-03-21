@@ -10,6 +10,8 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
     {
         public IPipelineExecutionContext Context { get; set; }
 
+        public virtual string MessageContractUri { get; protected set; }
+
         public virtual string RequestContractUri { get; protected set; }
 
         public virtual string ResponseContractUri { get; protected set; }
