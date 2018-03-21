@@ -1,10 +1,11 @@
-﻿using KpdApps.Orationi.Messaging.Sdk.Plugins;
+﻿using KpdApps.Orationi.Messaging.Sdk;
+using KpdApps.Orationi.Messaging.Sdk.Plugins;
 using System;
 using System.Collections.Generic;
 
 namespace KpdApps.Orationi.Messaging.DummyPlugins
 {
-    public class DummyPlugin : BasePipelinePlugin, IPipelinePlugin
+    public class PrepareDummyRequstPlugin : BasePipelinePlugin, IPipelinePlugin
     {
         const string SystemName = "DummySystem";
 
@@ -18,7 +19,7 @@ namespace KpdApps.Orationi.Messaging.DummyPlugins
 
         public override string[] LocalSettingsList => base.LocalSettingsList;
 
-        public DummyPlugin(IExecuteContext context)
+        public PrepareDummyRequstPlugin(IPipelineExecutionContext context)
             : base(context)
         {
             base.RequestContractUri = _RequestContractUri;
@@ -27,18 +28,9 @@ namespace KpdApps.Orationi.Messaging.DummyPlugins
 
         public override void Execute()
         {
-            DummyRequest request = DummyRequest.Deserialize(Context.RequestBody);
-
-            Context.PipelineValues.Add("TelegramMessages", new List<string>() { "Вы получили данное сообщение потому что тестировщик наркоман." });
-
-            if (Context.PipelineValues.Contains("TelegramMessages"))
-            {
-                var telegramMessages = Context.PipelineValues["TelegramMessages"] as List<string>;
-                telegramMessages.Add("Еще одно сообщение");
-            }
-
-            DummyResponse response = new DummyResponse() { MessageId = request.MessageId, RequestCode = request.RequestCode, Status = "Done" };
-            Context.ResponseBody = response.Serialize();
+            DummyRequest request = DummyRequest.Deserialize(Context.WorkflowExecutionContext.MessageBody);
+            Context.RequestBody = request.Serialize();
+            Context.PipelineValues.Add("DummyValue", 1);
         }
 
         public override void AfterExecution()

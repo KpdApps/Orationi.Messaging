@@ -22,13 +22,13 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         public string[] LocalSettingsList => new string[] { SettingsKeyChatId };
 
-        public TelegramMessagePlugin(IExecuteContext context)
+        public TelegramMessagePlugin(IPipelineExecutionContext context)
         {
             _context = context;
         }
 
-        private IExecuteContext _context;
-        public IExecuteContext Context => _context;
+        private IPipelineExecutionContext _context;
+        public IPipelineExecutionContext Context => _context;
 
         public string RequestContractUri => _RequestContractUri;
         public string ResponseContractUri => _ResponseContractUri;
@@ -40,11 +40,11 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         public void BeforeExecution()
         {
-            if (!_context.GlobalSettings.Contains(TelegramBotApiToken))
+            if (!_context.WorkflowExecutionContext.GlobalSettings.Contains(TelegramBotApiToken))
             {
                 return;
             }
-            _apiToken = _context.GlobalSettings[TelegramBotApiToken].ToString();
+            _apiToken = _context.WorkflowExecutionContext.GlobalSettings[TelegramBotApiToken].ToString();
 
             if (!string.IsNullOrEmpty(Context.RequestBody))
             {
