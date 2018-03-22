@@ -45,8 +45,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                 SetMessageStatus(WorkflowStatusCodes.InProgress);
                 foreach (WorkflowAction workflowAction in _workflowActions)
                 {
-                    PipelineProcessor pipeline = new PipelineProcessor(_workflowExecutionContext, workflowAction.PluginActionSetId);
+                    PipelineExecutionContext pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
+                    PipelineProcessor pipeline = new PipelineProcessor(pipelineExecutionContext, workflowAction);
                     pipeline.Run();
+                    //TODO: Temp solution
+                    _message.ResponseBody = pipelineExecutionContext.ResponseBody;
                 }
                 SetMessageStatus(WorkflowStatusCodes.Processed);
             }
@@ -75,11 +78,12 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                                          on w.Id equals wa.WorkflowId
                                     where
                                          w.RequestCodeId == _requestCode
-                                    orderby wa.Order
+                                    orderby w.Id, wa.Order
                                     select new WorkflowAction
                                     {
+                                        WorkflowId = w.Id,
                                         PluginActionSetId = wa.PluginActionSetId,
-                                        Order = wa.Order
+                                        Order = wa.Order,
                                     }
                                    ).ToList();
             }

@@ -1,4 +1,5 @@
 ﻿using KpdApps.Orationi.Messaging.Core.Models;
+using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -50,7 +51,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                     var message = Encoding.UTF8.GetString(body);
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
-                    Workflow.WorkflowProcessor processor = new Workflow.WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
+                    WorkflowProcessor processor = new WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
                     processor.Run();
 
                     Console.WriteLine($" [{QueueCode}] ({message})");

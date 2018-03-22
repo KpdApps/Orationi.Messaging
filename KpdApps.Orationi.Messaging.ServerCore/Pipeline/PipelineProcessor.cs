@@ -14,6 +14,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     public class PipelineProcessor : IDisposable
     {
+        private Guid _workflowId;
         private Guid _messageId;
         private int _requestCode;
         private Guid _pluginActionSetId;
@@ -23,13 +24,17 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private OrationiMessagingContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
+        private WorkflowExecutionStep _workflowExecutionStep;
 
-        public PipelineProcessor(IWorkflowExecutionContext workflowExecutionContext, Guid pluginActionSetId)
+        public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, Workflow.WorkflowAction workflowAction)
         {
-            _messageId = workflowExecutionContext.MessageId;
-            _requestCode = workflowExecutionContext.RequestCode;
-            _workflowExecutionContext = workflowExecutionContext;
-            _pluginActionSetId = pluginActionSetId;
+            _workflowExecutionContext = _pipelineExecutionContext.WorkflowExecutionContext;
+
+            _messageId = _workflowExecutionContext.MessageId;
+            _requestCode = _workflowExecutionContext.RequestCode;
+
+            _workflowId = workflowAction.WorkflowId;
+            _pluginActionSetId = workflowAction.PluginActionSetId;
             Init();
         }
 
@@ -49,6 +54,15 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public void Init()
         {
             _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
+
+            _workflowExecutionStep = new WorkflowExecutionStep
+            {
+                WorkflowId = _workflowId,
+                PluginActionSetId = _pluginActionSetId,
+                StatusCode = (int)PipelineStatusCodes.New
+            };
+            _dbContext.WorkflowExecutionSteps.Add(_workflowExecutionStep);
+            _dbContext.SaveChanges();
 
             _pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
 
@@ -82,15 +96,35 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Run()
         {
-            foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
+            SetStatusCode(PipelineStatusCodes.InProgress);
+
+            try
             {
-                string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
+                foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
+                {
+                    string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
 
-                Assembly assembly = Assembly.LoadFrom(assemblyName);
-                Type type = assembly.GetType(stepDescription.Class);
+                    Assembly assembly = Assembly.LoadFrom(assemblyName);
+                    Type type = assembly.GetType(stepDescription.Class);
 
-                ExecutePlugin(type, stepDescription);
+                    ExecutePlugin(type, stepDescription);
+
+                    _workflowExecutionStep.RequestBody = _pipelineExecutionContext.RequestBody;
+                    _workflowExecutionStep.ResponseBody = _pipelineExecutionContext.ResponseBody;
+                    _dbContext.SaveChanges();
+                }
+                SetStatusCode(PipelineStatusCodes.Finished);
             }
+            catch (Exception ex)
+            {
+                SetStatusCode(PipelineStatusCodes.Error);
+            }
+        }
+
+        private void SetStatusCode(PipelineStatusCodes statusCode)
+        {
+            _workflowExecutionStep.StatusCode = (int)statusCode;
+            _dbContext.SaveChanges();
         }
 
         private void ExecutePlugin(Type type, PipelineStepDescription stepDescription)
@@ -104,6 +138,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
             catch (Exception ex)
             {
+                //TODO: Change to workflow paradigm
                 ProcessingError pe = new ProcessingError
                 {
                     MessageId = _messageId,
@@ -114,6 +149,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                 _dbContext.ProcessingErrors.Add(pe);
 
                 _dbContext.SaveChanges();
+                throw;
             }
         }
     }
