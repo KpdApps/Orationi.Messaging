@@ -17,6 +17,7 @@ namespace KpdApps.Orationi.WinNTHostService
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Run(async context => await context.Response.WriteAsync("KpdApps.Orationi.WinNTHostService"));
         }
     }
 }
