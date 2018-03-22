@@ -16,8 +16,8 @@ namespace KpdApps.Orationi.Messaging.ServerTests
         public void LoadAssemblyTest()
         {
             byte[] bytes;
-            string fileName = "KpdApps.Orationi.Messaging.TelegramPlugins.dll";
-            //string fileName = "KpdApps.Orationi.Messaging.DummyPlugins.dll";
+            //string fileName = "KpdApps.Orationi.Messaging.TelegramPlugins.dll";
+            string fileName = "KpdApps.Orationi.Messaging.DummyPlugins.dll";
             using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
             {
                 bytes = ReadAllBytes(reader);
@@ -26,7 +26,7 @@ namespace KpdApps.Orationi.Messaging.ServerTests
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    { "ConnectionStrings:DefaultConnection", "Data Source=hq-vm-tstsql.exiar.ru\\insttst02;Initial Catalog=OrationiMessageBus;Integrated Security=True;MultipleActiveResultSets=True;Application Name=KpdApps.Orationi.Messaging" }
+                    { "ConnectionStrings:DefaultConnection", "Data Source=localhost;Initial Catalog=OrationiMessageBus;Integrated Security=True;MultipleActiveResultSets=True;Application Name=KpdApps.Orationi.Messaging" }
 
                 })
                 .Build();

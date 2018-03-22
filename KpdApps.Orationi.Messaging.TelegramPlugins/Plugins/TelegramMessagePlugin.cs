@@ -14,6 +14,8 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         const string TelegramMessageKey = "TelegramMessages";
 
+        const string _MessageContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageRequest.xsd";
+
         const string _RequestContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageRequest.xsd";
 
         const string _ResponseContractUri = "KpdApps.Orationi.Messaging.TelegramPlugins.Contracts.TelegramMessage.TelegramMessageResponse.xsd";
@@ -22,16 +24,17 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         public string[] LocalSettingsList => new string[] { SettingsKeyChatId };
 
-        public TelegramMessagePlugin(IExecuteContext context)
+        public TelegramMessagePlugin(IPipelineExecutionContext context)
         {
             _context = context;
         }
 
-        private IExecuteContext _context;
-        public IExecuteContext Context => _context;
+        private IPipelineExecutionContext _context;
+        public IPipelineExecutionContext Context => _context;
 
         public string RequestContractUri => _RequestContractUri;
         public string ResponseContractUri => _ResponseContractUri;
+        public string MessageContractUri => _MessageContractUri;
 
         private bool _isInitialised = false;
         private long _chatId;
@@ -40,11 +43,11 @@ namespace KpdApps.Orationi.Messaging.TelegramPlugins
 
         public void BeforeExecution()
         {
-            if (!_context.GlobalSettings.Contains(TelegramBotApiToken))
+            if (!_context.WorkflowExecutionContext.GlobalSettings.Contains(TelegramBotApiToken))
             {
                 return;
             }
-            _apiToken = _context.GlobalSettings[TelegramBotApiToken].ToString();
+            _apiToken = _context.WorkflowExecutionContext.GlobalSettings[TelegramBotApiToken].ToString();
 
             if (!string.IsNullOrEmpty(Context.RequestBody))
             {

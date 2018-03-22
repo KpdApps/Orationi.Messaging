@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
 {
-    public class AsynchronousPluginHost : BasePluginHost
+    /*
+    public class AsynchronousPluginHost : ProcessHostBase
     {
         public override bool IsSynchronous => false;
 
         public override string QueueCode => $"queue-{RequestCode}-{Convert.ToInt32(IsSynchronous)}";
 
+        [Obsolete("Not implemented in current version")]
         public AsynchronousPluginHost(string hostname, string username, string password, int requestcode)
             : base(hostname, username, password, requestcode)
         {
@@ -68,4 +70,5 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
             });
         }
     }
+    */
 }

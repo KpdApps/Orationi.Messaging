@@ -1,9 +1,9 @@
 ﻿using RabbitMQ.Client;
 using System;
 
-namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
+namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
-    public abstract class BasePluginHost : IPluginHost, IDisposable
+    public abstract class ProcessHostBase : IProcessHost, IDisposable
     {
         protected string _hostname;
         protected string _username;
@@ -39,7 +39,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
         protected IConnection connection;
         protected IModel channel;
 
-        public BasePluginHost(string hostname, string username, string password, int requestcode)
+        public ProcessHostBase(string hostname, string username, string password, int requestcode)
         {
             _hostname = hostname;
             _username = username;
@@ -47,7 +47,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
             _requestcode = requestcode;
         }
 
-        ~BasePluginHost()
+        ~ProcessHostBase()
         {
             this.Dispose();
         }

@@ -2,7 +2,7 @@
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
-    public class PluginType
+    public class RegisteredPlugin
     {
         public Guid Id { get; set; }
 

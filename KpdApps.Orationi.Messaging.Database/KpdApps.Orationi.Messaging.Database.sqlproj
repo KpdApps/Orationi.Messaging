@@ -69,12 +69,17 @@
     <Build Include="dbo\Tables\RequestCodes.sql" />
     <Build Include="dbo\Tables\RequestCodeAliases.sql" />
     <Build Include="dbo\Views\MessagesView.sql" />
-    <Build Include="dbo\Tables\PluginTypes.sql" />
-    <Build Include="dbo\Tables\PluginRegisteredSteps.sql" />
     <Build Include="dbo\Tables\PluginAssemblies.sql" />
     <Build Include="dbo\Tables\GlobalSettings.sql" />
     <Build Include="dbo\Tables\ProcessingErrors.sql" />
     <Build Include="dbo\Tables\ExternalSystemsRequestCodes.sql" />
     <Build Include="dbo\Tables\ExternalSystems.sql" />
+    <Build Include="dbo\Tables\PluginActionSetItems.sql" />
+    <Build Include="dbo\Tables\PluginActionSets.sql" />
+    <Build Include="dbo\Tables\RegisteredPlugins.sql" />
+    <Build Include="dbo\Tables\WorkflowActions.sql" />
+    <Build Include="dbo\Tables\Workflows.sql" />
+    <Build Include="dbo\Tables\WorkflowExecutionStepsStatusCodes.sql" />
+    <Build Include="dbo\Tables\WorkflowExecutionSteps.sql" />
   </ItemGroup>
 </Project>

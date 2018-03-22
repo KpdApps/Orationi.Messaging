@@ -6,8 +6,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 {
     public class OrationiMessagingContext : DbContext
     {
-        public OrationiMessagingContext(IContextOptionsBuilder optionsBuilder)
-            : base(optionsBuilder.GetThroughSettings())
+        public OrationiMessagingContext(IContextOptionsBuilder optionsBuilder) : base(optionsBuilder.GetThroughSettings())
         {
 
         }
@@ -20,9 +19,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<PluginAssembly> PluginAsseblies { get; set; }
 
-        public DbSet<PluginType> PluginTypes { get; set; }
+        public DbSet<PluginActionSet> PluginActionSets { get; set; }
 
-        public DbSet<PluginRegisteredStep> PluginRegisteredSteps { get; set; }
+        public DbSet<PluginActionSetItem> PluginActionSetItems { get; set; }
 
         public DbSet<GlobalSetting> GlobalSettings { get; set; }
 
@@ -30,58 +29,82 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<ExternalSystem> ExternalSystems { get; set; }
 
+        public DbSet<Workflow> Workflows { get; set; }
+
+        public DbSet<WorkflowAction> WorkflowActions { get; set; }
+
+        public DbSet<RegisteredPlugin> RegisteredPlugins { get; set; }
+
+        public DbSet<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Entity<Message>()
                 .ToTable("Messages");
-            
+
             modelBuilder
                 .Entity<RequestCode>()
                 .ToTable("RequestCodes")
                 .Property(p => p.RequestCodeId).HasColumnName("Id");
-            
+
             modelBuilder
                 .Entity<RequestCodeAlias>()
                 .ToTable("RequestCodeAliases");
-            
+
             modelBuilder
                 .Entity<PluginAssembly>()
                 .ToTable("PluginAssemblies");
-            
+
             modelBuilder
-                .Entity<PluginType>()
-                .ToTable("PluginTypes");
-            
+                .Entity<RegisteredPlugin>()
+                .ToTable("RegisteredPlugins");
+
             modelBuilder
-                .Entity<PluginRegisteredStep>()
-                .ToTable("PluginRegisteredSteps");
-            
+                .Entity<PluginActionSet>()
+                .ToTable("PluginActionSets");
+
+            modelBuilder
+                .Entity<PluginActionSetItem>()
+                .ToTable("PluginActionSetItems");
+
             modelBuilder
                 .Entity<GlobalSetting>()
                 .ToTable("GlobalSettings");
-            
+
             modelBuilder
                 .Entity<ProcessingError>()
                 .ToTable("ProcessingErrors");
-            
+
             modelBuilder
                 .Entity<ExternalSystem>()
                 .ToTable("ExternalSystems")
                 .Property(p => p.ExternalSystemId)
                 .HasColumnName("Id");
-            
+
+            modelBuilder
+                .Entity<Workflow>()
+                .ToTable("Workflows");
+
+            modelBuilder
+                .Entity<WorkflowAction>()
+                .ToTable("WorkflowActions");
+
+            modelBuilder
+                .Entity<WorkflowExecutionStep>()
+                .ToTable("WorkflowExecutionSteps");
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .ToTable("ExternalSystemsRequestCodes")
                 .HasKey(entity => new { entity.ExternalSystemId, entity.RequestCodeId });
-            
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .HasOne(entity => entity.ExternalSystem)
                 .WithMany(entity => entity.EsternalsSystemRequestCodes)
                 .HasForeignKey(entity => entity.ExternalSystemId);
-            
+
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
                 .HasOne(entity => entity.RequestCode)

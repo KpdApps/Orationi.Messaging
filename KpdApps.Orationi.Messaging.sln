@@ -33,7 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.ServerCore", "KpdApps.Orationi.Messaging.ServerCore\KpdApps.Orationi.Messaging.ServerCore.csproj", "{08E8B489-52C5-4547-85A2-5579FA679EBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.TelegramPlugins", "KpdApps.Orationi.Messaging.TelegramPlugins\KpdApps.Orationi.Messaging.TelegramPlugins.csproj", "{C8DE3690-89A0-4269-8A73-0D14D0F876E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.TelegramPlugins", "KpdApps.Orationi.Messaging.TelegramPlugins\KpdApps.Orationi.Messaging.TelegramPlugins.csproj", "{C8DE3690-89A0-4269-8A73-0D14D0F876E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccessTests", "KpdApps.Orationi.Messaging.DataAccessTests\KpdApps.Orationi.Messaging.DataAccessTests.csproj", "{4D719190-A13F-4DAC-BFF1-6A45A3BC08F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +97,10 @@ Global
 		{C8DE3690-89A0-4269-8A73-0D14D0F876E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8DE3690-89A0-4269-8A73-0D14D0F876E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8DE3690-89A0-4269-8A73-0D14D0F876E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D719190-A13F-4DAC-BFF1-6A45A3BC08F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D719190-A13F-4DAC-BFF1-6A45A3BC08F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D719190-A13F-4DAC-BFF1-6A45A3BC08F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D719190-A13F-4DAC-BFF1-6A45A3BC08F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
