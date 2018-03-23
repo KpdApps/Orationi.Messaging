@@ -88,7 +88,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         public void Dispose()
         {
-            _dbContext.Dispose();
+            _dbContext?.Dispose();
         }
     }
 }
