@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
+﻿namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
     public static class ProcessHostFactory
     {
@@ -12,11 +8,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             {
                 return new SynchronousProcessHost(hostname, username, password, requestCode);
             }
-            else
-            {
-                throw new NotImplementedException();
-                //return new AsynchronousPluginHost(hostname, username, password, requestCode);
-            }
+
+            return new AsynchronousProcessHost(hostname, username, password, requestCode);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using KpdApps.Orationi.Messaging.Core.Models;
+using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
+using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -6,17 +8,15 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
+namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
-    /*
-    public class AsynchronousPluginHost : ProcessHostBase
+    public class AsynchronousProcessHost : ProcessHostBase, IProcessHost
     {
         public override bool IsSynchronous => false;
 
         public override string QueueCode => $"queue-{RequestCode}-{Convert.ToInt32(IsSynchronous)}";
 
-        [Obsolete("Not implemented in current version")]
-        public AsynchronousPluginHost(string hostname, string username, string password, int requestcode)
+        public AsynchronousProcessHost(string hostname, string username, string password, int requestcode)
             : base(hostname, username, password, requestcode)
         {
 
@@ -50,8 +50,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                     var message = Encoding.UTF8.GetString(body);
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
-                    Pipeline.Pipeline pipeline = new Pipeline.Pipeline(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                    pipeline.Run();
+                    WorkflowProcessor processor = new WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
+                    processor.Run();
 
                     Console.WriteLine($" [{QueueCode}] ({message})");
                     rabbitRequest.RequestCode++;
@@ -70,5 +70,4 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
             });
         }
     }
-    */
 }
