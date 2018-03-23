@@ -1,10 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Xml.Serialization;
-
-namespace KpdApps.Orationi.Messaging.Sdk.Plugins
+﻿namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 {
     public abstract class BasePipelinePlugin : IPipelinePlugin
     {
