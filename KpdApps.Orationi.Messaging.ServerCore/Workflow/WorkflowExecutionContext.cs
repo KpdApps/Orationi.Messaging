@@ -1,5 +1,4 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.Sdk;
 using System;
 using System.Collections;
 using System.Collections.Generic;

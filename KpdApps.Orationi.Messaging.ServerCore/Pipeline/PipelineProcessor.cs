@@ -20,7 +20,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         private Guid _pluginActionSetId;
 
         private IPipelineExecutionContext _pipelineExecutionContext;
-        private IWorkflowExecutionContext _workflowExecutionContext;
 
         private OrationiMessagingContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
@@ -28,10 +27,10 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, Workflow.WorkflowAction workflowAction)
         {
-            _workflowExecutionContext = _pipelineExecutionContext.WorkflowExecutionContext;
+            _pipelineExecutionContext = pipelineExecutionContext;
 
-            _messageId = _workflowExecutionContext.MessageId;
-            _requestCode = _workflowExecutionContext.RequestCode;
+            _messageId = pipelineExecutionContext.MessageId;
+            _requestCode = pipelineExecutionContext.RequestCode;
 
             _workflowId = workflowAction.WorkflowId;
             _pluginActionSetId = workflowAction.PluginActionSetId;
@@ -63,8 +62,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             };
             _dbContext.WorkflowExecutionSteps.Add(_workflowExecutionStep);
             _dbContext.SaveChanges();
-
-            _pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
 
             _stepsDescriptions = (from pas in _dbContext.PluginActionSets
                                   join pasi in _dbContext.PluginActionSetItems

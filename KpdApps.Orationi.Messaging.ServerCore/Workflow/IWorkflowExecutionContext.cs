@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace KpdApps.Orationi.Messaging.Sdk
+namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
     public interface IWorkflowExecutionContext
     {

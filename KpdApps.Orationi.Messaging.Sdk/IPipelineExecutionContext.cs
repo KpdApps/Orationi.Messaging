@@ -13,12 +13,18 @@ namespace KpdApps.Orationi.Messaging.Sdk
 
         string ResponseSystem { get; set; }
 
-	    Nullable<int> StatusCode { get; set; }
+        Nullable<int> StatusCode { get; set; }
 
         IDictionary PipelineValues { get; }
 
         IDictionary PluginStepSettings { get; set; }
 
-        IWorkflowExecutionContext WorkflowExecutionContext { get; set; }
+        Guid MessageId { get; }
+
+        int RequestCode { get; }
+
+        string MessageBody { get; }
+
+        IDictionary GlobalSettings { get; }
     }
 }

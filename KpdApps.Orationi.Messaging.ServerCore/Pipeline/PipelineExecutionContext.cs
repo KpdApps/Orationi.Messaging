@@ -4,7 +4,6 @@ using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
@@ -24,13 +23,21 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public IDictionary PluginStepSettings { get; set; }
 
-        public IWorkflowExecutionContext WorkflowExecutionContext { get; set; }
+        public Guid MessageId => _workflowExecutionContext.MessageId;
+
+        public int RequestCode => _workflowExecutionContext.RequestCode;
+
+        public string MessageBody => _workflowExecutionContext.MessageBody;
+
+        public IDictionary GlobalSettings => _workflowExecutionContext.GlobalSettings;
+
+        private IWorkflowExecutionContext _workflowExecutionContext;
 
         internal PipelineExecutionContext(IWorkflowExecutionContext workflowExecutionContext)
         {
             PipelineValues = new Dictionary<string, object>();
             PluginStepSettings = new Dictionary<string, object>();
-            WorkflowExecutionContext = workflowExecutionContext;
+            _workflowExecutionContext = workflowExecutionContext;
         }
     }
 }
