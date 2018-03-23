@@ -19,15 +19,22 @@ namespace KpdApps.Orationi.WinNTHostService
             BuildWebHost(args).RunAsServiceHost();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("Orationi.WinNTHostService.Configuration.json")
+                .Build();
+
             // По умолчанию служба слушает 5000 порт
-            WebHost.CreateDefaultBuilder(args)
-                //.UseHttpSys(options =>
-                //{
-                //    options.Authentication.AllowAnonymous = true;
-                //    options.UrlPrefixes.Add("http://localhost:7000");
-                //})
+            return WebHost.CreateDefaultBuilder(args)
+                .UseHttpSys(options =>
+                {
+                    options.Authentication.AllowAnonymous = true;
+                    options.UrlPrefixes.Add(configuration["SeviceHost"]);
+                })
                 .UseStartup<Startup>()
                 .Build();
+        }
     }
 }
