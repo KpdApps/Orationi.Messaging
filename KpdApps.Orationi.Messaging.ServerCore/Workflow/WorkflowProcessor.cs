@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
-    public class WorkflowProcessor
+    public class WorkflowProcessor : IDisposable
     {
         private Guid _messageId;
         private int _requestCode;
@@ -19,28 +19,28 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         private List<WorkflowAction> _workflowActions;
 
+        private OrationiMessagingContext _dbContext;
+
         public WorkflowProcessor(Guid messageId, int requestCode)
         {
             _messageId = messageId;
             _requestCode = requestCode;
+            _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
         }
 
         public void Run()
         {
             try
             {
-                using (OrationiMessagingContext dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder()))
-                {
-                    _message = dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
-                    _message.AttemptCount++;
-                    _message.StatusCode = (int)WorkflowStatusCodes.Preparing;
-                    dbContext.SaveChanges();
+                 _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
+                 _message.AttemptCount++;
+                 _message.StatusCode = (int)WorkflowStatusCodes.Preparing;
+                 _dbContext.SaveChanges();
 
-                    LoadWorkflowActions();
+                 LoadWorkflowActions();
 
-                    List<GlobalSetting> globalSettings = dbContext.GlobalSettings.ToList();
-                    _workflowExecutionContext = new WorkflowExecutionContext(_message, globalSettings);
-                }
+                 List<GlobalSetting> globalSettings = _dbContext.GlobalSettings.ToList();
+                 _workflowExecutionContext = new WorkflowExecutionContext(_message, globalSettings);
 
                 SetMessageStatus(WorkflowStatusCodes.InProgress);
                 foreach (WorkflowAction workflowAction in _workflowActions)
@@ -62,11 +62,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         private void SetMessageStatus(WorkflowStatusCodes statusCode)
         {
-            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder()))
-            {
-                _message.StatusCode = (int)statusCode;
-                dbContext.SaveChanges();
-            }
+            _message.StatusCode = (int)statusCode;
+            _dbContext.SaveChanges();
         }
 
         public void LoadWorkflowActions()
@@ -87,6 +84,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                                     }
                                    ).ToList();
             }
+        }
+
+        public void Dispose()
+        {
+            _dbContext.Dispose();
         }
     }
 }

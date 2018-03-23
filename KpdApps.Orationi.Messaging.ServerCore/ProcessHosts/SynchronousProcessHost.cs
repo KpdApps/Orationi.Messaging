@@ -51,8 +51,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                     var message = Encoding.UTF8.GetString(body);
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
-                    WorkflowProcessor processor = new WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
-                    processor.Run();
+                    using (WorkflowProcessor processor =
+                        new WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode))
+                    {
+                        processor.Run();
+                    }
 
                     Console.WriteLine($" [{QueueCode}] ({message})");
                     response = JsonConvert.SerializeObject("Success");
