@@ -1,22 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using KpdApps.Orationi.WinNTHostService.Host;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using KpdApps.Orationi.WinNTHostService.Host;
+using log4net;
+using log4net.Config;
+
 
 namespace KpdApps.Orationi.WinNTHostService
 {
     public class Program
     {
-        public static void Main(string[] args)
+		public static log4net.ILog log;
+
+		public static void Main(string[] args)
         {
-            BuildWebHost(args).RunAsServiceHost();
+			//System.Diagnostics.Debugger.Launch();
+
+			var logRepository = LogManager.GetRepository();
+			XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+			log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+			log.Info("Main");
+
+			BuildWebHost(args).RunAsServiceHost();
         }
 
         public static IWebHost BuildWebHost(string[] args)

@@ -6,9 +6,8 @@ namespace KpdApps.Orationi.WinNTHostService.Host
 {
     public class ServiceHost : WebHostService
     {
-        public ServiceHost(IWebHost webHost) : base(webHost)
+		public ServiceHost(IWebHost webHost) : base(webHost)
         {
-
         }
 
         /// <summary>
@@ -18,8 +17,9 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarting(string[] args)
         {
             base.OnStarting(args);
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarting");
-        }
+            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarting");
+			Program.log.Info("OnStarting");
+		}
 
         /// <summary>
         /// Эпат, когда служба запущена
@@ -27,8 +27,9 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarted()
         {
             base.OnStarted();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarted");
-        }
+            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarted");
+			Program.log.Info("OnStarted");
+		}
 
         /// <summary>
         /// Этап, когда служба останавливается
@@ -36,8 +37,9 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopping()
         {
             base.OnStopping();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopping");
-        }
+            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopping");
+			Program.log.Info("OnStopping");
+		}
 
         /// <summary>
         /// Этап, когда служба остановлена
@@ -45,7 +47,8 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopped()
         {
             base.OnStopped();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopped");
-        }
+            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopped");
+			Program.log.Info("OnStopped");
+		}
     }
 }
