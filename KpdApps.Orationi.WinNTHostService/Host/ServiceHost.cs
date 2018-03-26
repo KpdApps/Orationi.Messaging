@@ -1,13 +1,17 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.WindowsServices;
+using Microsoft.Extensions.Logging;
 
 namespace KpdApps.Orationi.WinNTHostService.Host
 {
     public class ServiceHost : WebHostService
     {
+        private readonly ILogger log;
+
 		public ServiceHost(IWebHost webHost) : base(webHost)
-        {
+		{
+            var loggerFactory = (ILoggerFactory)webHost.Services.GetService(typeof(ILoggerFactory));
+            log = loggerFactory.CreateLogger(this.GetType());
         }
 
         /// <summary>
@@ -17,7 +21,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarting(string[] args)
         {
             base.OnStarting(args);
-			Program.Log.Info("OnStarting");
+			log.LogInformation("OnStarting");
 		}
 
         /// <summary>
@@ -26,7 +30,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarted()
         {
             base.OnStarted();
-			Program.Log.Info("OnStarted");
+			log.LogInformation("OnStarted");
 		}
 
         /// <summary>
@@ -35,7 +39,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopping()
         {
             base.OnStopping();
-			Program.Log.Info("OnStopping");
+			log.LogInformation("OnStopping");
 		}
 
         /// <summary>
@@ -44,7 +48,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopped()
         {
             base.OnStopped();
-			Program.Log.Info("OnStopped");
+			log.LogInformation("OnStopped");
 		}
     }
 }
