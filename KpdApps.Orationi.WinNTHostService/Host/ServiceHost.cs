@@ -17,8 +17,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarting(string[] args)
         {
             base.OnStarting(args);
-            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarting");
-			Program.log.Info("OnStarting");
+			Program.Log.Info("OnStarting");
 		}
 
         /// <summary>
@@ -27,8 +26,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarted()
         {
             base.OnStarted();
-            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarted");
-			Program.log.Info("OnStarted");
+			Program.Log.Info("OnStarted");
 		}
 
         /// <summary>
@@ -37,8 +35,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopping()
         {
             base.OnStopping();
-            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopping");
-			Program.log.Info("OnStopping");
+			Program.Log.Info("OnStopping");
 		}
 
         /// <summary>
@@ -47,8 +44,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopped()
         {
             base.OnStopped();
-            //Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopped");
-			Program.log.Info("OnStopped");
+			Program.Log.Info("OnStopped");
 		}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -12,25 +13,23 @@ namespace KpdApps.Orationi.WinNTHostService
 {
     public class Program
     {
-		public static log4net.ILog log;
+        protected internal static ILog Log;
+        protected internal static string BasePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
-		public static void Main(string[] args)
+        public static void Main(string[] args)
         {
-			//System.Diagnostics.Debugger.Launch();
-
-			var logRepository = LogManager.GetRepository();
+            //System.Diagnostics.Debugger.Launch();
+            var logRepository = LogManager.GetRepository();
 			XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
-			log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-			log.Info("Main");
-
-			BuildWebHost(args).RunAsServiceHost();
+			Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            Log.Info("Main");
+            BuildWebHost(args).RunAsServiceHost();
         }
 
         public static IWebHost BuildWebHost(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
+                .SetBasePath(BasePath)
                 .AddJsonFile("Orationi.WinNTHostService.Configuration.json")
                 .Build();
 
@@ -39,7 +38,7 @@ namespace KpdApps.Orationi.WinNTHostService
                 .UseHttpSys(options =>
                 {
                     options.Authentication.AllowAnonymous = true;
-                    options.UrlPrefixes.Add(configuration["SeviceHost"]);
+                    options.UrlPrefixes.Add(configuration["ServiceHost"]);
                 })
                 .UseStartup<Startup>()
                 .Build();
