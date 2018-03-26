@@ -1,15 +1,9 @@
-﻿using System;
+﻿using System.IO;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Xml;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using KpdApps.Orationi.WinNTHostService.Host;
-using log4net;
-using log4net.Config;
-
 
 namespace KpdApps.Orationi.WinNTHostService
 {
