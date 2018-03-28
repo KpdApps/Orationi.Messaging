@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
+using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace KpdApps.Orationi.Messaging
+namespace KpdApps.Orationi.Messaging.Soap
 {
     public class MessagingService : IMessagingService
     {
