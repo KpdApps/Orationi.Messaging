@@ -1,11 +1,10 @@
-﻿using KpdApps.Orationi.Messaging.Core.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text;
+using KpdApps.Orationi.Messaging.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {

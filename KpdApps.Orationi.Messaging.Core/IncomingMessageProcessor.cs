@@ -1,11 +1,9 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.Models;
+using KpdApps.Orationi.Messaging.Common.Models;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
