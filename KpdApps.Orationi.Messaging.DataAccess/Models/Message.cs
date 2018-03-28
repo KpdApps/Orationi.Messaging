@@ -28,7 +28,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string ResponseSystem { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int StatusCode { get; set; }
 
         public Nullable<int> ErrorCode { get; set; }
@@ -37,7 +37,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public bool IsSyncRequest { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int AttemptCount { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
             OrationiMessagingContext _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
 
             var assemblies = (from pasi in _dbContext.PluginActionSetItems
-                              join rp in _dbContext.RegisteredPlugins on pasi.PluginActionSetId equals rp.Id
+                              join rp in _dbContext.RegisteredPlugins on pasi.RegisteredPluginId equals rp.Id
                               join pa in _dbContext.PluginAsseblies on rp.AssemblyId equals pa.Id
                               select new
                               {
@@ -24,7 +24,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                                   AssemblyBinary = pa.Assembly,
                                   Modified = pa.Modified
                               }
-                             ).ToList().Distinct();
+                             ).Distinct().ToList();
 
             string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
 

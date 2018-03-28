@@ -5,6 +5,7 @@ using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
@@ -34,15 +35,15 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
             {
                  _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
                  _message.AttemptCount++;
-                 _message.StatusCode = (int)WorkflowStatusCodes.Preparing;
-                 _dbContext.SaveChanges();
+                 _message.StatusCode = (int)MessageStatusCodes.Preparing;
+                _dbContext.SaveChanges();
 
                  LoadWorkflowActions();
 
                  List<GlobalSetting> globalSettings = _dbContext.GlobalSettings.ToList();
                  _workflowExecutionContext = new WorkflowExecutionContext(_message, globalSettings);
 
-                SetMessageStatus(WorkflowStatusCodes.InProgress);
+                SetMessageStatus(MessageStatusCodes.InProgress);
                 foreach (WorkflowAction workflowAction in _workflowActions)
                 {
                     PipelineExecutionContext pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
@@ -51,16 +52,16 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                     //TODO: Temp solution
                     _message.ResponseBody = pipelineExecutionContext.ResponseBody;
                 }
-                SetMessageStatus(WorkflowStatusCodes.Processed);
+                SetMessageStatus(MessageStatusCodes.Processed);
             }
             catch (Exception ex)
             {
                 _message.ErrorMessage = ex.Message;
-                SetMessageStatus(WorkflowStatusCodes.Error);
+                SetMessageStatus(MessageStatusCodes.Error);
             }
         }
 
-        private void SetMessageStatus(WorkflowStatusCodes statusCode)
+        private void SetMessageStatus(MessageStatusCodes statusCode)
         {
             _message.StatusCode = (int)statusCode;
             _dbContext.SaveChanges();

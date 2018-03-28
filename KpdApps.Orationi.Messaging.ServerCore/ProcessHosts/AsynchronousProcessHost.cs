@@ -31,13 +31,15 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             channel.QueueDeclare(queue: QueueCode, durable: true, exclusive: false, autoDelete: false, arguments: null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += Consumer_Received;
             channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
             Console.WriteLine($"{QueueCode} [x] Awaiting async requests");
-            consumer.Received += Consumer_Received;
+            
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs ea)
         {
+            Console.WriteLine($"Received message from {ea.RoutingKey}");
             Task.Run(() =>
             {
                 var body = ea.Body;
