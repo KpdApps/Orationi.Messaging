@@ -1,11 +1,4 @@
-﻿using KpdApps.Orationi.Messaging.ServerCore;
-using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
-using System;
-using System.Collections.Concurrent;
-using System.IO;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
 {
@@ -13,17 +6,17 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     {
         static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            //TODO: Проверить как себя ведет Env для обычного .NET Framework
+            //Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             ProcessHostManager phm = new ProcessHostManager("vm-co-crmt-01.exiar.ru", "orationi", "orationi");
-            phm.Add(60105, false);
-            //phm.Add(1, false);
 
+            phm.Add(60105, false);
             Console.WriteLine(" Press [enter] to stop.");
             Console.ReadLine();
-            phm.Remove(60105, false);
-            //phm.Remove(1, false);
 
+            //TODO: разобраться почему после нажатия Enter не происходит завершения работы хост менеджера
+            phm.Remove(60105, false);
             Console.WriteLine(" Press [enter] to exit.");
             Console.ReadLine();
         }
