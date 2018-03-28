@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class Message
     {
@@ -28,7 +28,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string ResponseSystem { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int StatusCode { get; set; }
 
         public Nullable<int> ErrorCode { get; set; }
@@ -37,7 +36,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public bool IsSyncRequest { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int AttemptCount { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class PluginActionSetItem
     {

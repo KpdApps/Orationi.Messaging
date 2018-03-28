@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class ProcessingError
     {

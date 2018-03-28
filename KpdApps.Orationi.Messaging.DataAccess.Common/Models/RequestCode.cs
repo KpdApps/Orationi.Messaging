@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class RequestCode
     {

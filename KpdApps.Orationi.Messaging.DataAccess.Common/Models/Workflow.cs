@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class Workflow
     {
