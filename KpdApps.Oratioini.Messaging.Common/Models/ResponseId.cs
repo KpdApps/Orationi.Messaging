@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace KpdApps.Orationi.Messaging.Models
+namespace KpdApps.Orationi.Messaging.Common.Models
 {
     [DataContract]
     public class ResponseId : ResponseBase

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace KpdApps.Orationi.Messaging.Core.Models
+namespace KpdApps.Orationi.Messaging.Common.Models
 {
     public class RabbitRequest
     {
