@@ -1,13 +1,10 @@
 ﻿using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.DummyPlugins;
-using KpdApps.Orationi.Messaging.Models;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
