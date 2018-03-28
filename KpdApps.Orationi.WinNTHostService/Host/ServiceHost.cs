@@ -1,14 +1,17 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.WindowsServices;
+using Microsoft.Extensions.Logging;
 
 namespace KpdApps.Orationi.WinNTHostService.Host
 {
     public class ServiceHost : WebHostService
     {
-        public ServiceHost(IWebHost webHost) : base(webHost)
-        {
+        private readonly ILogger log;
 
+		public ServiceHost(IWebHost webHost) : base(webHost)
+		{
+            var loggerFactory = (ILoggerFactory)webHost.Services.GetService(typeof(ILoggerFactory));
+            log = loggerFactory.CreateLogger(this.GetType());
         }
 
         /// <summary>
@@ -18,8 +21,8 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarting(string[] args)
         {
             base.OnStarting(args);
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarting");
-        }
+			log.LogInformation("OnStarting");
+		}
 
         /// <summary>
         /// Эпат, когда служба запущена
@@ -27,8 +30,8 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStarted()
         {
             base.OnStarted();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStarted");
-        }
+			log.LogInformation("OnStarted");
+		}
 
         /// <summary>
         /// Этап, когда служба останавливается
@@ -36,8 +39,8 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopping()
         {
             base.OnStopping();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopping");
-        }
+			log.LogInformation("OnStopping");
+		}
 
         /// <summary>
         /// Этап, когда служба остановлена
@@ -45,7 +48,7 @@ namespace KpdApps.Orationi.WinNTHostService.Host
         protected override void OnStopped()
         {
             base.OnStopped();
-            Helpers.Helpers.WriteToFile($"{DateTime.Now} - OnStopped");
-        }
+			log.LogInformation("OnStopped");
+		}
     }
 }

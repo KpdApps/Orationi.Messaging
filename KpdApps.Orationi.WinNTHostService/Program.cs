@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using KpdApps.Orationi.WinNTHostService.Host;
+﻿using System.IO;
+using System.Diagnostics;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using KpdApps.Orationi.WinNTHostService.Host;
 
 namespace KpdApps.Orationi.WinNTHostService
 {
     public class Program
     {
+        protected internal static string BasePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+
         public static void Main(string[] args)
         {
             BuildWebHost(args).RunAsServiceHost();
@@ -22,7 +19,7 @@ namespace KpdApps.Orationi.WinNTHostService
         public static IWebHost BuildWebHost(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
+                .SetBasePath(BasePath)
                 .AddJsonFile("Orationi.WinNTHostService.Configuration.json")
                 .Build();
 
@@ -31,7 +28,7 @@ namespace KpdApps.Orationi.WinNTHostService
                 .UseHttpSys(options =>
                 {
                     options.Authentication.AllowAnonymous = true;
-                    options.UrlPrefixes.Add(configuration["SeviceHost"]);
+                    options.UrlPrefixes.Add(configuration["ServiceHost"]);
                 })
                 .UseStartup<Startup>()
                 .Build();
