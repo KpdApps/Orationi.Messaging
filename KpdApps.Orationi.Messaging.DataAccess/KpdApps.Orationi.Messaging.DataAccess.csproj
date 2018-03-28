@@ -8,4 +8,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess.Common\KpdApps.Orationi.Messaging.DataAccess.Common.csproj" />
+  </ItemGroup>
+
 </Project>

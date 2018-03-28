@@ -14,8 +14,4 @@
     <EmbeddedResource Include="Contracts\Dummy\DummyResponse.xsd" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj" />
-  </ItemGroup>
-
 </Project>

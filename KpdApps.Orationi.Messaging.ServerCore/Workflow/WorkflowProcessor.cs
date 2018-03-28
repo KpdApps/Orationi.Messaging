@@ -1,11 +1,9 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.ServerCore.Helpers;
-using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
+﻿using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
+using KpdApps.Orationi.Messaging.DataAccess.EF;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
@@ -20,13 +18,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         private List<WorkflowAction> _workflowActions;
 
-        private OrationiMessagingContext _dbContext;
+        private OrationiDbContext _dbContext;
 
         public WorkflowProcessor(Guid messageId, int requestCode)
         {
             _messageId = messageId;
             _requestCode = requestCode;
-            _dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder());
+            _dbContext = new OrationiDbContext();
         }
 
         public void Run()
@@ -69,7 +67,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         public void LoadWorkflowActions()
         {
-            using (OrationiMessagingContext dbContext = new OrationiMessagingContext(ContextOptionsBuilderExtensions.GetContextOptionsBuilder()))
+            using (OrationiDbContext dbContext = new OrationiDbContext())
             {
                 _workflowActions = (from w in dbContext.Workflows
                                     join wa in dbContext.WorkflowActions

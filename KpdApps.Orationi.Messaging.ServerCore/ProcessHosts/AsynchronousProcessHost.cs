@@ -1,12 +1,11 @@
-﻿using KpdApps.Orationi.Messaging.Core.Models;
-using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
-using KpdApps.Orationi.Messaging.ServerCore.Workflow;
+﻿using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {

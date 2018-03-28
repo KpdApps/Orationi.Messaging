@@ -42,8 +42,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.PluginHosts
                         {
                             foreach (ManagedPlugin managedPlugin in _managedPlugins)
                             {
-                                IProcessHost host = _hostsDictionary.GetValueOrDefault(managedPlugin.QueueCode);
-                                if (host == null)
+                                if (!_hostsDictionary.TryGetValue(managedPlugin.QueueCode, out IProcessHost host))
                                 {
                                     host = ProcessHostFactory.GetPluginHost(_hostname, _username, _password, managedPlugin.RequestCode, managedPlugin.IsSynchronous);
                                     host.Run();

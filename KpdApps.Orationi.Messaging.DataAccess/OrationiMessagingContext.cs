@@ -1,4 +1,4 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
+﻿using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +37,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
 
+        public DbSet<ExternalSystemRequestCode> ExternalSystemRequestCodes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
@@ -45,8 +47,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder
                 .Entity<RequestCode>()
-                .ToTable("RequestCodes")
-                .Property(p => p.RequestCodeId).HasColumnName("Id");
+                .ToTable("RequestCodes");
 
             modelBuilder
                 .Entity<RequestCodeAlias>()
@@ -78,9 +79,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder
                 .Entity<ExternalSystem>()
-                .ToTable("ExternalSystems")
-                .Property(p => p.ExternalSystemId)
-                .HasColumnName("Id");
+                .ToTable("ExternalSystems");
 
             modelBuilder
                 .Entity<Workflow>()
@@ -96,20 +95,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
-                .ToTable("ExternalSystemsRequestCodes")
-                .HasKey(entity => new { entity.ExternalSystemId, entity.RequestCodeId });
-
-            modelBuilder
-                .Entity<ExternalSystemRequestCode>()
-                .HasOne(entity => entity.ExternalSystem)
-                .WithMany(entity => entity.EsternalsSystemRequestCodes)
-                .HasForeignKey(entity => entity.ExternalSystemId);
-
-            modelBuilder
-                .Entity<ExternalSystemRequestCode>()
-                .HasOne(entity => entity.RequestCode)
-                .WithMany(entity => entity.EsternalsSystemRequestCodes)
-                .HasForeignKey(entity => entity.RequestCodeId);
+                .ToTable("ExternalSystemRequestCodes");
         }
     }
 }

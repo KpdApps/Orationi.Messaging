@@ -2,7 +2,7 @@
 using System.Linq;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,20 +34,20 @@ namespace KpdApps.Orationi.Messaging.Core
                 errorList.Add($"Invalid token ({token}).");
             }
 
-            externalSystem = dbContext
-                .ExternalSystems
-                .Include(entity => entity.EsternalsSystemRequestCodes)
-                .FirstOrDefault(entity => entity.Token == token);
+            externalSystem = (from extSys in dbContext.ExternalSystems
+                join extSysReqCodes in dbContext.ExternalSystemRequestCodes on extSys.Id equals extSysReqCodes.ExternalSystemId
+                join reqCode in dbContext.RequestCodes on extSysReqCodes.RequestCodeId equals reqCode.Id
+                where reqCode.Id == requestCode && extSys.Token == token
+                select new
+                    {
+                        ExternalSystem = extSys
+                    })
+                    .FirstOrDefault()
+                    ?.ExternalSystem;
 
             if (externalSystem is null)
             {
                 errorList.Add($" External system is not exists for token ({token}).");
-            }
-
-            if (externalSystem != null &&
-                externalSystem.EsternalsSystemRequestCodes.All(entity => entity.RequestCodeId != requestCode))
-            {
-                errorList.Add($" Processing of the current code [{requestCode}] is forbidden.");
             }
 
             if (errorList.Count == 0) return true;

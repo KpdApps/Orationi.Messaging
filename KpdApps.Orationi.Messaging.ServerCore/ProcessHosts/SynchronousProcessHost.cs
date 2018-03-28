@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using KpdApps.Oratioini.Messaging.Common.Models;
+using KpdApps.Orationi.Messaging.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {

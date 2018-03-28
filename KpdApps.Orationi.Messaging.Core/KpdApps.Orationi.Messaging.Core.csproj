@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KpdApps.Oratioini.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj" />
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess.Common\KpdApps.Orationi.Messaging.DataAccess.Common.csproj" />
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj" />
   </ItemGroup>
 
