@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
@@ -11,5 +12,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
         public byte[] Assembly { get; set; }
 
         public DateTime Modified { get; set; }
+
+        public virtual List<RegisteredPlugin> RegisteredPlugins { get; set; }
+
+        public virtual List<PluginActionSetItem> PluginActionSetItems { get; set; }
     }
 }

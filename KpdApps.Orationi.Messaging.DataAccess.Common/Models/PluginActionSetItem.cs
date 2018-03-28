@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
@@ -8,6 +9,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 
         public int RequestCode { get; set; }
 
+        [ForeignKey("RegisteredPlugin")]
         public Guid RegisteredPluginId { get; set; }
 
         public Guid PluginActionSetId { get; set; }
@@ -17,5 +19,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
         public bool IsAsynchronous { get; set; }
 
         public string Configuration { get; set; }
+
+        public virtual RegisteredPlugin RegisteredPlugin { get; set; }
+
+        public virtual PluginActionSet PluginActionSet { get; set; }
     }
 }
