@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
