@@ -24,15 +24,28 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 
         public override void Run()
         {
-            ConnectionFactory factory = new ConnectionFactory() { HostName = _hostname, UserName = _username, Password = _password };
+            ConnectionFactory factory = new ConnectionFactory()
+            {
+                HostName = _hostname,
+                UserName = _username,
+                Password = _password
+            };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: QueueCode, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(
+                queue: QueueCode, 
+                durable: true, 
+                exclusive: false, 
+                autoDelete: false, 
+                arguments: null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
-            channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
+            channel.BasicConsume(
+                queue: QueueCode, 
+                autoAck: false,
+                consumer: consumer);
             Console.WriteLine($"{QueueCode} [x] Awaiting async requests");
             
         }
