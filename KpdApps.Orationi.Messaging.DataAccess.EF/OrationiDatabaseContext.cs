@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess.EF.EntityConfigurations;
+using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.EF
 {
-    public class OrationiDbContext : DbContext
+    public class OrationiDatabaseContext : DbContext
     {
-        static OrationiDbContext()
+        static OrationiDatabaseContext()
         {
-            Database.SetInitializer(new NullDatabaseInitializer<OrationiDbContext>());
+            Database.SetInitializer(new NullDatabaseInitializer<OrationiDatabaseContext>());
         }
 
-        public OrationiDbContext() : base("OrationiConnectionString")
+        public OrationiDatabaseContext() : base("OrationiConnectionString")
         {
 
         }

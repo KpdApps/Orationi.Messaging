@@ -49,18 +49,28 @@
   <ItemGroup>
     <Compile Include="EntityConfigurations\MessageTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\ExternalSystemTypeConfiguration.cs" />
-    <Compile Include="OrationiDbContext.cs" />
+    <Compile Include="Models\ExternalSystem.cs" />
+    <Compile Include="Models\ExternalSystemRequestCode.cs" />
+    <Compile Include="Models\GlobalSetting.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageStatusCode.cs" />
+    <Compile Include="Models\PluginActionSet.cs" />
+    <Compile Include="Models\PluginActionSetItem.cs" />
+    <Compile Include="Models\PluginAssembly.cs" />
+    <Compile Include="Models\ProcessingError.cs" />
+    <Compile Include="Models\RegisteredPlugin.cs" />
+    <Compile Include="Models\RequestCode.cs" />
+    <Compile Include="Models\RequestCodeAlias.cs" />
+    <Compile Include="Models\Workflow.cs" />
+    <Compile Include="Models\WorkflowAction.cs" />
+    <Compile Include="Models\WorkflowExecutionStep.cs" />
+    <Compile Include="Models\WorkflowExecutionStepsStatusCode.cs" />
+    <Compile Include="OrationiDatabaseContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess.Common\KpdApps.Orationi.Messaging.DataAccess.Common.csproj">
-      <Project>{efb31db5-034c-4d9f-9d36-3f3e5c37d2c7}</Project>
-      <Name>KpdApps.Orationi.Messaging.DataAccess.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

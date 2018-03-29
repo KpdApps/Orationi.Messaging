@@ -57,10 +57,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess.Common\KpdApps.Orationi.Messaging.DataAccess.Common.csproj">
-      <Project>{EFB31DB5-034C-4D9F-9D36-3F3E5C37D2C7}</Project>
-      <Name>KpdApps.Orationi.Messaging.DataAccess.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess.EF\KpdApps.Orationi.Messaging.DataAccess.EF.csproj">
       <Project>{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}</Project>
       <Name>KpdApps.Orationi.Messaging.DataAccess.EF</Name>
