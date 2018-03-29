@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
-using KpdApps.Orationi.Messaging.DataAccess.EF;
-using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
+using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {

@@ -33,9 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Common", "KpdApps.Oratioini.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj", "{03EEEBBA-A264-40D3-95FF-1CB8740D760E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess.EF\KpdApps.Orationi.Messaging.DataAccess.csproj", "{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj", "{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess.Tests", "KpdApps.Orationi.Messaging.DataAccess.EF.Tests\KpdApps.Orationi.Messaging.DataAccess.Tests.csproj", "{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess.Tests", "KpdApps.Orationi.Messaging.DataAccess.Tests\KpdApps.Orationi.Messaging.DataAccess.Tests.csproj", "{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Core", "KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj", "{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}"
 EndProject
