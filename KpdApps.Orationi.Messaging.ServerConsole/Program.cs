@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
+using System;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
 {
@@ -9,7 +10,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
             //TODO: Проверить как себя ведет Env для обычного .NET Framework
             //Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            ProcessHostManager phm = new ProcessHostManager("vm-co-crmt-01.exiar.ru", "orationi", "orationi");
+            ProcessHostManager phm = new ProcessHostManager("localhost", "orationi", "orationi");
 
             phm.Add(60105, false);
             Console.WriteLine(" Press [enter] to stop.");
