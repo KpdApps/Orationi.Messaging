@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj", "{77E366C4-0698-4F9A-8302-38667761C173}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Endpoints", "Endpoints", "{4761BF27-601E-43A2-AF74-4003D39FECC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Soap", "KpdApps.Orationi.Messaging.Soap\KpdApps.Orationi.Messaging.Soap.csproj", "{AE239068-A023-4684-969D-6D31D0C04FB0}"
@@ -27,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.WinNTHostService", "KpdApps.Orationi.WinNTHostService\KpdApps.Orationi.WinNTHostService.csproj", "{D5C2FCEB-1363-49F7-8182-1F01EA492312}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.DataAccessTests", "KpdApps.Orationi.Messaging.DataAccessTests\KpdApps.Orationi.Messaging.DataAccessTests.csproj", "{61DBF02E-38F6-489D-9727-CD84A9097148}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Sdk", "KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj", "{523EE427-C005-4846-AC19-58BDD5FDD26B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.ServerConsole", "KpdApps.Orationi.Messaging.ServerConsole\KpdApps.Orationi.Messaging.ServerConsole.csproj", "{B6B08523-A8F8-4D3E-8E32-B6877473C465}"
@@ -49,10 +45,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{77E366C4-0698-4F9A-8302-38667761C173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77E366C4-0698-4F9A-8302-38667761C173}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77E366C4-0698-4F9A-8302-38667761C173}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77E366C4-0698-4F9A-8302-38667761C173}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE239068-A023-4684-969D-6D31D0C04FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE239068-A023-4684-969D-6D31D0C04FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE239068-A023-4684-969D-6D31D0C04FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,10 +75,6 @@ Global
 		{D5C2FCEB-1363-49F7-8182-1F01EA492312}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5C2FCEB-1363-49F7-8182-1F01EA492312}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5C2FCEB-1363-49F7-8182-1F01EA492312}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61DBF02E-38F6-489D-9727-CD84A9097148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61DBF02E-38F6-489D-9727-CD84A9097148}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61DBF02E-38F6-489D-9727-CD84A9097148}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61DBF02E-38F6-489D-9727-CD84A9097148}.Release|Any CPU.Build.0 = Release|Any CPU
 		{523EE427-C005-4846-AC19-58BDD5FDD26B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{523EE427-C005-4846-AC19-58BDD5FDD26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{523EE427-C005-4846-AC19-58BDD5FDD26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
