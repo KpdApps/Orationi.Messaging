@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
@@ -12,12 +10,10 @@ namespace KpdApps.Orationi.Messaging.Soap
     public class MessagingService : IMessagingService
     {
         private readonly OrationiDatabaseContext _dbContext;
-        private readonly HttpContext _httpContext;
 
         public MessagingService()
         {
             _dbContext = new OrationiDatabaseContext();
-            _httpContext = null;
         }
 
         public Response GetStatus(Guid requestId)
@@ -27,15 +23,36 @@ namespace KpdApps.Orationi.Messaging.Soap
 
         public Response ExecuteRequest(Request request)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, _httpContext);
-            Response response = imp.Execute(request);
+            if (!AuthorizeHelpers.IsAuthorized(
+                _dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                request.Code,
+                out Response response,
+                out var externalSystem))
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.Execute(request);
             return response;
         }
 
         public Response GetResponse(Guid requestId)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, _httpContext);
-            Response response = imp.GetResponse(requestId);
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                requestId,
+                out Response response,
+                out var externalSystem))
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetResponse(requestId);
             return response;
         }
 
@@ -46,16 +63,18 @@ namespace KpdApps.Orationi.Messaging.Soap
 
         public ResponseId ExecuteRequestAsync(Request request)
         {
-            WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
-            return new ResponseId
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, 
+                WebOperationContext.Current.IncomingRequest.Headers["Token"], 
+                request.Code, 
+                out ResponseId response, 
+                out var externalSystem))
             {
-                Error = "Unauthorized",
-                IsError = true,
-                Id = Guid.NewGuid()
-            };
-
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, _httpContext);
-            ResponseId response = imp.ExecuteAsync(request);
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+            
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteAsync(request);
             return response;
         }
 

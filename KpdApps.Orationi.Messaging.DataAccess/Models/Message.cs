@@ -15,7 +15,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         [ForeignKey("RequestCode")]
         public int RequestCodeId { get; set; }
 
-        [Column(TypeName = "xml not null")]
+        [Column(TypeName = "xml")]
         public string RequestBody { get; set; }
 
         public string RequestUser { get; set; }

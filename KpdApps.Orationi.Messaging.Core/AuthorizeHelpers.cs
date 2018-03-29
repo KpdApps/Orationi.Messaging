@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
@@ -18,15 +19,16 @@ namespace KpdApps.Orationi.Messaging.Core
         /// <param name="response">Ответ</param>
         /// <param name="externalSystem">Внешняя система, которая выполнила запрос</param>
         /// <returns></returns>
-        public static bool IsAuthorized(this HttpContext context,
-            OrationiDatabaseContext dbContext,
+        public static bool IsAuthorized<T>(OrationiDatabaseContext dbContext,
+            string token,
             int requestCode,
-            ResponseBase response,
+            out T response,
             out ExternalSystem externalSystem)
+        where T : ResponseBase, new()
         {
-            var errorList = new List<string>();
+            response = new T();
 
-            var token = context.Request.Headers["Token"];
+            var errorList = new List<string>();
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -45,11 +47,37 @@ namespace KpdApps.Orationi.Messaging.Core
 
             if (errorList.Count == 0) return true;
 
-            context.Response.StatusCode = 401;
             response.IsError = true;
             response.Error = string.Join(" ", errorList);
 
             return false;
+        }
+
+        public static bool IsAuthorized<T>(OrationiDatabaseContext dbContext,
+            string token,
+            Guid requestId,
+            out T response,
+            out ExternalSystem externalSystem)
+            where T : ResponseBase, new()
+        {
+            var message = dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+
+            if (message is null)
+            {
+                response = new T
+                {
+                    IsError = true,
+                    Error = $"Request {requestId} not found"
+                };
+                externalSystem = null;
+                return false;
+            }
+
+            return IsAuthorized<T>(dbContext,
+                token,
+                message.RequestCodeId,
+                out response,
+                out externalSystem);
         }
     }
 }
