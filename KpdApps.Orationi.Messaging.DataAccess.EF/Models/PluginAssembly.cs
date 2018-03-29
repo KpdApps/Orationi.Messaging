@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class PluginAssembly
     {

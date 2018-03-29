@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class PluginActionSet
     {

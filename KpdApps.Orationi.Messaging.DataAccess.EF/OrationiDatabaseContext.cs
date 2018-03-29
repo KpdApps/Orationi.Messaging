@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using KpdApps.Orationi.Messaging.DataAccess.EF.EntityConfigurations;
-using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
+using KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF
+namespace KpdApps.Orationi.Messaging.DataAccess
 {
     public class OrationiDatabaseContext : DbContext
     {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
-using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.EntityConfigurations
+namespace KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations
 {
     public class MessageTypeConfiguration : EntityTypeConfiguration<Message>
     {

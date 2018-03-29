@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.Models
-{
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
+{ 
     public class Workflow
     {
         [Key]

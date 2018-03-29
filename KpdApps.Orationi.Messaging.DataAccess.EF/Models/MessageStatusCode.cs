@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class MessageStatusCode
     {

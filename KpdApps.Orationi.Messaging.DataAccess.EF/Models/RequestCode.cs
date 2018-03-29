@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
-namespace KpdApps.Orationi.Messaging.DataAccess.EF.Models
+namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class RequestCode
     {
