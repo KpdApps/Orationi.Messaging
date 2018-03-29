@@ -1,6 +1,6 @@
-﻿using System;
+﻿using KpdApps.Orationi.Messaging.Common.Models;
+using System;
 using System.ServiceModel;
-using KpdApps.Orationi.Messaging.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {

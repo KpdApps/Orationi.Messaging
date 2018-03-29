@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
-using KpdApps.Orationi.Messaging.DataAccess.EF;
+using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk;
 using KpdApps.Orationi.Messaging.Sdk.Plugins;
 using Newtonsoft.Json;
@@ -19,7 +19,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private IPipelineExecutionContext _pipelineExecutionContext;
 
-        private OrationiDbContext _dbContext;
+        private OrationiDatabaseContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
         private WorkflowExecutionStep _workflowExecutionStep;
 
@@ -50,7 +50,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Init()
         {
-            _dbContext = new OrationiDbContext();
+            _dbContext = new OrationiDatabaseContext();
 
             _workflowExecutionStep = new WorkflowExecutionStep
             {

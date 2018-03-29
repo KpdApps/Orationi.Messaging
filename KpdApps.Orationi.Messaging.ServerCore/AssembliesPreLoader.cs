@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
-using KpdApps.Orationi.Messaging.DataAccess.EF;
+using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 
 namespace KpdApps.Orationi.Messaging.ServerCore
@@ -12,7 +12,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute()
         {
-            OrationiDbContext _dbContext = new OrationiDbContext();
+            OrationiDatabaseContext _dbContext = new OrationiDatabaseContext();
 
             var assemblies = (from pasi in _dbContext.PluginActionSetItems
                               join rp in _dbContext.RegisteredPlugins on pasi.RegisteredPluginId equals rp.Id
@@ -53,7 +53,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         public static void Execute(Guid assemblyId)
         {
-            OrationiDbContext _dbContext = new OrationiDbContext();
+            OrationiDatabaseContext _dbContext = new OrationiDatabaseContext();
 
             var assemblies = (from pa in _dbContext.PluginAsseblies
                               where pa.Id == assemblyId

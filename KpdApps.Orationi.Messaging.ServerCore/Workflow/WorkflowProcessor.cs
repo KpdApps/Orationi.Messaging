@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
-using KpdApps.Orationi.Messaging.DataAccess.EF;
+using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
@@ -18,13 +18,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         private List<WorkflowAction> _workflowActions;
 
-        private OrationiDbContext _dbContext;
+        private OrationiDatabaseContext _dbContext;
 
         public WorkflowProcessor(Guid messageId, int requestCode)
         {
             _messageId = messageId;
             _requestCode = requestCode;
-            _dbContext = new OrationiDbContext();
+            _dbContext = new OrationiDatabaseContext();
         }
 
         public void Run()
@@ -67,7 +67,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         public void LoadWorkflowActions()
         {
-            using (OrationiDbContext dbContext = new OrationiDbContext())
+            using (OrationiDatabaseContext dbContext = new OrationiDatabaseContext())
             {
                 _workflowActions = (from w in dbContext.Workflows
                                     join wa in dbContext.WorkflowActions

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
 {
