@@ -13,7 +13,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
 
             WriteCaption("Проверка обращения к таблице GlobalSettings");
             List<GlobalSetting> globalSettings;
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 globalSettings = context.GlobalSettings.ToList();
             }
@@ -34,7 +34,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
 
             WriteCaption("Проверка обращения к таблице ProcessingErrors");
             List<ProcessingError> processingErrors;
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 processingErrors = context.ProcessingErrors.ToList();
             }
@@ -55,7 +55,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
 
             WriteCaption("Проверка обращения к таблице RequestCodeAliases");
             List<RequestCodeAlias> requestCodeAliases;
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 requestCodeAliases = context.RequestCodeAliases.ToList();
             }
@@ -76,7 +76,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
 
             WriteCaption("Проверка обращения к таблице WorkflowExecutionSteps");
             List<WorkflowExecutionStep> workflowExecutionSteps;
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 workflowExecutionSteps = context
                     .WorkflowExecutionSteps
@@ -106,7 +106,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
             #region Проверка обращения к таблице ExternalSystems
 
             WriteCaption("Проверка обращения к таблице ExternalSystems");
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 var externalSystems = context
                     .ExternalSystems
@@ -143,7 +143,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
             #region Проверка обращения к таблице Messages
 
             WriteCaption("Проверка обращения к таблице Messages");
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 var messages = context
                     .Messages
@@ -171,7 +171,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
             #region Проверка обращения к таблице WorkflowExecutionStepsStatusCodes
 
             WriteCaption("Проверка обращения к таблице WorkflowExecutionStepsStatusCodes");
-            using (var context = new OrationiDbContext())
+            using (var context = new OrationiDatabaseContext())
             {
                 var statuses = context
                     .WorkflowExecutionStepsStatusCodes
