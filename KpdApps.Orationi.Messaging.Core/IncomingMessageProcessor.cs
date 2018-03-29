@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Linq;
+using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
-using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
+using KpdApps.Orationi.Messaging.DataAccess.EF;
+using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
     public class IncomingMessageProcessor
     {
-        private readonly OrationiMessagingContext _dbContext;
+        private readonly OrationiDatabaseContext _dbContext;
         private readonly HttpContext _httpContext;
 
-        public IncomingMessageProcessor(OrationiMessagingContext dbContext, HttpContext httpContext)
+        public IncomingMessageProcessor(OrationiDatabaseContext dbContext, HttpContext httpContext)
         {
             _dbContext = dbContext;
             _httpContext = httpContext;

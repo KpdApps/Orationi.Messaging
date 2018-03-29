@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
-using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using KpdApps.Orationi.Messaging.DataAccess.EF;
+using KpdApps.Orationi.Messaging.DataAccess.EF.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -20,7 +19,7 @@ namespace KpdApps.Orationi.Messaging.Core
         /// <param name="externalSystem">Внешняя система, которая выполнила запрос</param>
         /// <returns></returns>
         public static bool IsAuthorized(this HttpContext context,
-            OrationiMessagingContext dbContext,
+            OrationiDatabaseContext dbContext,
             int requestCode,
             ResponseBase response,
             out ExternalSystem externalSystem)
@@ -34,16 +33,10 @@ namespace KpdApps.Orationi.Messaging.Core
                 errorList.Add($"Invalid token ({token}).");
             }
 
-            externalSystem = (from extSys in dbContext.ExternalSystems
-                join extSysReqCodes in dbContext.ExternalSystemRequestCodes on extSys.Id equals extSysReqCodes.ExternalSystemId
-                join reqCode in dbContext.RequestCodes on extSysReqCodes.RequestCodeId equals reqCode.Id
-                where reqCode.Id == requestCode && extSys.Token == token
-                select new
-                    {
-                        ExternalSystem = extSys
-                    })
-                    .FirstOrDefault()
-                    ?.ExternalSystem;
+            externalSystem = dbContext
+                .ExternalSystems
+                .Where(extSys => extSys.Token == token)
+                .FirstOrDefault(extSys => extSys.RequestCodes.Any(rc => rc.Id == requestCode));
 
             if (externalSystem is null)
             {
