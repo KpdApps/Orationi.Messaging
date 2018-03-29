@@ -6,13 +6,10 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class Message
     {
-        [Key]
         public Guid Id { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public Nullable<DateTime> Created { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public Nullable<DateTime> Modified { get; set; }
 
         [ForeignKey("RequestCode")]

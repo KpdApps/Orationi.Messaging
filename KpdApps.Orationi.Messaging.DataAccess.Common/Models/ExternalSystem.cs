@@ -6,6 +6,12 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Common.Models
 {
     public class ExternalSystem
     {
+        public ExternalSystem()
+        {
+            RequestCodes = new List<RequestCode>();
+            Messages = new List<Message>();
+        }
+
         public Guid Id { get; set; }
 
         public string SystemName { get; set; }

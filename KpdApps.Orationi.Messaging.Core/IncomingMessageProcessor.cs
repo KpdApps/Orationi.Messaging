@@ -1,9 +1,6 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
+﻿using System;
 using KpdApps.Orationi.Messaging.Common.Models;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Linq;
+using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -31,8 +28,8 @@ namespace KpdApps.Orationi.Messaging.Core
                 Message message = new Message
                 {
                     RequestBody = request.Body,
-                    RequestCode = request.Code,
-                    ExternalSystemId = externalSystem.ExternalSystemId,
+                    RequestCodeId = request.Code,
+                    ExternalSystemId = externalSystem.Id,
                     RequestUser = request.UserName,
                     IsSyncRequest = true
                 };
@@ -41,7 +38,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.Code, true);
-                client.Execute(message.RequestCode, message.Id);
+                client.Execute(message.RequestCodeId, message.Id);
 
                 message = _dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
 
@@ -79,7 +76,7 @@ namespace KpdApps.Orationi.Messaging.Core
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
             //TODO: Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
-            return !_httpContext.IsAuthorized(_dbContext, message.RequestCode, response, out var externalSystem)
+            return !_httpContext.IsAuthorized(_dbContext, message.RequestCodeId, response, out var externalSystem)
                 ? response
                 : new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
         }
@@ -96,8 +93,8 @@ namespace KpdApps.Orationi.Messaging.Core
                 Message message = new Message
                 {
                     RequestBody = request.Body,
-                    RequestCode = request.Code,
-                    ExternalSystemId = externalSystem.ExternalSystemId,
+                    RequestCodeId = request.Code,
+                    ExternalSystemId = externalSystem.Id,
                     RequestUser = request.UserName,
                     IsSyncRequest = false
                 };
@@ -106,7 +103,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.Code, false);
-                client.PullMessage(message.RequestCode, message.Id);
+                client.PullMessage(message.RequestCodeId, message.Id);
 
                 response = new ResponseId();
                 response.Id = message.Id;

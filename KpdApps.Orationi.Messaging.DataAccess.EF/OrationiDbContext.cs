@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.DataAccess.Common.Models;
+using KpdApps.Orationi.Messaging.DataAccess.EF.EntityConfigurations;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.EF
 {
@@ -54,13 +56,18 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Configurations.Add(new ExternalSystemTypeConfiguration());
+            modelBuilder.Configurations.Add(new MessageTypeConfiguration());
+
             modelBuilder
                 .Entity<RequestCodeAlias>()
                 .ToTable("RequestCodeAliases");
 
             modelBuilder
                 .Entity<ProcessingError>()
-                .ToTable("ProcessingErrors");
+                .ToTable("ProcessingErrors")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<GlobalSetting>()
@@ -101,29 +108,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF
             modelBuilder
                 .Entity<RequestCode>()
                 .ToTable("RequestCodes");
-
-            modelBuilder
-                .Entity<Message>()
-                .ToTable("Messages")
-                // данный финт ушами сделан, только для того, что на текущем этапе тестирования со строны подрядчика ничего не сломалось
-                //TODO: обязательно переименовать колонку в БД с RequestCode на RequestCodeId
-                .Property(p => p.RequestCodeId)
-                .HasColumnName("RequestCode");
-
-            modelBuilder
-                .Entity<Message>()
-                .HasRequired(p => p.MessageStatusCode)
-                .WithMany(p => p.Messages)
-                .HasForeignKey(p => p.StatusCode);
-
-            modelBuilder
-                .Entity<ExternalSystem>()
-                .ToTable("ExternalSystems")
-                .HasMany(p => p.RequestCodes)
-                .WithMany(p => p.ExternalSystems)
-                .Map(t => t.ToTable("ExternalSystemsRequestCodes")
-                    .MapLeftKey("ExternalSystemId")
-                    .MapRightKey("RequestCodeId"));
 
             modelBuilder
                 .Entity<MessageStatusCode>()

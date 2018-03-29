@@ -53,11 +53,18 @@ namespace KpdApps.Orationi.Messaging.Core
             request.RequestCode = requestCode;
 
             string message = JsonConvert.SerializeObject(request);
+            string queueName = $"queue-{requestCode}-1";
+
+            _channel.QueueDeclare(queue: queueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
 
             var messageBytes = Encoding.UTF8.GetBytes(message);
             _channel.BasicPublish(
                 exchange: "",
-                routingKey: $"queue-{requestCode}-1",
+                routingKey: queueName,
                 basicProperties: _props,
                 body: messageBytes);
 
@@ -76,7 +83,9 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: $"queue-{requestCode}-0",
+                    string queueName = $"queue-{requestCode}-0";
+
+                    channel.QueueDeclare(queue: queueName,
                                          durable: true,
                                          exclusive: false,
                                          autoDelete: false,
@@ -96,7 +105,7 @@ namespace KpdApps.Orationi.Messaging.Core
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(exchange: "",
-                                         routingKey: $"queue-{requestCode}-0",
+                                         routingKey: queueName,
                                          basicProperties: properties,
                                          body: body);
                     Console.WriteLine(" [x] Sent {0}", message);

@@ -39,15 +39,26 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<ExternalSystemRequestCode> ExternalSystemRequestCodes { get; set; }
 
+        public DbSet<MessageStatusCode> MessageStatusCodes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Entity<Message>()
-                .ToTable("Messages");
+                .ToTable("Messages")                
+                .Property(p => p.RequestCodeId)
+                .HasColumnName("RequestCode");
+
+            //modelBuilder
+            //    .Entity<Message>()
+            //    .HasOne(p => p.MessageStatusCode)
+            //    .WithMany(p => Messages)
+            //    .HasForeignKey(p => p.StatusCode);
 
             modelBuilder
                 .Entity<RequestCode>()
-                .ToTable("RequestCodes");
+                .ToTable("RequestCodes")
+                .Ignore(p => p.ExternalSystems);
 
             modelBuilder
                 .Entity<RequestCodeAlias>()
@@ -79,7 +90,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder
                 .Entity<ExternalSystem>()
-                .ToTable("ExternalSystems");
+                .ToTable("ExternalSystems")
+                .Ignore(p => p.RequestCodes);
 
             modelBuilder
                 .Entity<Workflow>()
@@ -95,7 +107,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder
                 .Entity<ExternalSystemRequestCode>()
-                .ToTable("ExternalSystemRequestCodes");
+                .ToTable("ExternalSystemsRequestCodes")
+                .HasKey("ExternalSystemId", "RequestCodeId");
         }
     }
 }

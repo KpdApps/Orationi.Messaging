@@ -2,7 +2,7 @@
     [Id]             UNIQUEIDENTIFIER CONSTRAINT [DF_Messages_Id] DEFAULT (newid()) NOT NULL,
     [Created]        DATETIME         CONSTRAINT [DF__Messages__Create__45F365D3] DEFAULT (getdate()) NOT NULL,
     [Modified]       DATETIME         CONSTRAINT [DF__Messages__Modifi__46E78A0C] DEFAULT (getdate()) NOT NULL,
-    [RequestCode]    INT              NOT NULL,
+    [RequestCodeId]    INT              NOT NULL,
     [RequestBody]    XML              NOT NULL,
     [RequestUser]    NVARCHAR (50)    NULL,
     [ExternalSystemId] UNIQUEIDENTIFIER            NOT NULL,
@@ -16,7 +16,7 @@
     [AttemptCount]   INT              CONSTRAINT [DF__Messages__Attemp__4AB81AF0] DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK__Messages__3214EC0777BFA700] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Messages_MessageStatusCode] FOREIGN KEY ([StatusCode]) REFERENCES [dbo].[MessageStatusCode] ([Id]),
-    CONSTRAINT [FK_Messages_RequestCodes] FOREIGN KEY ([RequestCode]) REFERENCES [dbo].[RequestCodes] ([Id]),
+    CONSTRAINT [FK_Messages_RequestCodes] FOREIGN KEY ([RequestCodeId]) REFERENCES [dbo].[RequestCodes] ([Id]),
 	CONSTRAINT [FK_Messages_ExternalSystems] FOREIGN KEY ([ExternalSystemId]) REFERENCES [dbo].[ExternalSystems]([Id])
 );
 
