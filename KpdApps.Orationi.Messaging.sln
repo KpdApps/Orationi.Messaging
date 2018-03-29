@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Endpoints", "Endpoints", "{4761BF27-601E-43A2-AF74-4003D39FECC7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Soap", "KpdApps.Orationi.Messaging.Soap\KpdApps.Orationi.Messaging.Soap.csproj", "{AE239068-A023-4684-969D-6D31D0C04FB0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KpdApps.Orationi.Messaging.Rest", "KpdApps.Orationi.Messaging.Rest\KpdApps.Orationi.Messaging.Rest.csproj", "{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "KpdApps.Orationi.Messaging.Database", "KpdApps.Orationi.Messaging.Database\KpdApps.Orationi.Messaging.Database.sqlproj", "{5EAEBB5B-BA9C-4570-A1E0-B55E06A37120}"
@@ -39,16 +37,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Core", "KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj", "{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Soap", "KpdApps.Orationi.Messaging.Soap\KpdApps.Orationi.Messaging.Soap.csproj", "{CE3B7962-E67A-4A23-990F-1EDF177072A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AE239068-A023-4684-969D-6D31D0C04FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE239068-A023-4684-969D-6D31D0C04FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE239068-A023-4684-969D-6D31D0C04FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE239068-A023-4684-969D-6D31D0C04FB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -103,12 +99,15 @@ Global
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE3B7962-E67A-4A23-990F-1EDF177072A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE3B7962-E67A-4A23-990F-1EDF177072A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3B7962-E67A-4A23-990F-1EDF177072A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE3B7962-E67A-4A23-990F-1EDF177072A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AE239068-A023-4684-969D-6D31D0C04FB0} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{FDA15268-5AB8-4CD2-AB88-BDCBBC8F621B} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{19AE4168-E053-4DDE-AD49-1C1FBF164458} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{0E72F8C1-BC53-4848-A196-58CD2C047DCF} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
@@ -120,6 +119,7 @@ Global
 		{44B48E39-FFA6-463A-94C8-70141F5F2717} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
 		{03EEEBBA-A264-40D3-95FF-1CB8740D760E} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
+		{CE3B7962-E67A-4A23-990F-1EDF177072A1} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CB5D1CE4-14F8-486E-9DEE-32E4DB9C9C1F}

@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Net;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using Microsoft.AspNetCore.Http;
 
 namespace KpdApps.Orationi.Messaging.Soap
 {
     public class MessagingService : IMessagingService
     {
-        private readonly OrationiMessagingContext _dbContext;
+        private readonly OrationiDatabaseContext _dbContext;
         private readonly HttpContext _httpContext;
 
-        public MessagingService(OrationiMessagingContext dbContext, IHttpContextAccessor httpContext)
+        public MessagingService()
         {
-            _dbContext = dbContext;
-            _httpContext = httpContext.HttpContext;
+            _dbContext = new OrationiDatabaseContext();
+            _httpContext = null;
         }
 
         public Response GetStatus(Guid requestId)
@@ -43,6 +46,14 @@ namespace KpdApps.Orationi.Messaging.Soap
 
         public ResponseId ExecuteRequestAsync(Request request)
         {
+            WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+            return new ResponseId
+            {
+                Error = "Unauthorized",
+                IsError = true,
+                Id = Guid.NewGuid()
+            };
+
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, _httpContext);
             ResponseId response = imp.ExecuteAsync(request);
             return response;
