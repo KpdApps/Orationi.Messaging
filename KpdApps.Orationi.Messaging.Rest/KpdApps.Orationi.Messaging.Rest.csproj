@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -104,6 +110,20 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
+      <Project>{f3a60582-96a6-449a-9eb6-92f876ec14e9}</Project>
+      <Name>KpdApps.Orationi.Messaging.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj">
+      <Project>{db7f7a03-92bf-4c73-b8d3-02b49cde97ca}</Project>
+      <Name>KpdApps.Orationi.Messaging.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
+      <Project>{312dd07c-f632-4dbf-9153-aa6e9dbebbc7}</Project>
+      <Name>KpdApps.Orationi.Messaging.DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

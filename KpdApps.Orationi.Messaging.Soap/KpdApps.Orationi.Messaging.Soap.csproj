@@ -88,10 +88,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Oratioini.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
-      <Project>{03EEEBBA-A264-40D3-95FF-1CB8740D760E}</Project>
-      <Name>KpdApps.Orationi.Messaging.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj">
       <Project>{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}</Project>
       <Name>KpdApps.Orationi.Messaging.Core</Name>

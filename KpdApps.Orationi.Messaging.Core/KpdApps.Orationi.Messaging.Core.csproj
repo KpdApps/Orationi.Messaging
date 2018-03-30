@@ -46,8 +46,10 @@
       <HintPath>..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -69,8 +71,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Oratioini.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
-      <Project>{03eeebba-a264-40d3-95ff-1cb8740d760e}</Project>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
+      <Project>{f3a60582-96a6-449a-9eb6-92f876ec14e9}</Project>
       <Name>KpdApps.Orationi.Messaging.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
