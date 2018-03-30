@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[PluginAssemblies] (
-    [Id]         UNIQUEIDENTIFIER NOT NULL,
+    [Id]         UNIQUEIDENTIFIER CONSTRAINT [DF_PluginAssemblies_Id] DEFAULT (newid()) NOT NULL,
     [Name]       NVARCHAR (128)   NOT NULL,
     [Assembly]   VARBINARY (MAX)  NOT NULL,
     [Modified] DATETIME2 (7)    CONSTRAINT [DF_PluginAssemblies_ModifiedOn] DEFAULT (getdate()) NOT NULL,
-    CONSTRAINT [PK_PipelineAssemblies] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_PluginAssemblies] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 

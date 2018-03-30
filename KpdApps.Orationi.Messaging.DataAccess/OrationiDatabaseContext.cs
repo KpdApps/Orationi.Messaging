@@ -53,10 +53,13 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
             modelBuilder.Configurations.Add(new ExternalSystemTypeConfiguration());
             modelBuilder.Configurations.Add(new MessageTypeConfiguration());
+            modelBuilder.Configurations.Add(new MessageStatusCodeEntityConfiguration());
 
             modelBuilder
                 .Entity<RequestCodeAlias>()
-                .ToTable("RequestCodeAliases");
+                .ToTable("RequestCodeAliases")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<ProcessingError>()
@@ -75,38 +78,51 @@ namespace KpdApps.Orationi.Messaging.DataAccess
                 .HasRequired(p => p.WorkflowExecutionStepsStatusCode)
                 .WithMany(p => p.WorkflowExecutionSteps)
                 .HasForeignKey(p => p.StatusCode);
+            
+            modelBuilder
+                .Entity<WorkflowExecutionStep>()
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<Workflow>()
-                .ToTable("Workflows");
+                .ToTable("Workflows")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<PluginActionSet>()
-                .ToTable("PluginActionSets");
+                .ToTable("PluginActionSets")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<PluginAssembly>()
-                .ToTable("PluginAssemblies");
+                .ToTable("PluginAssemblies")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<WorkflowAction>()
-                .ToTable("WorkflowActions");
+                .ToTable("WorkflowActions")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<RegisteredPlugin>()
-                .ToTable("RegisteredPlugins");
+                .ToTable("RegisteredPlugins")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<PluginActionSetItem>()
-                .ToTable("PluginActionSetItems");
+                .ToTable("PluginActionSetItems")
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             modelBuilder
                 .Entity<RequestCode>()
                 .ToTable("RequestCodes");
-
-            modelBuilder
-                .Entity<MessageStatusCode>()
-                .ToTable("MessageStatusCode");
 
             modelBuilder
                 .Entity<WorkflowExecutionStepsStatusCode>()

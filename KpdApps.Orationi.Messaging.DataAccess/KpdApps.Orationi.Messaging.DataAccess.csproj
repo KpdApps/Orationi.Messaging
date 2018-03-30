@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\ExternalSystemTypeConfiguration.cs" />
     <Compile Include="Models\ExternalSystem.cs" />

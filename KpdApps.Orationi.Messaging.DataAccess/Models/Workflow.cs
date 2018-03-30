@@ -7,6 +7,11 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 { 
     public class Workflow
     {
+        public Workflow()
+        {
+            WorkflowExecutionSteps = new List<WorkflowExecutionStep>();
+        }
+
         [Key]
         public Guid Id { get; set; }
 
