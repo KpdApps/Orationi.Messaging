@@ -5,6 +5,11 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class WorkflowExecutionStepsStatusCode
     {
+        public WorkflowExecutionStepsStatusCode()
+        {
+            WorkflowExecutionSteps = new List<WorkflowExecutionStep>();
+        }
+
         [Key]
         public int Id { get; set; }
 

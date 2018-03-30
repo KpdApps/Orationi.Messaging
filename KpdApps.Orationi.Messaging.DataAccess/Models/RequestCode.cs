@@ -7,6 +7,13 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class RequestCode
     {
+        public RequestCode()
+        {
+            Workflows = new List<Workflow>();
+            Messages = new List<Message>();
+            ExternalSystems = new List<ExternalSystem>();
+        }
+
         [Key]
         public int Id { get; set; }
 

@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class PluginAssembly
     {
+        public PluginAssembly()
+        {
+            RegisteredPlugins = new List<RegisteredPlugin>();
+            PluginActionSetItems = new List<PluginActionSetItem>();
+        }
+
+        [Key]
         public Guid Id { get; set; }
 
         public string Name { get; set; }

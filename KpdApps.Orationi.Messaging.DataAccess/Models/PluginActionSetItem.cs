@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
     public class PluginActionSetItem
     {
+        [Key]
         public Guid Id { get; set; }
 
         public int RequestCode { get; set; }
