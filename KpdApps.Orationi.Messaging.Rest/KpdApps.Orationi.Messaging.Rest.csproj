@@ -107,10 +107,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
       <Project>{f3a60582-96a6-449a-9eb6-92f876ec14e9}</Project>
