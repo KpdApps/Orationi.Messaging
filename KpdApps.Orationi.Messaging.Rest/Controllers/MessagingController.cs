@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
 
@@ -36,8 +37,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 out Common.Models.Response response,
                 out var externalSystem))
             {
-                ActionContext.Response.StatusCode = HttpStatusCode.Forbidden;
-                return response;
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
@@ -64,8 +64,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 out Common.Models.Response response,
                 out var externalSystem))
             {
-                ActionContext.Response.StatusCode = HttpStatusCode.Forbidden;
-                return response;
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
@@ -84,8 +83,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 out Common.Models.ResponseId response,
                 out var externalSystem))
             {
-                ActionContext.Response.StatusCode = HttpStatusCode.Forbidden;
-                return response;
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
