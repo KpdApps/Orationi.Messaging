@@ -47,9 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityConfigurations\GlobalSettingTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\ExternalSystemTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginActionSetItemTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginActionSetTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginAssemblyTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\ProcessingErrorTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RegisteredPluginTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RequestCodeAliasTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RequestCodeTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowActionTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowExecutionStepsStatusCodeTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowExecutionStepTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowTypeConfiguration.cs" />
     <Compile Include="Models\ExternalSystem.cs" />
     <Compile Include="Models\ExternalSystemRequestCode.cs" />
     <Compile Include="Models\GlobalSetting.cs" />

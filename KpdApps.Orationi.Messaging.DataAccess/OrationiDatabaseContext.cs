@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
 using KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 
@@ -52,81 +53,27 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Configurations.Add(new ExternalSystemTypeConfiguration());
+            modelBuilder.Configurations.Add(new GlobalSettingTypeConfiguration());
             modelBuilder.Configurations.Add(new MessageTypeConfiguration());
             modelBuilder.Configurations.Add(new MessageStatusCodeEntityConfiguration());
+            modelBuilder.Configurations.Add(new PluginActionSetTypeConfiguration());
+            modelBuilder.Configurations.Add(new PluginActionSetItemTypeConfiguration());
+            modelBuilder.Configurations.Add(new PluginAssemblyTypeConfiguration());
+            modelBuilder.Configurations.Add(new ProcessingErrorTypeConfiguration());
+            modelBuilder.Configurations.Add(new RegisteredPluginTypeConfiguration());
+            modelBuilder.Configurations.Add(new RequestCodeTypeConfiguration());
+            modelBuilder.Configurations.Add(new RequestCodeAliasTypeConfiguration());
+            modelBuilder.Configurations.Add(new WorkflowTypeConfiguration());
+            modelBuilder.Configurations.Add(new WorkflowActionTypeConfiguration());
+            modelBuilder.Configurations.Add(new WorkflowExecutionStepTypeConfiguration());
+            modelBuilder.Configurations.Add(new WorkflowExecutionStepsStatusCodeTypeConfiguration());
+        }
 
-            modelBuilder
-                .Entity<RequestCodeAlias>()
-                .ToTable("RequestCodeAliases")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<ProcessingError>()
-                .ToTable("ProcessingErrors")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<GlobalSetting>()
-                .ToTable("GlobalSettings")
-                .HasKey(key => key.Name);
-
-            modelBuilder
-                .Entity<WorkflowExecutionStep>()
-                .ToTable("WorkflowExecutionSteps")
-                .HasRequired(p => p.WorkflowExecutionStepsStatusCode)
-                .WithMany(p => p.WorkflowExecutionSteps)
-                .HasForeignKey(p => p.StatusCode);
-            
-            modelBuilder
-                .Entity<WorkflowExecutionStep>()
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<Workflow>()
-                .ToTable("Workflows")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<PluginActionSet>()
-                .ToTable("PluginActionSets")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<PluginAssembly>()
-                .ToTable("PluginAssemblies")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<WorkflowAction>()
-                .ToTable("WorkflowActions")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<RegisteredPlugin>()
-                .ToTable("RegisteredPlugins")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<PluginActionSetItem>()
-                .ToTable("PluginActionSetItems")
-                .Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            modelBuilder
-                .Entity<RequestCode>()
-                .ToTable("RequestCodes");
-
-            modelBuilder
-                .Entity<WorkflowExecutionStepsStatusCode>()
-                .ToTable("WorkflowExecutionStepsStatusCodes");
+        private void AddConfiguration<TConfiguration, TEntity>(DbModelBuilder modelBuilder)
+            where TConfiguration : EntityTypeConfiguration<TEntity>, new ()
+            where TEntity : class
+        {
+            modelBuilder.Configurations.Add(new TConfiguration());
         }
     }
 }
