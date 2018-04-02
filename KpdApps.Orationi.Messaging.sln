@@ -39,8 +39,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Service.PluginHost", "KpdApps.Orationi.Service.PluginHost\KpdApps.Orationi.Service.PluginHost.csproj", "{B67325CA-FBCD-4731-A395-1A8B57932FE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLog", "TestLog\TestLog.csproj", "{9856D471-59FD-40C2-8C26-D823DEF67C4D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,10 +103,6 @@ Global
 		{B67325CA-FBCD-4731-A395-1A8B57932FE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B67325CA-FBCD-4731-A395-1A8B57932FE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B67325CA-FBCD-4731-A395-1A8B57932FE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9856D471-59FD-40C2-8C26-D823DEF67C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9856D471-59FD-40C2-8C26-D823DEF67C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9856D471-59FD-40C2-8C26-D823DEF67C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9856D471-59FD-40C2-8C26-D823DEF67C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,7 +120,6 @@ Global
 		{CB0A3C63-6536-4B2C-8E09-4FA016FF227D} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{F3A60582-96A6-449A-9EB6-92F876EC14E9} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
 		{B67325CA-FBCD-4731-A395-1A8B57932FE4} = {1B1C06A4-74B9-42A0-80ED-5AE03B2A9053}
-		{9856D471-59FD-40C2-8C26-D823DEF67C4D} = {1B1C06A4-74B9-42A0-80ED-5AE03B2A9053}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CB5D1CE4-14F8-486E-9DEE-32E4DB9C9C1F}
