@@ -91,7 +91,7 @@ namespace KpdApps.Orationi.Messaging.Core
                     IsSyncRequest = false
                 };
 
-                _dbContext.Messages.Attach(message);
+                _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.Code, false);

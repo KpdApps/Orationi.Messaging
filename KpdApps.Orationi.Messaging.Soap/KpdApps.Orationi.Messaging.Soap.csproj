@@ -80,6 +80,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -88,6 +89,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj">
+      <Project>{f3a60582-96a6-449a-9eb6-92f876ec14e9}</Project>
+      <Name>KpdApps.Orationi.Messaging.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj">
       <Project>{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}</Project>
       <Name>KpdApps.Orationi.Messaging.Core</Name>
@@ -108,7 +113,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49417</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
