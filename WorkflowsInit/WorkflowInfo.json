@@ -1,0 +1,18 @@
+[
+	{
+	"name" : "Test", 
+	"requestCode" : 60105,
+	"workflowActions" : [
+		{
+			"description" : null,
+			"order" : 1,
+			"plugins" : [
+				{
+					"assemblyName" : "assembly",
+					"className" : "class",
+					"order" : 1,
+					"configuration" : null
+				}]
+		}]
+	}
+]
