@@ -3,7 +3,7 @@
     [Created]        DATETIME         CONSTRAINT [DF__Messages__Create__45F365D3] DEFAULT (getdate()) NOT NULL,
     [Modified]       DATETIME         CONSTRAINT [DF__Messages__Modifi__46E78A0C] DEFAULT (getdate()) NOT NULL,
     [RequestCodeId]    INT              NOT NULL,
-    [RequestBody]    XML              NOT NULL,
+    [RequestBody]    NVARCHAR(MAX)              NOT NULL,
     [RequestUser]    NVARCHAR (50)    NULL,
     [ExternalSystemId] UNIQUEIDENTIFIER            NOT NULL,
     [ResponseBody]   NVARCHAR (MAX)   NULL,
