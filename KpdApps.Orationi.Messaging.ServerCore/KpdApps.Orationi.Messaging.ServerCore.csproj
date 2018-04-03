@@ -84,7 +84,7 @@
     </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
       <Project>{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}</Project>
-      <Name>KpdApps.Orationi.Messaging.DataAccess.EF</Name>
+      <Name>KpdApps.Orationi.Messaging.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj">
       <Project>{523ee427-c005-4846-ac19-58bdd5fdd26b}</Project>
