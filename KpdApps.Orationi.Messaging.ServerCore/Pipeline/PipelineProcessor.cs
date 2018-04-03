@@ -112,6 +112,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             catch (Exception ex)
             {
                 SetStatusCode(PipelineStatusCodes.Error);
+                throw;
             }
         }
 

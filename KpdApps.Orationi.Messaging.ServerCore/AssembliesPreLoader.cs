@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Text.RegularExpressions;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 
@@ -8,7 +9,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 {
     public static class AssembliesPreLoader
     {
-        const string AssembliesTempFolderName = "tmp";
+        private const string AssembliesTempFolderName = "Plugins";
+        private static readonly Regex AssembliesNamingTemplate = new Regex("^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}-\\d+\\.dll$");
 
         public static void Execute()
         {
@@ -25,14 +27,17 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               }
                              ).Distinct().ToList();
 
-            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
+            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
 
             if (Directory.Exists(tmpAssembliesPath))
             {
                 DirectoryInfo di = new DirectoryInfo(tmpAssembliesPath);
                 foreach (FileInfo file in di.GetFiles())
                 {
-                    file.Delete();
+                    if (AssembliesNamingTemplate.IsMatch(file.Name))
+                    {
+                        file.Delete();
+                    }
                 }
             }
             else
@@ -65,7 +70,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               }
                              ).ToList().Distinct();
 
-            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
+            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
             Directory.CreateDirectory(tmpAssembliesPath);
             foreach (var assembly in assemblies)
             {
