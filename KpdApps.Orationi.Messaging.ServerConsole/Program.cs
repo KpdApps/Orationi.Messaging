@@ -1,5 +1,7 @@
-﻿using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
+﻿using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
 using System;
+using System.Collections.Generic;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
 {
@@ -7,17 +9,23 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     {
         static void Main(string[] args)
         {
-            //TODO: Проверить как себя ведет Env для обычного .NET Framework
-            //Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            ProcessHostManager processHostManager = new ProcessHostManager("vm-co-crmt-01.exiar.ru", "orationi", "orationi");
+            List<(int RequestCode, bool IsSync)> plugins = plugins = new List<(int RequestCode, bool IsSync)>();
 
-            ProcessHostManager phm = new ProcessHostManager("localhost", "orationi", "orationi");
+            using (var dbContext = new OrationiDatabaseContext())
+            {
+                foreach (var requestCode in dbContext.RequestCodes)
+                {
+                    plugins.AddRange(new[] { (requestCode.Id, true), (requestCode.Id, false) });
+                }
+            }
 
-            phm.Add(60105, false);
+            plugins.ForEach(p => processHostManager.Add(p.RequestCode, p.IsSync));
             Console.WriteLine(" Press [enter] to stop.");
             Console.ReadLine();
 
             //TODO: разобраться почему после нажатия Enter не происходит завершения работы хост менеджера
-            phm.Remove(60105, false);
+            plugins.ForEach(p => processHostManager.Remove(p.RequestCode, p.IsSync));
             Console.WriteLine(" Press [enter] to exit.");
             Console.ReadLine();
         }
