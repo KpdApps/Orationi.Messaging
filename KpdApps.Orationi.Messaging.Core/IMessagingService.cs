@@ -1,8 +1,8 @@
-﻿using KpdApps.Orationi.Messaging.Models;
+﻿using KpdApps.Orationi.Messaging.Common.Models;
 using System;
 using System.ServiceModel;
 
-namespace KpdApps.Orationi.Messaging
+namespace KpdApps.Orationi.Messaging.Core
 {
     [ServiceContract]
     public interface IMessagingService

@@ -1,11 +1,11 @@
-﻿using KpdApps.Orationi.Messaging.Core.Models;
-using KpdApps.Orationi.Messaging.ServerCore.Workflow;
+﻿using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using KpdApps.Orationi.Messaging.Common.Models;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
@@ -27,7 +27,12 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: QueueCode, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(
+                queue: QueueCode, 
+                durable: true,
+                exclusive: false, 
+                autoDelete: false, 
+                arguments: null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
             channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);

@@ -1,7 +1,7 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
@@ -19,7 +19,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
         {
             MessageId = message.Id;
 
-            RequestCode = message.RequestCode;
+            RequestCode = message.RequestCodeId;
 
             MessageBody = message.RequestBody;
 

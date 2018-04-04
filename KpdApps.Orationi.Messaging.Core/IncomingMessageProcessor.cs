@@ -1,23 +1,21 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.Models;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using System.Web;
+using KpdApps.Orationi.Messaging.Common.Models;
+using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
     public class IncomingMessageProcessor
     {
-        private readonly OrationiMessagingContext _dbContext;
-        private readonly HttpContext _httpContext;
+        private readonly OrationiDatabaseContext _dbContext;
+        private readonly ExternalSystem _externalSystem;
 
-        public IncomingMessageProcessor(OrationiMessagingContext dbContext, HttpContext httpContext)
+        public IncomingMessageProcessor(OrationiDatabaseContext dbContext, ExternalSystem externalSystem)
         {
             _dbContext = dbContext;
-            _httpContext = httpContext;
+            _externalSystem = externalSystem;
         }
 
         public Response Execute(Request request)
@@ -26,24 +24,21 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 Response response = new Response();
 
-                if (!_httpContext.IsAuthorized(_dbContext, request.Code, response, out var externalSystem))
-                    return response;
-
                 SetRequestCode(request);
                 Message message = new Message
                 {
                     RequestBody = request.Body,
-                    RequestCode = request.Code,
-                    ExternalSystemId = externalSystem.ExternalSystemId,
+                    RequestCodeId = request.Code,
+                    ExternalSystemId = _externalSystem.Id,
                     RequestUser = request.UserName,
                     IsSyncRequest = true
                 };
 
-                _dbContext.Messages.Attach(message);
+                _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.Code, true);
-                client.Execute(message.RequestCode, message.Id);
+                client.Execute(message.RequestCodeId, message.Id);
 
                 message = _dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
 
@@ -72,7 +67,6 @@ namespace KpdApps.Orationi.Messaging.Core
 
             if (message is null)
             {
-                _httpContext.Response.StatusCode = 400;
                 response.Id = requestId;
                 response.IsError = true;
                 response.Error = $"Request {requestId} not found";
@@ -80,37 +74,30 @@ namespace KpdApps.Orationi.Messaging.Core
             }
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            //TODO: Вот действительно страннно, что система однозначно не может знать, что за RequestCode  будет по запрашиваемому идентификатору, будет нежданчик
-            return !_httpContext.IsAuthorized(_dbContext, message.RequestCode, response, out var externalSystem)
-                ? response
-                : new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
+            return new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
         }
 
         public ResponseId ExecuteAsync(Request request)
         {
             try
             {
-                ResponseId response = new ResponseId();
-
-                if (!_httpContext.IsAuthorized(_dbContext, request.Code, response, out var externalSystem))
-                    return response;
                 SetRequestCode(request);
                 Message message = new Message
                 {
                     RequestBody = request.Body,
-                    RequestCode = request.Code,
-                    ExternalSystemId = externalSystem.ExternalSystemId,
+                    RequestCodeId = request.Code,
+                    ExternalSystemId = _externalSystem.Id,
                     RequestUser = request.UserName,
                     IsSyncRequest = false
                 };
 
-                _dbContext.Messages.Attach(message);
+                _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient(request.Code, false);
-                client.PullMessage(message.RequestCode, message.Id);
+                client.PullMessage(message.RequestCodeId, message.Id);
 
-                response = new ResponseId();
+                ResponseId response = new ResponseId();
                 response.Id = message.Id;
 
                 return response;

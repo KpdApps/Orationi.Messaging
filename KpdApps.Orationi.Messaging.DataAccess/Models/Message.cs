@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
@@ -7,19 +8,18 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
     {
         public Guid Id { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public Nullable<DateTime> Created { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public Nullable<DateTime> Modified { get; set; }
 
-        public int RequestCode { get; set; }
+        [ForeignKey("RequestCode")]
+        public int RequestCodeId { get; set; }
 
-        [Column(TypeName = "xml not null")]
         public string RequestBody { get; set; }
 
         public string RequestUser { get; set; }
 
+        [ForeignKey("ExternalSystem")]
         public Guid ExternalSystemId { get; set; }
 
         public string ResponseBody { get; set; }
@@ -28,7 +28,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string ResponseSystem { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int StatusCode { get; set; }
 
         public Nullable<int> ErrorCode { get; set; }
@@ -37,7 +36,12 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public bool IsSyncRequest { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int AttemptCount { get; set; }
+
+        public virtual RequestCode RequestCode { get; set; }
+
+        public virtual ExternalSystem ExternalSystem { get; set; }
+
+        public virtual MessageStatusCode MessageStatusCode { get; set; }
     }
 }

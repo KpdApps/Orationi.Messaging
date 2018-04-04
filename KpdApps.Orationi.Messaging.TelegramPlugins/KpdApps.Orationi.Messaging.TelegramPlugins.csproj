@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\10.0.1\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>

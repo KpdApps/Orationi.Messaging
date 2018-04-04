@@ -1,78 +1,114 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
-using KpdApps.Orationi.Messaging.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
 {
-    [Route("api/rest/[controller]")]
-    public class MessagingController : Controller, IMessagingService
+    [RoutePrefix("api/rest/messaging")]
+    public class MessagingController : ApiController, IMessagingService
     {
-        OrationiMessagingContext _dbContext;
+        private OrationiDatabaseContext _dbContext;
 
-        public MessagingController(OrationiMessagingContext dbContext)
+        public MessagingController()
         {
-            _dbContext = dbContext;
+            _dbContext = new OrationiDatabaseContext();
         }
 
-        [HttpGet("version")]
+        [HttpGet]
+        [Route("version")]
         public string GetVersion()
         {
             return "v.1.0";
         }
 
-        [HttpGet("{requestId}")]
-        public Response GetResponse(Guid requestId)
+        [HttpGet]
+        [Route("{requestId}")]
+        public Common.Models.Response GetResponse(Guid requestId)
         {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
-            Response response = imp.GetResponse(requestId);
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                GetTokenValue(),
+                requestId,
+                out Common.Models.Response response,
+                out var externalSystem))
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetResponse(requestId);
+            return response;
+            
+        }
+
+        [HttpGet]
+        [Route("status/{requestId}")]
+        public Common.Models.Response GetStatus(Guid requestId)
+        {
+            throw new NotImplementedException();
+        }
+        
+        [HttpPost]
+        [Route("sync")]
+        public Common.Models.Response ExecuteRequest([FromBody]Common.Models.Request request)
+        {
+            if (!AuthorizeHelpers.IsAuthorized(
+                _dbContext,
+                GetTokenValue(),
+                request.Code,
+                out Common.Models.Response response,
+                out var externalSystem))
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.Execute(request);
+            return response;
+
+        }
+
+        [HttpPost]
+        [Route("async")]
+        public Common.Models.ResponseId ExecuteRequestAsync([FromBody]Common.Models.Request request)
+        {
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                GetTokenValue(),
+                request.Code,
+                out Common.Models.ResponseId response,
+                out var externalSystem))
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteAsync(request);
             return response;
         }
 
-        [HttpGet("status/{requestId}")]
-        public Response GetStatus(Guid requestId)
+        [HttpPost]
+        [Route("request")]
+        public Common.Models.ResponseId SendRequest([FromBody]Common.Models.Request request)
         {
             throw new NotImplementedException();
         }
 
-        [HttpPost("sync")]
-        public Response ExecuteRequest([FromBody]Request request)
-        {
-            // Отдаем запрос в процессор, дальше он сам
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
-            Response response = imp.Execute(request);
-            return response;
-        }
-
-        [HttpPost("async")]
-        public ResponseId ExecuteRequestAsync([FromBody]Request request)
-        {
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, HttpContext);
-            ResponseId response = imp.ExecuteAsync(request);
-            return response;
-        }
-
-        [HttpPost("request")]
-        public ResponseId SendRequest([FromBody]Request request)
+        [HttpGet]
+        [Route("xsd/{requestCode}")]
+        public Common.Models.Response GetXsd(int requestCode)
         {
             throw new NotImplementedException();
         }
 
-        [HttpGet("xsd/{requestCode}")]
-        public Response GetXsd(int requestCode)
+        [NonAction]
+        private string GetTokenValue()
         {
-            var response = new Response();
-            if (!HttpContext.IsAuthorized(_dbContext, requestCode, response, out var externalSystem))
-                return response;
-
-            response.Body = "test";
-
-            return response;
+            return Request.Headers.GetValues("Token").FirstOrDefault();
         }
     }
 }
