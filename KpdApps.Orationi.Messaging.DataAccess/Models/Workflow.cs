@@ -23,5 +23,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public virtual RequestCode RequestCode { get; set; }
 
         public virtual List<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
+
+        public virtual List<WorkflowAction> WorkflowActions { get; set; }
     }
 }

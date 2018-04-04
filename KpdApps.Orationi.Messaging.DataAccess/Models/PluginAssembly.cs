@@ -9,7 +9,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public PluginAssembly()
         {
             RegisteredPlugins = new List<RegisteredPlugin>();
-            PluginActionSetItems = new List<PluginActionSetItem>();
         }
 
         [Key]
@@ -22,7 +21,5 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public DateTime Modified { get; set; }
 
         public virtual List<RegisteredPlugin> RegisteredPlugins { get; set; }
-
-        public virtual List<PluginActionSetItem> PluginActionSetItems { get; set; }
     }
 }
