@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\Plugin.cs" />
+    <Compile Include="Infrastructure\RequestCode.cs" />
     <Compile Include="Infrastructure\WorkflowAction.cs" />
     <Compile Include="Infrastructure\WorkflowInfo.cs" />
     <Compile Include="Program.cs" />
@@ -63,6 +64,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="WorkflowInfo.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">

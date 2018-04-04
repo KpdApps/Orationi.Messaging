@@ -1,18 +1,31 @@
 [
 	{
-	"name" : "Test", 
-	"requestCode" : 60105,
+	"name" : "Test",
+    "requestCode": {
+      "code": 60106,
+      "name": "Test request",
+      "description": null,
+      "needNotification" : false
+    },
 	"workflowActions" : [
-		{
-			"description" : null,
-			"order" : 1,
-			"plugins" : [
-				{
-					"assemblyName" : "assembly",
-					"className" : "class",
-					"order" : 1,
-					"configuration" : null
-				}]
-		}]
+    {
+      "name" :  "WorkflowAction", 
+      "description": null,
+      "order": 1,
+      "plugins": [
+        {
+          "assemblyName": "Rec.Orationi.Plugins",
+          "className": "MyClass1",
+          "order": 1,
+          "configuration": null
+        },
+        {
+          "assemblyName": "Rec.Orationi.Plugins",
+          "className": "MyClass2",
+          "order": 2,
+          "configuration": null
+        }
+      ]
+    }]
 	}
 ]
