@@ -11,20 +11,32 @@ namespace KpdApps.Orationi.Service.PluginHost
     {
         public static readonly ILog log = LogManager.GetLogger(typeof(PluginHost));
         private readonly ProcessHostManager processHostManager;
-        private readonly List<(int RequestCode, bool IsSync)> plugins;
+        private readonly List<Plugin> plugins;
 
         public PluginHost()
         {
             InitializeComponent();
             XmlConfigurator.Configure();
             processHostManager = new ProcessHostManager("localhost", "orationi", "orationi");
-            plugins = new List<(int RequestCode, bool IsSync)>();
+            plugins = new List<Plugin>();
 
             using (var dbContext = new OrationiDatabaseContext())
             {
                 foreach (var requestCode in dbContext.RequestCodes)
                 {
-                    plugins.AddRange(new [] {(requestCode.Id, true), (requestCode.Id, false)});
+                    plugins.AddRange(new[] {
+                        new Plugin
+                        {
+                            RequestCode = requestCode.Id,
+                            IsSync = true
+                        }
+                        , new Plugin
+                        {
+                            RequestCode = requestCode.Id,
+                            IsSync = false
+                        }
+
+                    });
                 }
             }
         }
