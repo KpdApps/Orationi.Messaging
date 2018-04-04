@@ -17,7 +17,7 @@ namespace WorkflowsInit
         {
             var workflowInfoPath = "WorkflowInfo.json";
 
-            var workflowInfoJson = File.ReadAllText(workflowInfoPath);
+            var workflowInfoJson = File.ReadAllText(workflowInfoPath, Encoding.UTF8);
 
             var serializer = Newtonsoft.Json.JsonSerializer.Create();
             var workflowInfos = serializer.Deserialize<List<WorkflowInfo>>(new JsonTextReader(new StringReader(workflowInfoJson)));
@@ -29,7 +29,7 @@ namespace WorkflowsInit
             catch (Exception e)
             {
                 Console.WriteLine("Что-то пошло не так.");
-                Console.WriteLine($"Exception — {e.Message}{(e.InnerException is null ? "" : $", {e.Message}")}");
+                Console.WriteLine($"Exception — {e.Message}{(e.InnerException is null ? "" : $", {e.InnerException.Message}")}");
                 Console.WriteLine($"StackTrace — {e.StackTrace}");
             }
             
@@ -71,7 +71,7 @@ namespace WorkflowsInit
 
                         if (requestCode is null)
                         {
-                            Console.WriteLine($"Создание RequestCode — {workflowInfo.RequestCode}.");
+                            Console.WriteLine($"Создание RequestCode — {workflowInfo.RequestCode.Id}.");
 
                             requestCode = new KpdApps.Orationi.Messaging.DataAccess.Models.RequestCode
                             {
@@ -109,9 +109,9 @@ namespace WorkflowsInit
                     {
                         Console.WriteLine($"Проверка WorkFlowAction с порядковым номером — {workflowActionInfo.Order}: ");
 
-                        var workflowAction = workflow
+                        var workflowAction = dbContext
                             .WorkflowActions
-                            .FirstOrDefault(wfa => wfa.Order == workflowActionInfo.Order);
+                            .FirstOrDefault(wa => wa.Order == workflowActionInfo.Order && wa.WorkflowId == workflow.Id);
 
                         if (workflowAction is null)
                         {
@@ -125,7 +125,7 @@ namespace WorkflowsInit
                             {
                                 WorkflowId = workflow.Id,
                                 PluginActionSet = pluginActionSet,
-                                Description = $"{workflowActionInfo.Name}WorkFlow",
+                                Description = workflowActionInfo.Description ?? $"{workflowActionInfo.Name}Workflow",
                                 Order = workflowActionInfo.Order
                             };
 
