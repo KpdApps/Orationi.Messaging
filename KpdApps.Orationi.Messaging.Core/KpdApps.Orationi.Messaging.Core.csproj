@@ -48,6 +48,7 @@
     <Reference Include="System" />
     <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.ServiceModel" />
@@ -61,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizeHelpers.cs" />
+    <Compile Include="Configurations\Rabbitmq\RabbitmqConfigurationSection.cs" />
     <Compile Include="IMessagingService.cs" />
     <Compile Include="IncomingMessageProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
