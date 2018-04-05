@@ -7,5 +7,10 @@ namespace KpdApps.Orationi.Messaging.Common.Models
     {
         [DataMember]
         public string Body { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()},\r\n\"Body\" : \"{Body}\"";
+        }
     }
 }

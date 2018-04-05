@@ -73,7 +73,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 queue: _replyQueueName,
                 autoAck: true);
 
-            return _respQueue.Take(); ;
+            return _respQueue.Take();
         }
 
         public void PullMessage(int requestCode, Guid messageId)

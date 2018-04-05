@@ -16,5 +16,10 @@ namespace KpdApps.Orationi.Messaging.Common.Models
 
         [DataMember]
         public string UserName { get; set; }
+
+        public override string ToString()
+        {
+            return $"\"Code\" : \"{Code}\",\r\n\"Type\" : \"{Type}\",\r\n\"Body\" : \"{Body}\",\r\n\"UserName\" : \"{UserName}\"";
+        }
     }
 }

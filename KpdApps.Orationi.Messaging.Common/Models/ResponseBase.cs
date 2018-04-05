@@ -9,5 +9,10 @@ namespace KpdApps.Orationi.Messaging.Common.Models
         public bool IsError { get; set; }
         [DataMember]
         public string Error { get; set; }
+
+        public override string ToString()
+        {
+            return $"\"IsError\" : \"{IsError}\",\r\n\"Error\" : \"{Error}\"";
+        }
     }
 }

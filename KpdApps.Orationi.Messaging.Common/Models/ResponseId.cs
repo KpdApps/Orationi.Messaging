@@ -8,5 +8,10 @@ namespace KpdApps.Orationi.Messaging.Common.Models
     {
         [DataMember]
         public Guid Id { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()},\r\n\"Id\" : \"{Id}\"";
+        }
     }
 }
