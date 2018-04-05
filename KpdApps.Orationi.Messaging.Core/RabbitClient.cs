@@ -28,7 +28,7 @@ namespace KpdApps.Orationi.Messaging.Core
             var rabbitmqCongig = RabbitmqConfigurationSection.GetConfiguration();
             _hostName = rabbitmqCongig.HostName;
             _userName = rabbitmqCongig.UserName;
-            _userName = rabbitmqCongig.Password;
+            _password = rabbitmqCongig.Password;
 
             var factory = new ConnectionFactory() { HostName = _hostName, UserName = _userName, Password = _password };
 
