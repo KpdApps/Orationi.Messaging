@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Text;
 using KpdApps.Orationi.Messaging.Common.Models;
+using KpdApps.Orationi.Messaging.Core.Configurations.Rabbitmq;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -16,14 +17,20 @@ namespace KpdApps.Orationi.Messaging.Core
         private readonly EventingBasicConsumer _consumer;
         private readonly BlockingCollection<string> _respQueue = new BlockingCollection<string>();
         private readonly IBasicProperties _props;
+        private readonly string _hostName;
+        private readonly string _userName;
+        private readonly string _password;
 
-        private bool _isSynchronous;
 
-        public RabbitClient(int requestCode, bool isSynchronous)
+        public RabbitClient()
         {
-            _isSynchronous = isSynchronous;
 
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "orationi", Password = "orationi" };
+            var rabbitmqCongig = RabbitmqConfigurationSection.GetConfiguration();
+            _hostName = rabbitmqCongig.HostName;
+            _userName = rabbitmqCongig.UserName;
+            _userName = rabbitmqCongig.Password;
+
+            var factory = new ConnectionFactory() { HostName = _hostName, UserName = _userName, Password = _password };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
@@ -78,7 +85,7 @@ namespace KpdApps.Orationi.Messaging.Core
 
         public void PullMessage(int requestCode, Guid messageId)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "orationi", Password = "orationi" };
+            var factory = new ConnectionFactory() { HostName = _hostName, UserName = _userName, Password = _password };
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())

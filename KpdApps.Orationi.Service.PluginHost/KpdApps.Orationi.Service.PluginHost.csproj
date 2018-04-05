@@ -60,6 +60,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -85,6 +86,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj">
+      <Project>{db7f7a03-92bf-4c73-b8d3-02b49cde97ca}</Project>
+      <Name>KpdApps.Orationi.Messaging.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
       <Project>{312dd07c-f632-4dbf-9153-aa6e9dbebbc7}</Project>
       <Name>KpdApps.Orationi.Messaging.DataAccess</Name>

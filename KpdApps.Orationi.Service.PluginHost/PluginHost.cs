@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ServiceProcess;
+using KpdApps.Orationi.Messaging.Core.Configurations.Rabbitmq;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
 using log4net;
@@ -17,7 +18,8 @@ namespace KpdApps.Orationi.Service.PluginHost
         {
             InitializeComponent();
             XmlConfigurator.Configure();
-            processHostManager = new ProcessHostManager("localhost", "orationi", "orationi");
+            var rabbitmqConfig = RabbitmqConfigurationSection.GetConfiguration();
+            processHostManager = new ProcessHostManager(rabbitmqConfig.HostName, rabbitmqConfig.UserName, rabbitmqConfig.Password);
             plugins = new List<Plugin>();
 
             using (var dbContext = new OrationiDatabaseContext())
