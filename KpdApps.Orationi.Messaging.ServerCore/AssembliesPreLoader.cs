@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
@@ -11,6 +12,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
     {
         private const string AssembliesTempFolderName = "Plugins";
         private static readonly Regex AssembliesNamingTemplate = new Regex("^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}-\\d+\\.dll$");
+        private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public static void Execute()
         {
@@ -27,7 +29,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               }
                              ).Distinct().ToList();
 
-            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
+            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
 
             if (Directory.Exists(tmpAssembliesPath))
             {
@@ -70,7 +72,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                               }
                              ).ToList().Distinct();
 
-            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
+            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
             Directory.CreateDirectory(tmpAssembliesPath);
             foreach (var assembly in assemblies)
             {
@@ -85,7 +87,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 
         internal static string WarmupAssembly(PipelineStepDescription stepDescription)
         {
-            string tmpAssembliesPath = Path.Combine(Directory.GetCurrentDirectory(), AssembliesTempFolderName);
+            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
             long unixTimeSec = ((DateTimeOffset)stepDescription.Modified).ToUnixTimeSeconds();
             string assemblyName = Path.Combine(tmpAssembliesPath, $"{stepDescription.AssemblyId}-{unixTimeSec}.dll");
 
