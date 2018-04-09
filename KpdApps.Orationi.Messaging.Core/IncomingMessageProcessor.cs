@@ -33,17 +33,13 @@ namespace KpdApps.Orationi.Messaging.Core
                     RequestUser = request.UserName,
                     IsSyncRequest = true
                 };
-                _dbContext.Messages.AsNoTracking();
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
                 RabbitClient client = new RabbitClient();
                 client.Execute(message.RequestCodeId, message.Id);
 
-                using (var dbContext = new OrationiDatabaseContext())
-                {
-                    message = dbContext.Messages.FirstOrDefault(m => m.Id == message.Id);
-                }
+                _dbContext.Entry(message).Reload();
 
                 response = new Response
                 {
