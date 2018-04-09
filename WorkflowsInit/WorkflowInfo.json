@@ -144,22 +144,22 @@
     ]
   },
   {
-    "name": "ServiceConfirmationRequest",
+    "name": "ServiceConfirmation",
     "requestCode": {
       "code": 60107,
-      "name": "ServiceConfirmationRequest",
+      "name": "ServiceConfirmation",
       "description": "Service confirmation request (incoming)",
       "needNotification": false
     },
     "workflowActions": [
       {
-        "name": "ServiceConfirmationRequest",
+        "name": "ServiceConfirmation",
         "description": null,
         "order": 1,
         "plugins": [
           {
             "assemblyName": "Rec.Orationi.Plugins",
-            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationRequestPlugin",
+            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationPlugin",
             "order": 1,
             "configuration": null
           }
@@ -288,22 +288,22 @@
     ]
   },
   {
-    "name": "ServiceConfirmation",
+    "name": "ServiceConfirmationRequest",
     "requestCode": {
       "code": 60212,
-      "name": "ServiceConfirmation",
+      "name": "ServiceConfirmationRequest",
       "description": "Service confirmation request (outgoing)",
       "needNotification": false
     },
     "workflowActions": [
       {
-        "name": "ServiceConfirmation",
+        "name": "ServiceConfirmationRequest",
         "description": null,
         "order": 1,
         "plugins": [
           {
             "assemblyName": "Rec.Orationi.Plugins",
-            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationPlugin",
+            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationRequestPlugin",
             "order": 1,
             "configuration": null
           }
