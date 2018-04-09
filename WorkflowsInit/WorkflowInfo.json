@@ -159,7 +159,7 @@
         "plugins": [
           {
             "assemblyName": "Rec.Orationi.Plugins",
-            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationPlugin",
+            "className": "Rec.Orationi.Plugins.Plugins.Service.ServiceConfirmationRequestPlugin",
             "order": 1,
             "configuration": null
           }

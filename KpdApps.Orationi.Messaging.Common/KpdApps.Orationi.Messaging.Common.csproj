@@ -46,6 +46,7 @@
     <Compile Include="Models\Response.cs" />
     <Compile Include="Models\ResponseBase.cs" />
     <Compile Include="Models\ResponseId.cs" />
+    <Compile Include="Models\ResponseXsd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

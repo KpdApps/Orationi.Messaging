@@ -1,4 +1,7 @@
-﻿namespace KpdApps.Orationi.Messaging.Sdk.Plugins
+﻿using System.Reflection;
+using KpdApps.Orationi.Messaging.Sdk.Attributes;
+
+namespace KpdApps.Orationi.Messaging.Sdk.Plugins
 {
     public abstract class BasePipelinePlugin : IPipelinePlugin
     {
@@ -17,6 +20,8 @@
         public BasePipelinePlugin(IPipelineExecutionContext context)
         {
             Context = context;
+            RequestContractUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(RequestContractAttribute)))?.Uri;
+            ResponseContractUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(ResponseContractAttribute)))?.Uri;
         }
 
         public virtual void AfterExecution()
