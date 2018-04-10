@@ -117,49 +117,13 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
-            var request = _dbContext
-                .RequestCodes
-                .FirstOrDefault(rc => rc.Id == requestCode);
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetXsd(requestCode);
 
-            if (request is null)
+            if (response.IsError)
             {
-                response.IsError = true;
-                response.Error = $"Для requestCode = {requestCode}, отсутствует запись в БД";
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, response));
             }
-
-            var registeredPlugin = request
-                .Workflows
-                .FirstOrDefault()
-                ?.WorkflowActions
-                .OrderBy(wfa => wfa.Order)
-                .FirstOrDefault()
-                ?.PluginActionSet
-                .PluginActionSetItems
-                .OrderBy(pasi => pasi.Order)
-                .FirstOrDefault()
-                ?.RegisteredPlugin;
-
-            if (registeredPlugin is null)
-            {
-                response.IsError = true;
-                response.Error = $"Для requestCode = {requestCode}, не найден подходящий зарегистрированный плагин.{Environment.NewLine}Порядок поиска Workflows (1) — WorkflowActions (сортировка, 1) — PluginActionSet — PluginActionSetItems (сортировка, 1) — RegisteredPlugin";
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, response));
-            }
-
-            var assembly = Assembly.Load(registeredPlugin
-                .PluginAssembly
-                .Assembly);
-
-            var pluginType = assembly.GetType(registeredPlugin
-                .Class);
-
-            response.RequestContractUri =
-                ((ContractAttribute) pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
-                ?.GetXsd(assembly);
-            response.ResponseContractUri =
-                ((ContractAttribute) pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
-                ?.GetXsd(assembly);
 
             return response;
         }

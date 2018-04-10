@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace KpdApps.Orationi.Messaging.Common.Models
 {
@@ -7,14 +6,14 @@ namespace KpdApps.Orationi.Messaging.Common.Models
     public class ResponseXsd : ResponseBase
     {
         [DataMember]
-        public string RequestContractUri { get; set; }
+        public string RequestContract { get; set; }
 
         [DataMember]
-        public string ResponseContractUri { get; set; }
+        public string ResponseContract { get; set; }
 
         public override string ToString()
         {
-            return $"{base.ToString()},\r\n\"RequestContractUri\" : \"{RequestContractUri}\",\r\n\"ResponseContractUri\" : \"{ResponseContractUri}\"";
+            return $"{base.ToString()},\r\n\"RequestContract\" : \"{RequestContract}\",\r\n\"ResponseContract\" : \"{ResponseContract}\"";
         }
     }
 }

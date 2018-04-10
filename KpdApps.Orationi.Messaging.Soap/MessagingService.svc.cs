@@ -44,6 +44,7 @@ namespace KpdApps.Orationi.Messaging.Soap
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
                 return response;
             }
+
             log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.Execute(request);
@@ -68,6 +69,7 @@ namespace KpdApps.Orationi.Messaging.Soap
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
                 return response;
             }
+
             log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetResponse(requestId);
@@ -87,16 +89,17 @@ namespace KpdApps.Orationi.Messaging.Soap
             log.Debug($"Сообщение:\r\n{OperationContext.Current.RequestContext.RequestMessage}");
             log.Debug($"request:\r\n{request}");
             log.Debug($"Token: {WebOperationContext.Current.IncomingRequest.Headers["Token"]}");
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext, 
-                WebOperationContext.Current.IncomingRequest.Headers["Token"], 
-                request.Code, 
-                out ResponseId response, 
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                request.Code,
+                out ResponseId response,
                 out var externalSystem))
             {
                 log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
                 return response;
             }
+
             log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.ExecuteAsync(request);
@@ -108,6 +111,39 @@ namespace KpdApps.Orationi.Messaging.Soap
         public string GetVersion()
         {
             return "v.1.0";
+        }
+
+        public ResponseXsd GetXsd(int requestCode)
+        {
+            log.Debug("Запуск");
+            log.Debug($"Сообщение:\r\n{OperationContext.Current.RequestContext.RequestMessage}");
+            log.Debug($"requestCode: {requestCode}");
+            log.Debug($"Token: {WebOperationContext.Current.IncomingRequest.Headers["Token"]}");
+            if (!AuthorizeHelpers.IsAuthorized(
+                _dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                requestCode,
+                out ResponseXsd response,
+                out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+
+            log.Debug("Авторизация пройдена");
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetXsd(requestCode);
+            log.Debug($"Результат:\r\n{response}");
+
+            if (response.IsError)
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
+
+            log.Debug("Звершение");
+            return response;
         }
     }
 }

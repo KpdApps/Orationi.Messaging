@@ -24,5 +24,8 @@ namespace KpdApps.Orationi.Messaging.Core
 
         [OperationContract]
         ResponseId SendRequest(Request request);
+
+        [OperationContract]
+        ResponseXsd GetXsd(int requestCode);
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.Sdk.Attributes;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -121,6 +124,57 @@ namespace KpdApps.Orationi.Messaging.Core
                 }
                 request.Code = requestCodeAlias.RequestCode;
             }
+        }
+
+        public ResponseXsd GetXsd(int requestCode)
+        {
+            var response = new ResponseXsd();
+
+            var request = _dbContext
+                .RequestCodes
+                .FirstOrDefault(rc => rc.Id == requestCode);
+
+            if (request is null)
+            {
+                response.IsError = true;
+                response.Error = $"Для requestCode = {requestCode}, отсутствует запись в БД";
+                return response;
+            }
+
+            var registeredPlugin = request
+                .Workflows
+                .FirstOrDefault()
+                ?.WorkflowActions
+                .OrderBy(wfa => wfa.Order)
+                .FirstOrDefault()
+                ?.PluginActionSet
+                .PluginActionSetItems
+                .OrderBy(pasi => pasi.Order)
+                .FirstOrDefault()
+                ?.RegisteredPlugin;
+
+            if (registeredPlugin is null)
+            {
+                response.IsError = true;
+                response.Error = $"Для requestCode = {requestCode}, не найден подходящий зарегистрированный плагин.{Environment.NewLine}Порядок поиска Workflows (1) — WorkflowActions (сортировка, 1) — PluginActionSet — PluginActionSetItems (сортировка, 1) — RegisteredPlugin";
+                return response;
+            }
+
+            var assembly = Assembly.Load(registeredPlugin
+                .PluginAssembly
+                .Assembly);
+
+            var pluginType = assembly.GetType(registeredPlugin
+                .Class);
+
+            response.RequestContract =
+                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
+                ?.GetXsd(assembly);
+            response.ResponseContract =
+                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+                ?.GetXsd(assembly);
+
+            return response;
         }
     }
 }
