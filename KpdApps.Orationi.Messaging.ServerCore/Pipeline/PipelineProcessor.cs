@@ -114,6 +114,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
             catch (Exception ex)
             {
+                log.Error($"Exception message:\r\n{ex.Message}");
+                log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
+                    log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
+                }
                 SetStatusCode(PipelineStatusCodes.Error);
                 throw;
             }
