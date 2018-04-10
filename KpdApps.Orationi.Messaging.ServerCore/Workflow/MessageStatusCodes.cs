@@ -1,4 +1,7 @@
-﻿namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("KpdApps.Orationi.Tests")]
+namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 {
     public enum MessageStatusCodes
     {

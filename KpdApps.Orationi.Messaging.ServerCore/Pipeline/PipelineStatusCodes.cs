@@ -1,4 +1,7 @@
-﻿namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("KpdApps.Orationi.Tests")]
+namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     internal enum PipelineStatusCodes
     {
