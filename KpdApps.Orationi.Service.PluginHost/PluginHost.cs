@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.ServiceProcess;
 using KpdApps.Orationi.Messaging.Core.Configurations.Rabbitmq;
 using KpdApps.Orationi.Messaging.DataAccess;
@@ -16,8 +17,10 @@ namespace KpdApps.Orationi.Service.PluginHost
 
         public PluginHost()
         {
-            InitializeComponent();
             XmlConfigurator.Configure();
+            var sopWatch = Stopwatch.StartNew();
+            log.Debug("Инициализация...");
+            InitializeComponent();
             var rabbitmqConfig = RabbitmqConfigurationSection.GetConfiguration();
             processHostManager = new ProcessHostManager(rabbitmqConfig.HostName, rabbitmqConfig.UserName, rabbitmqConfig.Password);
             plugins = new List<Plugin>();
@@ -26,6 +29,7 @@ namespace KpdApps.Orationi.Service.PluginHost
             {
                 foreach (var requestCode in dbContext.RequestCodes)
                 {
+                    log.Debug($"Загрузка синхронного/асинхронного обработчиков для кода запроса \"{requestCode.Id}\"");
                     plugins.AddRange(new[] {
                         new Plugin
                         {
@@ -41,18 +45,28 @@ namespace KpdApps.Orationi.Service.PluginHost
                     });
                 }
             }
+            sopWatch.Stop();
+            log.Debug($"Инициализация выполнилась за {sopWatch.Elapsed.TotalSeconds} секунд");
         }
 
         protected override void OnStart(string[] args)
         {
-            plugins.ForEach(p => processHostManager.Add(p.RequestCode, p.IsSync));
-            log.Info("Service started");
+            plugins.ForEach(p =>
+            {
+                log.Debug($"Запуск {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
+                processHostManager.Add(p.RequestCode, p.IsSync);
+            });
+            log.Info("Служба запущена");
         }
 
         protected override void OnStop()
         {
-            plugins.ForEach(p => processHostManager.Remove(p.RequestCode, p.IsSync));
-            log.Info("Service stopped");
+            plugins.ForEach(p =>
+            {
+                log.Debug($"Остановка {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
+                processHostManager.Remove(p.RequestCode, p.IsSync);
+            });
+            log.Info("Служба остановлена");
         }
     }
 }
