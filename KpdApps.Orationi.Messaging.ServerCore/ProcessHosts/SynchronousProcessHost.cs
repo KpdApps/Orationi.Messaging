@@ -6,11 +6,14 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common.Models;
+using log4net;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
     public class SynchronousProcessHost : ProcessHostBase, IProcessHost
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(SynchronousProcessHost));
+
         public override bool IsSynchronous => true;
 
         public override string QueueCode => $"queue-{RequestCode}-{Convert.ToInt32(IsSynchronous)}";
@@ -36,12 +39,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
             channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
-            Console.WriteLine($"{QueueCode} [x] Awaiting sync requests");
+            log.Debug($"{QueueCode} [x] Ожидание синхронного запроса...");
             consumer.Received += Consumer_Received;
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs ea)
         {
+            log.Debug($"Получено сообщение от {ea.RoutingKey}");
             Task.Run(() =>
             {
                 string response = null;
@@ -54,6 +58,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                 try
                 {
                     var message = Encoding.UTF8.GetString(body);
+                    log.Debug($"Тело:\r\n{message}");
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
                     using (WorkflowProcessor processor =
@@ -62,12 +67,12 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                         processor.Run();
                     }
 
-                    Console.WriteLine($" [{QueueCode}] ({message})");
+                    log.Debug($" [{QueueCode}] ({message})");
                     response = JsonConvert.SerializeObject("Success");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($" [{QueueCode}] " + e.Message);
+                    log.Error($" [{QueueCode}] " + e.Message);
                     response = JsonConvert.SerializeObject("Error");
                 }
                 finally

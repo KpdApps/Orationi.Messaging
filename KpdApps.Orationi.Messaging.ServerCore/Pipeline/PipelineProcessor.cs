@@ -6,12 +6,15 @@ using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk;
 using KpdApps.Orationi.Messaging.Sdk.Plugins;
+using log4net;
 using Newtonsoft.Json;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     public class PipelineProcessor : IDisposable
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(PipelineProcessor));
+
         private Guid _workflowId;
         private Guid _messageId;
         private int _requestCode;
@@ -126,13 +129,23 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         {
             try
             {
+                log.Debug($"Инстанцирование типа — {type.FullName}");
+                log.Debug($"Рабочий каталог домена приложения: {AppDomain.CurrentDomain.BaseDirectory}");
                 IPipelinePlugin plugin = (IPipelinePlugin)Activator.CreateInstance(type, _pipelineExecutionContext);
+                log.Debug($"Инстанцирование типа — {type.FullName} завершено!");
                 plugin.BeforeExecution();
                 plugin.Execute();
                 plugin.AfterExecution();
             }
             catch (Exception ex)
             {
+                log.Error($"Exception message:\r\n{ex.Message}");
+                log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
+                    log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
+                }
                 //TODO: Change to workflow paradigm
                 ProcessingError pe = new ProcessingError
                 {

@@ -6,11 +6,14 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common.Models;
+using log4net;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
 {
     public class AsynchronousProcessHost : ProcessHostBase, IProcessHost
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(AsynchronousProcessHost));
+
         public override bool IsSynchronous => false;
 
         public override string QueueCode => $"queue-{RequestCode}-{Convert.ToInt32(IsSynchronous)}";
@@ -45,13 +48,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                 queue: QueueCode, 
                 autoAck: false,
                 consumer: consumer);
-            Console.WriteLine($"{QueueCode} [x] Awaiting async requests");
+            log.Debug($"{QueueCode} [x] Ожидание асинхронного запроса...");
             
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs ea)
         {
-            Console.WriteLine($"Received message from {ea.RoutingKey}");
+            log.Debug($"Получено сообщение от {ea.RoutingKey}");
             Task.Run(() =>
             {
                 var body = ea.Body;
@@ -62,17 +65,18 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                 try
                 {
                     var message = Encoding.UTF8.GetString(body);
+                    log.Debug($"Тело:\r\n{message}");
                     RabbitRequest rabbitRequest = JsonConvert.DeserializeObject<RabbitRequest>(message);
 
                     WorkflowProcessor processor = new WorkflowProcessor(rabbitRequest.MessageId, rabbitRequest.RequestCode);
                     processor.Run();
 
-                    Console.WriteLine($" [{QueueCode}] ({message})");
+                    log.Debug($" [{QueueCode}] ({message})");
                     rabbitRequest.RequestCode++;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($" [{QueueCode}] " + e.Message);
+                    log.Error($" [{QueueCode}] " + e.Message);
                 }
                 finally
                 {
