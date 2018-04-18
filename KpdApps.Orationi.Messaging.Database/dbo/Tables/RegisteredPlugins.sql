@@ -3,6 +3,6 @@
     [AssemblyId] UNIQUEIDENTIFIER NOT NULL,
     [Class]      NVARCHAR (250)   NOT NULL,
     CONSTRAINT [PK_PipelineSteps] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_PipelineSteps_PipelineAssemblies] FOREIGN KEY ([AssemblyId]) REFERENCES [dbo].[PluginAssemblies] ([Id]) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT [FK_PipelineSteps_PipelineAssemblies] FOREIGN KEY ([AssemblyId]) REFERENCES [dbo].[PluginAssemblies] ([Id])
 );
 

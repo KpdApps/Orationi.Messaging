@@ -3,7 +3,7 @@
     [Name]          NVARCHAR (128)   NOT NULL,
     [RequestCodeId] INT              NOT NULL,
     CONSTRAINT [PK_Workflows] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Workflows_RequestCodes] FOREIGN KEY ([RequestCodeId]) REFERENCES [dbo].[RequestCodes] ([Id]) ON DELETE CASCADE ON UPDATE CASCADE, 
+    CONSTRAINT [FK_Workflows_RequestCodes] FOREIGN KEY ([RequestCodeId]) REFERENCES [dbo].[RequestCodes] ([Id]), 
     CONSTRAINT [AK_Workflows_RequestCodeId] UNIQUE ([RequestCodeId])
 );
 
