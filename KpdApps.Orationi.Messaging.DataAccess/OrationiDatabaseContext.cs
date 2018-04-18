@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 using KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -48,7 +47,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<WorkflowExecutionStepsStatusCode> WorkflowExecutionStepsStatusCodes { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		public DbSet<FileStore> FileStores { get; set; }
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -67,6 +68,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Configurations.Add(new WorkflowActionTypeConfiguration());
             modelBuilder.Configurations.Add(new WorkflowExecutionStepTypeConfiguration());
             modelBuilder.Configurations.Add(new WorkflowExecutionStepsStatusCodeTypeConfiguration());
+			modelBuilder.Configurations.Add(new FileStoreTypeConfiguration());
         }
 
         private void AddConfiguration<TConfiguration, TEntity>(DbModelBuilder modelBuilder)

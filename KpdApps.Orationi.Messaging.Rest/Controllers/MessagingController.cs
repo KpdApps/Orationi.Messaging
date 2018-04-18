@@ -36,7 +36,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpGet]
         [Route("{requestId}")]
-        public Common.Models.Response GetResponse(Guid requestId)
+        public Response GetResponse(Guid requestId)
         {
             if (!AuthorizeHelpers.IsAuthorized(_dbContext,
                 GetTokenValue(),
@@ -54,14 +54,14 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpGet]
         [Route("status/{requestId}")]
-        public Common.Models.Response GetStatus(Guid requestId)
+        public Response GetStatus(Guid requestId)
         {
             throw new NotImplementedException();
         }
 
         [HttpPost]
         [Route("sync")]
-        public Common.Models.Response ExecuteRequest([FromBody]Common.Models.Request request)
+        public Response ExecuteRequest([FromBody]Common.Models.Request request)
         {
             if (!AuthorizeHelpers.IsAuthorized(
                 _dbContext,
@@ -80,7 +80,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("async")]
-        public Common.Models.ResponseId ExecuteRequestAsync([FromBody]Common.Models.Request request)
+        public ResponseId ExecuteRequestAsync([FromBody]Common.Models.Request request)
         {
             if (!AuthorizeHelpers.IsAuthorized(_dbContext,
                 GetTokenValue(),
@@ -98,14 +98,14 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("request")]
-        public Common.Models.ResponseId SendRequest([FromBody]Common.Models.Request request)
+        public ResponseId SendRequest([FromBody]Common.Models.Request request)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
         [Route("xsd/{requestCode}")]
-        public Common.Models.ResponseXsd GetXsd(int requestCode)
+        public ResponseXsd GetXsd(int requestCode)
         {
             if (!AuthorizeHelpers.IsAuthorized(
                 _dbContext,
@@ -127,6 +127,14 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
             return response;
         }
+
+		[HttpPost]
+		[Route("file/upload")]
+		public Response FileUpload()
+		{
+			// TODO: написать получение файла тут
+			throw new NotImplementedException();
+		}
 
         [NonAction]
         private string GetTokenValue()

@@ -145,5 +145,10 @@ namespace KpdApps.Orationi.Messaging.Soap
             log.Debug("Звершение");
             return response;
         }
-    }
+
+		public Response FileUpload()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

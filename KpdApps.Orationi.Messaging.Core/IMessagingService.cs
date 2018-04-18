@@ -27,5 +27,8 @@ namespace KpdApps.Orationi.Messaging.Core
 
         [OperationContract]
         ResponseXsd GetXsd(int requestCode);
+
+		[OperationContract]
+		Response FileUpload();
     }
 }
