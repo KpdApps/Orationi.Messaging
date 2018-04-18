@@ -82,4 +82,7 @@
     <Build Include="dbo\Tables\WorkflowExecutionStepsStatusCodes.sql" />
     <Build Include="dbo\Tables\WorkflowExecutionSteps.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="dbo\Script.PostDeployment.sql" />
+  </ItemGroup>
 </Project>

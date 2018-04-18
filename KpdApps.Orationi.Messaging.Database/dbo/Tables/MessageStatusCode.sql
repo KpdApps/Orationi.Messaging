@@ -4,4 +4,3 @@
     [Description] NVARCHAR (300) NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
-
