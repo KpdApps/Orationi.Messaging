@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.Sdk;
-using KpdApps.Orationi.Messaging.Sdk.Attributes;
-using KpdApps.Orationi.Messaging.Sdk.Plugins;
-using TextReader = System.IO.TextReader;
+using KpdApps.Orationi.Messaging.Rest.Models;
+using Newtonsoft.Json;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
 {
@@ -38,11 +34,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
-                GetTokenValue(),
-                requestId,
-                out Common.Models.Response response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId,out Response response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -61,14 +53,9 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("sync")]
-        public Response ExecuteRequest([FromBody]Common.Models.Request request)
+        public Response ExecuteRequest([FromBody]Request request)
         {
-            if (!AuthorizeHelpers.IsAuthorized(
-                _dbContext,
-                GetTokenValue(),
-                request.Code,
-                out Common.Models.Response response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out Response response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -80,13 +67,9 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("async")]
-        public ResponseId ExecuteRequestAsync([FromBody]Common.Models.Request request)
+        public ResponseId ExecuteRequestAsync([FromBody]Request request)
         {
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
-                GetTokenValue(),
-                request.Code,
-                out Common.Models.ResponseId response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -98,7 +81,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("request")]
-        public ResponseId SendRequest([FromBody]Common.Models.Request request)
+        public ResponseId SendRequest([FromBody]Request request)
         {
             throw new NotImplementedException();
         }
@@ -107,12 +90,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("xsd/{requestCode}")]
         public ResponseXsd GetXsd(int requestCode)
         {
-            if (!AuthorizeHelpers.IsAuthorized(
-                _dbContext,
-                GetTokenValue(),
-                requestCode,
-                out Common.Models.ResponseXsd response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestCode, out ResponseXsd response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -130,10 +108,49 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
 		[HttpPost]
 		[Route("file/upload")]
-		public Response FileUpload()
+		public async Task<Response> FileUpload()
 		{
-			// TODO: написать получение файла тут
-			throw new NotImplementedException();
+			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
+
+			if (!isMimeMultipartContent)
+				throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+			var provider = new MultipartMemoryStreamProvider();
+
+			if (provider.Contents.Count != 2)
+				throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+			await Request.Content.ReadAsMultipartAsync(provider);
+
+			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+			if (json == null)
+				throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+			UploadFileInfo fileInfo = null;
+			using (var stream = await json.ReadAsStreamAsync())
+			{
+				var sr = new StreamReader(stream);
+				fileInfo = JsonConvert.DeserializeObject<UploadFileInfo>(sr.ReadToEnd());
+			}
+
+			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.MessageId, out Response response, out var externalSystem))
+				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+
+			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
+			if (file == null)
+				throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+			
+			string fileName = file.Headers.ContentDisposition.FileName;
+			UploadFileInfo.ValidateFileName(fileName);
+
+
+			byte[] fileAsArray = await file.ReadAsByteArrayAsync();
+
+			IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+			response = imp.FileUpload(fileInfo.MessageId, fileName, fileInfo.FileType, fileAsArray);
+
+			return response;
 		}
 
         [NonAction]

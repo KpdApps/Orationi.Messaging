@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
@@ -160,21 +163,45 @@ namespace KpdApps.Orationi.Messaging.Core
                 return response;
             }
 
-            var assembly = Assembly.Load(registeredPlugin
-                .PluginAssembly
-                .Assembly);
+            var assembly = Assembly.Load(registeredPlugin.PluginAssembly.Assembly);
 
-            var pluginType = assembly.GetType(registeredPlugin
-                .Class);
+            var pluginType = assembly.GetType(registeredPlugin.Class);
 
-            response.RequestContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
+            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
                 ?.GetXsd(assembly);
-            response.ResponseContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+
+			response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
                 ?.GetXsd(assembly);
 
             return response;
         }
+
+		public Response FileUpload(Guid messageId, string fileName, string fileType, byte[] fileAsArray)
+		{
+			var response = new Response();
+
+			if (!_dbContext.Messages.Any(m => m.Id == messageId))
+			{
+				response.IsError = true;
+				response.Error = $"Не нали сообщения с идентификатором {messageId}";
+				return response;
+			}
+
+			FileStore fileStore = new FileStore
+			{
+				MessageId = messageId,
+				FileName = fileName,
+				CreatedOn = DateTime.Now
+			};
+			fileAsArray.CopyTo(fileStore.Data, 0);
+
+			_dbContext.FileStores.Add(fileStore);
+			_dbContext.SaveChanges();
+
+			response.Id = fileStore.Id;
+			response.IsError = false;
+
+			return response;
+		}
     }
 }

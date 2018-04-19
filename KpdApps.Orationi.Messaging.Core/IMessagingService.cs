@@ -1,6 +1,7 @@
 ﻿using KpdApps.Orationi.Messaging.Common.Models;
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -29,6 +30,6 @@ namespace KpdApps.Orationi.Messaging.Core
         ResponseXsd GetXsd(int requestCode);
 
 		[OperationContract]
-		Response FileUpload();
+		Task<Response> FileUpload();
     }
 }
