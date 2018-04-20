@@ -11,12 +11,14 @@ namespace KpdApps.Orationi.Messaging.Rest.Models
 		public Guid MessageId { get; set; }
 		public string FileType { get; set; }
 
+		private const int MaxSharePointFileNameLegth = 250;
+
 		public static void ValidateFileName(string fileName)
 		{
 			if (string.IsNullOrEmpty(fileName))
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			if (fileName.Length > 250)
+			if (fileName.Length > MaxSharePointFileNameLegth)
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 
 			string[] forbidenExtensions = { ".exe", ".dll" };
