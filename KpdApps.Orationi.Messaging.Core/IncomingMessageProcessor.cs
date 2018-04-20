@@ -182,13 +182,16 @@ namespace KpdApps.Orationi.Messaging.Core
 		{
 			var response = new Response();
 
-			if (!_dbContext.Messages.Any(m => m.Id == messageId))
+			// Проверяем, что существует исходное сообщение, по которому создали связанную с файлом сущность.
+			var createServiceMessage = _dbContext.Messages.FirstOrDefault(m => m.Id == messageId);
+			if (createServiceMessage == null)
 			{
 				response.IsError = true;
-				response.Error = $"Не нали сообщения с идентификатором {messageId}";
+				response.Error = $"Не нашли сообщения с идентификатором {messageId}";
 				return response;
 			}
 
+			// Сохраняем файл.
 			FileStore fileStore = new FileStore
 			{
 				MessageId = messageId,
@@ -200,9 +203,28 @@ namespace KpdApps.Orationi.Messaging.Core
 			_dbContext.FileStores.Add(fileStore);
 			_dbContext.SaveChanges();
 
-			// Тут надо в кролика пульнуть сообщением для плагина.
 
-			response.Id = fileStore.Id;
+			// Формируем сообщение для плагина перекладывания файла из БД в Шарик
+			// TODO: плагину для работы надо ИД Сервиса и ИД файла. 
+			// ИД сообщения, с которым связан файл, не очень подходит, тк pipeLineExecutionContext.FirstOrdefault тянет файл по ключу сообщения, 
+			// а если файлов несколько и два плагина одновременно начнут тянуть файлы - могут оба потянуть один и тот же файл.
+			// В итоге приходим к тому, что тут надо формировать свое тело запроса к плагину. Т.е. тащить в этот проект XSD? Или json нас устроит?
+			var uploadMessage = new Message
+			{
+				RequestBody = createServiceMessage.ResponseBody, // В ответе создания услуги есть и messageId - нужен для получения файла, и serviceId - нужен для привязывания к нему файла
+				RequestCodeId = 70001, // TODO: заглушка. На самом деле надо придумать нормальный код. И Я подозреваю, его нужно получать от клиента в теле json-объекта.
+				ExternalSystemId = _externalSystem.Id,
+				RequestUser = "Orationi.Messaging.Core",
+				IsSyncRequest = false
+			};
+
+			_dbContext.Messages.Add(uploadMessage);
+			_dbContext.SaveChanges();
+
+			RabbitClient client = new RabbitClient();
+			client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+
+			response.Id = uploadMessage.Id;
 			response.IsError = false;
 
 			return response;
