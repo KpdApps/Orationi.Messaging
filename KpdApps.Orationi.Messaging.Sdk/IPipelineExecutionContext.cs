@@ -1,5 +1,4 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
-using System;
+﻿using System;
 using System.Collections;
 
 namespace KpdApps.Orationi.Messaging.Sdk

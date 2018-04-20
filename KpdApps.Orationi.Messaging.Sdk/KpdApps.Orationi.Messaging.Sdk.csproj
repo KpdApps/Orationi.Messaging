@@ -49,11 +49,5 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XsdValidator.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
-      <Project>{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}</Project>
-      <Name>KpdApps.Orationi.Messaging.DataAccess</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
