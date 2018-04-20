@@ -1,11 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Web;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -81,7 +76,11 @@ namespace KpdApps.Orationi.Messaging.Core
             }
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            return new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
+            return new Response() {
+				Id = requestId,
+				IsError = false,
+				Error = null,
+				Body = message.ResponseBody };
         }
 
         public ResponseId ExecuteAsync(Request request)
@@ -111,7 +110,10 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
+                return new Response() {
+					IsError = true,
+					Error = $"{ex.Message} {(ex.InnerException is null ? "No inner exception" : ex.InnerException.Message)}"
+				};
             }
         }
 
@@ -123,7 +125,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.Type);
                 if (requestCodeAlias == null)
                 {
-                    throw new InvalidOperationException("Invalid request type.");
+                    throw new InvalidOperationException($"Invalid request type: {request.Type}.");
                 }
                 request.Code = requestCodeAlias.RequestCode;
             }
@@ -197,6 +199,8 @@ namespace KpdApps.Orationi.Messaging.Core
 
 			_dbContext.FileStores.Add(fileStore);
 			_dbContext.SaveChanges();
+
+			// Тут надо в кролика пульнуть сообщением для плагина.
 
 			response.Id = fileStore.Id;
 			response.IsError = false;
