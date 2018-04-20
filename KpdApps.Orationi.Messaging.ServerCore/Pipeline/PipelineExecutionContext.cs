@@ -1,9 +1,12 @@
-﻿using KpdApps.Orationi.Messaging.Sdk;
-using KpdApps.Orationi.Messaging.Sdk.Plugins;
+﻿using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.Sdk;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
@@ -33,11 +36,27 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private IWorkflowExecutionContext _workflowExecutionContext;
 
-        internal PipelineExecutionContext(IWorkflowExecutionContext workflowExecutionContext)
+		private DbSet<FileStore> _fileStores;
+
+        internal PipelineExecutionContext(IWorkflowExecutionContext workflowExecutionContext, OrationiDatabaseContext dbContext)
         {
             PipelineValues = new Dictionary<string, object>();
             PluginStepSettings = new Dictionary<string, object>();
             _workflowExecutionContext = workflowExecutionContext;
+			_fileStores = dbContext.FileStores;
         }
+
+		public byte[] GetFile(Guid messageId, out string filename)
+		{
+			var fileStore = _fileStores.FirstOrDefault(f => f.MessageId == messageId);
+
+			if (fileStore == null)
+				throw new ArgumentNullException($"Не нашли файла, связанного с сообщением {messageId}");
+
+			filename = fileStore.FileName;
+
+			// Массив - ссылочный тип, не хотим давать ссылку на объект в БД.
+			return fileStore.Data.ToArray();
+		}
     }
 }

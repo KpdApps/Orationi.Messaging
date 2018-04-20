@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KpdApps.Orationi.Messaging.DataAccess.Models;
+using System;
 using System.Collections;
 
 namespace KpdApps.Orationi.Messaging.Sdk
@@ -26,5 +27,7 @@ namespace KpdApps.Orationi.Messaging.Sdk
         string MessageBody { get; }
 
         IDictionary GlobalSettings { get; }
-    }
+
+		byte[] GetFile(Guid messageId, out string filename);
+	}
 }
