@@ -59,7 +59,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             {
                 WorkflowId = _workflowId,
                 PluginActionSetId = _pluginActionSetId,
-                StatusCode = (int)PipelineStatusCodes.New
+                StatusCode = (int)PipelineStatusCodes.New,
+                MessageId = (Guid?)_messageId
             };
             _dbContext.WorkflowExecutionSteps.Add(_workflowExecutionStep);
             _dbContext.SaveChanges();
@@ -106,6 +107,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
                     ExecutePlugin(type, stepDescription);
 
+                    _dbContext.Entry(_workflowExecutionStep).Reload();
                     _workflowExecutionStep.RequestBody = _pipelineExecutionContext.RequestBody;
                     _workflowExecutionStep.ResponseBody = _pipelineExecutionContext.ResponseBody;
                     _dbContext.SaveChanges();

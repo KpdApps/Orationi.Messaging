@@ -6,9 +6,11 @@
     [RequestBody]        NVARCHAR (MAX)   NULL,
     [ResponseBody]       NVARCHAR (MAX)   NULL,
     [ExecutionVariables] NVARCHAR (MAX)   NULL,
+    [MessageId] UNIQUEIDENTIFIER NULL, 
     CONSTRAINT [PK_WorkflowExecutionSteps] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_WorkflowExecutionSteps_PluginActionSets] FOREIGN KEY ([PluginActionSetId]) REFERENCES [dbo].[PluginActionSets] ([Id]),
     CONSTRAINT [FK_WorkflowExecutionSteps_WorkflowExecutionStepsStatusCodes] FOREIGN KEY ([StatusCode]) REFERENCES [dbo].[WorkflowExecutionStepsStatusCodes] ([Id]),
-    CONSTRAINT [FK_WorkflowExecutionSteps_Workflows] FOREIGN KEY ([WorkflowId]) REFERENCES [dbo].[Workflows] ([Id])
+    CONSTRAINT [FK_WorkflowExecutionSteps_Workflows] FOREIGN KEY ([WorkflowId]) REFERENCES [dbo].[Workflows] ([Id]), 
+    CONSTRAINT [FK_WorkflowExecutionSteps_Messages] FOREIGN KEY ([MessageId]) REFERENCES [dbo].[Messages]([Id])
 );
 

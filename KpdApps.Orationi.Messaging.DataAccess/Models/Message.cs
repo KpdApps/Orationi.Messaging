@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -43,5 +44,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public virtual ExternalSystem ExternalSystem { get; set; }
 
         public virtual MessageStatusCode MessageStatusCode { get; set; }
+
+        public virtual List<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
     }
 }
