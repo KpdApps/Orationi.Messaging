@@ -53,6 +53,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Init()
         {
+            log.Debug("Инициализация...");
             _dbContext = new OrationiDatabaseContext();
 
             _workflowExecutionStep = new WorkflowExecutionStep
@@ -87,6 +88,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             {
                 if (!string.IsNullOrEmpty(psd.ConfigurationString))
                 {
+                    log.Debug($"Загрузка конфигурации для {psd.Class}\r\n\tСтрока конфигурации - {psd.ConfigurationString}");
                     _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
                 }
             });
