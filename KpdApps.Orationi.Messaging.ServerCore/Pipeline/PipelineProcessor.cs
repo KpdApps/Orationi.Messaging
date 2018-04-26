@@ -83,15 +83,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                     Modified = pa.Modified,
                     ConfigurationString = pasi.Configuration,
                 }).ToList();
-
-            _stepsDescriptions.ForEach(psd =>
-            {
-                if (!string.IsNullOrEmpty(psd.ConfigurationString))
-                {
-                    log.Debug($"Загрузка конфигурации для {psd.Class}\r\n\tСтрока конфигурации - {psd.ConfigurationString}");
-                    _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
-                }
-            });
         }
 
         public void Run()
@@ -102,6 +93,18 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             {
                 foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
                 {
+                    if (!string.IsNullOrEmpty(stepDescription.ConfigurationString))
+                    {
+                        log.Debug($"Загрузка конфигурации для {stepDescription.Class}\r\n"+
+                                  $"Строка конфигурации - {stepDescription.ConfigurationString}");
+                        _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                            stepDescription.ConfigurationString);
+                    }
+                    else
+                    {
+                        _pipelineExecutionContext.PluginStepSettings = null;
+                    }
+
                     string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
 
                     Assembly assembly = Assembly.LoadFrom(assemblyName);
