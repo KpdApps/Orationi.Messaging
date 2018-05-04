@@ -51,7 +51,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 			var fileStore = _fileStores.FirstOrDefault(f => f.MessageId == messageId);
 
 			if (fileStore == null)
-				throw new ArgumentNullException($"Не нашли файла, связанного с сообщением {messageId}");
+				throw new ArgumentNullException($"Не нашли файл, связанный с сообщением {messageId}");
 
 			filename = fileStore.FileName;
 
