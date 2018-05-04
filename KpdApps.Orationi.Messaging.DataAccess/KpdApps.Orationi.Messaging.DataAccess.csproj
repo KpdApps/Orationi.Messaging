@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KpdApps.Orationi.Messaging.DataAccess</RootNamespace>
+    <AssemblyName>KpdApps.Orationi.Messaging.DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EntityConfigurations\GlobalSettingTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
+    <Compile Include="EntityConfigurations\MessageTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\ExternalSystemTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginActionSetItemTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginActionSetTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\PluginAssemblyTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\ProcessingErrorTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RegisteredPluginTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RequestCodeAliasTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\RequestCodeTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowActionTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowExecutionStepsStatusCodeTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowExecutionStepTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\WorkflowTypeConfiguration.cs" />
+    <Compile Include="Models\ExternalSystem.cs" />
+    <Compile Include="Models\ExternalSystemRequestCode.cs" />
+    <Compile Include="Models\GlobalSetting.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageStatusCode.cs" />
+    <Compile Include="Models\PluginActionSet.cs" />
+    <Compile Include="Models\PluginActionSetItem.cs" />
+    <Compile Include="Models\PluginAssembly.cs" />
+    <Compile Include="Models\ProcessingError.cs" />
+    <Compile Include="Models\RegisteredPlugin.cs" />
+    <Compile Include="Models\RequestCode.cs" />
+    <Compile Include="Models\RequestCodeAlias.cs" />
+    <Compile Include="Models\Workflow.cs" />
+    <Compile Include="Models\WorkflowAction.cs" />
+    <Compile Include="Models\WorkflowExecutionStep.cs" />
+    <Compile Include="Models\WorkflowExecutionStepsStatusCode.cs" />
+    <Compile Include="OrationiDatabaseContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
