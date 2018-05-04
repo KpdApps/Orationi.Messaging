@@ -146,7 +146,7 @@ namespace KpdApps.Orationi.Messaging.Soap
             return response;
         }
 
-		public Task<Response> FileUpload()
+		public Response FileUpload()
 		{
 			throw new NotImplementedException();
 		}

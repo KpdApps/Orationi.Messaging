@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -178,48 +179,37 @@ namespace KpdApps.Orationi.Messaging.Core
             return response;
         }
 
-		public Response FileUpload(Guid messageId, string fileName, string fileType, byte[] fileAsArray)
+		public Response FileUpload(UploadFileRequest uploadFileRequest, string filename, byte[] fileAsArray)
 		{
 			var response = new Response();
 
-			// Проверяем, что существует исходное сообщение, по которому создали связанную с файлом сущность.
-			var createServiceMessage = _dbContext.Messages.FirstOrDefault(m => m.Id == messageId);
-			if (createServiceMessage == null)
-			{
-				response.IsError = true;
-				response.Error = $"Не нашли сообщения с идентификатором {messageId}";
-				return response;
-			}
-
-			// Сохраняем файл.
-			FileStore fileStore = new FileStore
-			{
-				MessageId = messageId,
-				FileName = fileName,
-				CreatedOn = DateTime.Now
-			};
-			fileAsArray.CopyTo(fileStore.Data, 0);
-
-			_dbContext.FileStores.Add(fileStore);
-			_dbContext.SaveChanges();
-
-
-			// Формируем сообщение для плагина перекладывания файла из БД в Шарик
-			// TODO: плагину для работы надо ИД Сервиса и ИД файла. 
-			// ИД сообщения, с которым связан файл, не очень подходит, тк pipeLineExecutionContext.FirstOrdefault тянет файл по ключу сообщения, 
-			// а если файлов несколько и два плагина одновременно начнут тянуть файлы - могут оба потянуть один и тот же файл.
-			// В итоге приходим к тому, что тут надо формировать свое тело запроса к плагину. Т.е. тащить в этот проект XSD? Или json нас устроит?
+			// Создаем сообщение без тела
 			var uploadMessage = new Message
 			{
-				RequestBody = createServiceMessage.ResponseBody, // В ответе создания услуги есть и messageId - нужен для получения файла, и serviceId - нужен для привязывания к нему файла
-				RequestCodeId = 70001, // TODO: заглушка. На самом деле надо придумать нормальный код. И Я подозреваю, его нужно получать от клиента в теле json-объекта.
+				RequestCodeId = uploadFileRequest.RequsetCode,
 				ExternalSystemId = _externalSystem.Id,
 				RequestUser = "Orationi.Messaging.Core",
 				IsSyncRequest = false
 			};
-
 			_dbContext.Messages.Add(uploadMessage);
 			_dbContext.SaveChanges();
+
+
+			// Сохраняем файл
+			FileStore fileStore = new FileStore
+			{
+				MessageId = uploadMessage.Id,
+				FileName = filename,
+				CreatedOn = DateTime.Now
+			};
+			fileAsArray.CopyTo(fileStore.Data, 0);
+			_dbContext.FileStores.Add(fileStore);
+			_dbContext.SaveChanges();
+
+			// Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
+			uploadMessage.RequestBody = uploadFileRequest.ToXmlString(uploadMessage.Id);
+			_dbContext.SaveChanges();
+
 
 			RabbitClient client = new RabbitClient();
 			client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);

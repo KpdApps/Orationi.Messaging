@@ -30,6 +30,6 @@ namespace KpdApps.Orationi.Messaging.Core
         ResponseXsd GetXsd(int requestCode);
 
 		[OperationContract]
-		Task<Response> FileUpload();
+		Response FileUpload();
     }
 }

@@ -3,12 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.Rest.Models;
 using Newtonsoft.Json;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
@@ -108,32 +106,39 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
 		[HttpPost]
 		[Route("file/upload")]
-		public async Task<Response> FileUpload()
+		public Response FileUpload()
 		{
 			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
 
 			if (!isMimeMultipartContent)
-				throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.UnsupportedMediaType, 
+					new Response { IsError = true, Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart" })
+				);
 
 			var provider = new MultipartMemoryStreamProvider();
 
 			if (provider.Contents.Count != 2)
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			await Request.Content.ReadAsMultipartAsync(provider);
+			Request.Content.ReadAsMultipartAsync(provider);
 
 			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
 			if (json == null)
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			UploadFileInfo fileInfo = null;
-			using (var stream = await json.ReadAsStreamAsync())
+			UploadFileRequest fileInfo = null;
+
+			byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
+
+
+			using (var stream = new MemoryStream(jsonAsArray))
 			{
 				var sr = new StreamReader(stream);
-				fileInfo = JsonConvert.DeserializeObject<UploadFileInfo>(sr.ReadToEnd());
+				fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
 			}
 
-			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.MessageId, out Response response, out var externalSystem))
+			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
 				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
 
 			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
@@ -142,13 +147,13 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
 			
 			string fileName = file.Headers.ContentDisposition.FileName;
-			UploadFileInfo.ValidateFileName(fileName);
+			UploadFileRequest.ValidateFileName(fileName);
 
 
-			byte[] fileAsArray = await file.ReadAsByteArrayAsync();
+			byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
 
-			IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-			response = imp.FileUpload(fileInfo.MessageId, fileName, fileInfo.FileType, fileAsArray);
+			var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+			response = imp.FileUpload(fileInfo, fileName, fileAsArray);
 
 			return response;
 		}
