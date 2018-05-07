@@ -35,10 +35,9 @@ namespace KpdApps.Orationi.Messaging.Common.Models
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 		}
 
-		public string ToXmlString(Guid messageId)
+		public string ToXmlString()
 		{
 			var xmlBody = new XElement("UploadFileRequest",
-				new XElement("MessageId", messageId),
 				new XElement("ObjectId", ObjectId),
 				new XElement("ObjectCode", ObjectCode),
 				new XElement("FileType", FileType)

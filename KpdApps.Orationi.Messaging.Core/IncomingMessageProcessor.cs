@@ -207,7 +207,7 @@ namespace KpdApps.Orationi.Messaging.Core
 			_dbContext.SaveChanges();
 
 			// Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
-			uploadMessage.RequestBody = uploadFileRequest.ToXmlString(uploadMessage.Id);
+			uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
 			_dbContext.SaveChanges();
 
 
