@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Web;
+using System.Xml.Serialization;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -78,7 +77,11 @@ namespace KpdApps.Orationi.Messaging.Core
             }
 
             //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            return new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
+            return new Response() {
+				Id = requestId,
+				IsError = false,
+				Error = null,
+				Body = message.ResponseBody };
         }
 
         public ResponseId ExecuteAsync(Request request)
@@ -108,7 +111,10 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
+                return new Response() {
+					IsError = true,
+					Error = $"{ex.Message} {(ex.InnerException is null ? "No inner exception" : ex.InnerException.Message)}"
+				};
             }
         }
 
@@ -120,7 +126,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.Type);
                 if (requestCodeAlias == null)
                 {
-                    throw new InvalidOperationException("Invalid request type.");
+                    throw new InvalidOperationException($"Invalid request type: {request.Type}.");
                 }
                 request.Code = requestCodeAlias.RequestCode;
             }
@@ -160,21 +166,59 @@ namespace KpdApps.Orationi.Messaging.Core
                 return response;
             }
 
-            var assembly = Assembly.Load(registeredPlugin
-                .PluginAssembly
-                .Assembly);
+            var assembly = Assembly.Load(registeredPlugin.PluginAssembly.Assembly);
 
-            var pluginType = assembly.GetType(registeredPlugin
-                .Class);
+            var pluginType = assembly.GetType(registeredPlugin.Class);
 
-            response.RequestContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
+            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
                 ?.GetXsd(assembly);
-            response.ResponseContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+
+			response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
                 ?.GetXsd(assembly);
 
             return response;
         }
+
+		public Response FileUpload(UploadFileRequest uploadFileRequest, string filename, byte[] fileAsArray)
+		{
+			var response = new Response();
+
+			// Создаем сообщение без тела
+			var uploadMessage = new Message
+			{
+				RequestBody = "wait for file",
+				RequestCodeId = uploadFileRequest.RequsetCode,
+				ExternalSystemId = _externalSystem.Id,
+				RequestUser = "Orationi.Messaging.Core",
+				IsSyncRequest = false
+			};
+			_dbContext.Messages.Add(uploadMessage);
+			_dbContext.SaveChanges();
+
+
+			// Сохраняем файл
+			FileStore fileStore = new FileStore
+			{
+				MessageId = uploadMessage.Id,
+				FileName = filename,
+				CreatedOn = DateTime.Now,
+				Data = fileAsArray.ToArray()
+			};
+			_dbContext.FileStores.Add(fileStore);
+			_dbContext.SaveChanges();
+
+			// Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
+			uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
+			_dbContext.SaveChanges();
+
+
+			RabbitClient client = new RabbitClient();
+			client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+
+			response.Id = uploadMessage.Id;
+			response.IsError = false;
+
+			return response;
+		}
     }
 }

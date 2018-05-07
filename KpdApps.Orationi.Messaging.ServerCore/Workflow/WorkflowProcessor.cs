@@ -47,7 +47,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
                 SetMessageStatus(MessageStatusCodes.InProgress);
                 foreach (WorkflowAction workflowAction in _workflowActions)
                 {
-                    PipelineExecutionContext pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext);
+                    PipelineExecutionContext pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext, _dbContext);
                     PipelineProcessor pipeline = new PipelineProcessor(pipelineExecutionContext, workflowAction);
                     pipeline.Run();
                     //TODO: Temp solution

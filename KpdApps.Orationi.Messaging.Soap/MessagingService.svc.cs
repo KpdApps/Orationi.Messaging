@@ -2,7 +2,7 @@
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Threading;
+using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
@@ -145,5 +145,10 @@ namespace KpdApps.Orationi.Messaging.Soap
             log.Debug("Звершение");
             return response;
         }
-    }
+
+		public Task<Response> FileUpload()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

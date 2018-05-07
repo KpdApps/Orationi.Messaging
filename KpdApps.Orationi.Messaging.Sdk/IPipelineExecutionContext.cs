@@ -26,5 +26,7 @@ namespace KpdApps.Orationi.Messaging.Sdk
         string MessageBody { get; }
 
         IDictionary GlobalSettings { get; }
-    }
+
+		byte[] GetFile(Guid messageId, out string filename);
+	}
 }

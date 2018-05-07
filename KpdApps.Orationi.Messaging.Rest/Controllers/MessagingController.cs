@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.Sdk;
-using KpdApps.Orationi.Messaging.Sdk.Attributes;
-using KpdApps.Orationi.Messaging.Sdk.Plugins;
-using TextReader = System.IO.TextReader;
+using Newtonsoft.Json;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
 {
@@ -36,13 +32,9 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpGet]
         [Route("{requestId}")]
-        public Common.Models.Response GetResponse(Guid requestId)
+        public Response GetResponse(Guid requestId)
         {
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
-                GetTokenValue(),
-                requestId,
-                out Common.Models.Response response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId,out Response response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -54,21 +46,16 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpGet]
         [Route("status/{requestId}")]
-        public Common.Models.Response GetStatus(Guid requestId)
+        public Response GetStatus(Guid requestId)
         {
             throw new NotImplementedException();
         }
 
         [HttpPost]
         [Route("sync")]
-        public Common.Models.Response ExecuteRequest([FromBody]Common.Models.Request request)
+        public Response ExecuteRequest([FromBody]Request request)
         {
-            if (!AuthorizeHelpers.IsAuthorized(
-                _dbContext,
-                GetTokenValue(),
-                request.Code,
-                out Common.Models.Response response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out Response response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -80,13 +67,9 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("async")]
-        public Common.Models.ResponseId ExecuteRequestAsync([FromBody]Common.Models.Request request)
+        public ResponseId ExecuteRequestAsync([FromBody]Request request)
         {
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
-                GetTokenValue(),
-                request.Code,
-                out Common.Models.ResponseId response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -98,21 +81,16 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpPost]
         [Route("request")]
-        public Common.Models.ResponseId SendRequest([FromBody]Common.Models.Request request)
+        public ResponseId SendRequest([FromBody]Request request)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
         [Route("xsd/{requestCode}")]
-        public Common.Models.ResponseXsd GetXsd(int requestCode)
+        public ResponseXsd GetXsd(int requestCode)
         {
-            if (!AuthorizeHelpers.IsAuthorized(
-                _dbContext,
-                GetTokenValue(),
-                requestCode,
-                out Common.Models.ResponseXsd response,
-                out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestCode, out ResponseXsd response, out var externalSystem))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
@@ -127,6 +105,61 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
             return response;
         }
+
+		[HttpPost]
+		[Route("file/upload")]
+		public async Task<Response> FileUpload()
+		{
+			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
+
+			if (!isMimeMultipartContent)
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.UnsupportedMediaType, 
+					new Response { IsError = true, Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart" })
+				);
+
+			var provider = new MultipartMemoryStreamProvider();
+			await Request.Content.ReadAsMultipartAsync(provider);
+
+			if (provider.Contents.Count != 2)
+				throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+			if (json == null)
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.BadRequest,
+					new Response { IsError = true, Error = "В теле запроса нет части с Content-type: application/json" })
+				);
+
+			UploadFileRequest fileInfo = null;
+			byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
+			using (var stream = new MemoryStream(jsonAsArray))
+			{
+				var sr = new StreamReader(stream);
+				fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
+			}
+
+			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
+				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+
+			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
+			if (file == null)
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.BadRequest,
+					new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
+				);
+
+			string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+			UploadFileRequest.ValidateFileName(fileName);
+
+
+			byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
+
+			var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+			response = imp.FileUpload(fileInfo, fileName, fileAsArray);
+
+			return response;
+		}
 
         [NonAction]
         private string GetTokenValue()
