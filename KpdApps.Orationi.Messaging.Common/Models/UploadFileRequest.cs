@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,12 +10,16 @@ namespace KpdApps.Orationi.Messaging.Common.Models
 {
 	public class UploadFileRequest
 	{
+		[JsonProperty("ObjectId")]
 		public Guid ObjectId { get; set; }
 
+		[JsonProperty("ObjectCode")]
 		public int ObjectCode { get; set; }
 
+		[JsonProperty("FileType")]
 		public string FileType { get; set; }
 
+		[JsonProperty("RequsetCode")]
 		public int RequsetCode { get; set; }
 
 		private const int MaxSharePointFileNameLegth = 250;

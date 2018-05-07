@@ -186,6 +186,7 @@ namespace KpdApps.Orationi.Messaging.Core
 			// Создаем сообщение без тела
 			var uploadMessage = new Message
 			{
+				RequestBody = "wait for file",
 				RequestCodeId = uploadFileRequest.RequsetCode,
 				ExternalSystemId = _externalSystem.Id,
 				RequestUser = "Orationi.Messaging.Core",
@@ -200,9 +201,9 @@ namespace KpdApps.Orationi.Messaging.Core
 			{
 				MessageId = uploadMessage.Id,
 				FileName = filename,
-				CreatedOn = DateTime.Now
+				CreatedOn = DateTime.Now,
+				Data = fileAsArray.ToArray()
 			};
-			fileAsArray.CopyTo(fileStore.Data, 0);
 			_dbContext.FileStores.Add(fileStore);
 			_dbContext.SaveChanges();
 

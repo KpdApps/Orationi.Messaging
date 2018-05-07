@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
@@ -106,7 +108,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
 		[HttpPost]
 		[Route("file/upload")]
-		public Response FileUpload()
+		public async Task<Response> FileUpload()
 		{
 			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
 
@@ -117,7 +119,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 				);
 
 			var provider = new MultipartMemoryStreamProvider();
-			Request.Content.ReadAsMultipartAsync(provider);
+			await Request.Content.ReadAsMultipartAsync(provider);
 
 			if (provider.Contents.Count != 2)
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -140,7 +142,6 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
 				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
 
-
 			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
 			if (file == null)
 				throw new HttpResponseException(Request.CreateResponse(
@@ -148,8 +149,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 					new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
 				);
 
-
-			string fileName = file.Headers.ContentDisposition.FileName;
+			string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
 			UploadFileRequest.ValidateFileName(fileName);
 
 
