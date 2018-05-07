@@ -117,21 +117,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 				);
 
 			var provider = new MultipartMemoryStreamProvider();
+			Request.Content.ReadAsMultipartAsync(provider);
 
 			if (provider.Contents.Count != 2)
 				throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			Request.Content.ReadAsMultipartAsync(provider);
-
 			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
 			if (json == null)
-				throw new HttpResponseException(HttpStatusCode.BadRequest);
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.BadRequest,
+					new Response { IsError = true, Error = "В теле запроса нет части с Content-type: application/json" })
+				);
 
 			UploadFileRequest fileInfo = null;
-
 			byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
-
-
 			using (var stream = new MemoryStream(jsonAsArray))
 			{
 				var sr = new StreamReader(stream);
@@ -141,11 +140,15 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
 				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
 
+
 			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
 			if (file == null)
-				throw new HttpResponseException(HttpStatusCode.BadRequest);
+				throw new HttpResponseException(Request.CreateResponse(
+					HttpStatusCode.BadRequest,
+					new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
+				);
 
-			
+
 			string fileName = file.Headers.ContentDisposition.FileName;
 			UploadFileRequest.ValidateFileName(fileName);
 
