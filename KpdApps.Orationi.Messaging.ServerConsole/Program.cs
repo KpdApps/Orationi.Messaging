@@ -9,7 +9,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     {
         static void Main(string[] args)
         {
-            ProcessHostManager processHostManager = new ProcessHostManager("vm-co-crmt-01.exiar.ru", "orationi", "orationi");
+            ProcessHostManager processHostManager = new ProcessHostManager("localhost", "orationi", "orationi");
             List<(int RequestCode, bool IsSync)> plugins = plugins = new List<(int RequestCode, bool IsSync)>();
 
             using (var dbContext = new OrationiDatabaseContext())

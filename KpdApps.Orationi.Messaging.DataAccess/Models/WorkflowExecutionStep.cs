@@ -23,10 +23,15 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string ExecutionVariables { get; set; }
 
+        [ForeignKey("Message")]
+        public Nullable<Guid> MessageId { get; set; }
+
         public virtual Workflow Workflow { get; set; }
 
         public virtual PluginActionSet PluginActionSet { get; set; }
 
         public virtual WorkflowExecutionStepsStatusCode WorkflowExecutionStepsStatusCode { get; set; }
+
+        public virtual Message Message { get; set; }
     }
 }

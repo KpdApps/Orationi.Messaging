@@ -46,5 +46,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public virtual MessageStatusCode MessageStatusCode { get; set; }
 
 		public virtual List<FileStore> FileStores { get; set; }
+
+		public virtual List<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
     }
 }

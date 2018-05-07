@@ -53,13 +53,15 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         public void Init()
         {
+            log.Debug("Инициализация...");
             _dbContext = new OrationiDatabaseContext();
 
             _workflowExecutionStep = new WorkflowExecutionStep
             {
                 WorkflowId = _workflowId,
                 PluginActionSetId = _pluginActionSetId,
-                StatusCode = (int)PipelineStatusCodes.New
+                StatusCode = (int)PipelineStatusCodes.New,
+                MessageId = (Guid?)_messageId
             };
             _dbContext.WorkflowExecutionSteps.Add(_workflowExecutionStep);
             _dbContext.SaveChanges();
@@ -81,14 +83,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                     Modified = pa.Modified,
                     ConfigurationString = pasi.Configuration,
                 }).ToList();
-
-            _stepsDescriptions.ForEach(psd =>
-            {
-                if (!string.IsNullOrEmpty(psd.ConfigurationString))
-                {
-                    _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(psd.ConfigurationString);
-                }
-            });
         }
 
         public void Run()
@@ -99,6 +93,18 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             {
                 foreach (PipelineStepDescription stepDescription in _stepsDescriptions)
                 {
+                    if (!string.IsNullOrEmpty(stepDescription.ConfigurationString))
+                    {
+                        log.Debug($"Загрузка конфигурации для {stepDescription.Class}\r\n"+
+                                  $"Строка конфигурации - {stepDescription.ConfigurationString}");
+                        _pipelineExecutionContext.PluginStepSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                            stepDescription.ConfigurationString);
+                    }
+                    else
+                    {
+                        _pipelineExecutionContext.PluginStepSettings = null;
+                    }
+
                     string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
 
                     Assembly assembly = Assembly.LoadFrom(assemblyName);
@@ -106,6 +112,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
                     ExecutePlugin(type, stepDescription);
 
+                    _dbContext.Entry(_workflowExecutionStep).Reload();
                     _workflowExecutionStep.RequestBody = _pipelineExecutionContext.RequestBody;
                     _workflowExecutionStep.ResponseBody = _pipelineExecutionContext.ResponseBody;
                     _dbContext.SaveChanges();
