@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -59,30 +58,16 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
+				return ResponseGenerator.GenerateByException(ex);
             }
         }
 
         public Response GetResponse(Guid requestId)
         {
-            Response response = new Response();
-            Message message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+			Response resultResponse = new ResponseGenerator(_dbContext, requestId).GenerateByMessageAndRequestId();
 
-            if (message is null)
-            {
-                response.Id = requestId;
-                response.IsError = true;
-                response.Error = $"Request {requestId} not found";
-                return response;
-            }
-
-            //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            return new Response() {
-				Id = requestId,
-				IsError = false,
-				Error = null,
-				Body = message.ResponseBody };
-        }
+			return resultResponse;
+		}
 
         public ResponseId ExecuteAsync(Request request)
         {
@@ -111,11 +96,8 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() {
-					IsError = true,
-					Error = $"{ex.Message} {(ex.InnerException is null ? "No inner exception" : ex.InnerException.Message)}"
-				};
-            }
+                return ResponseGenerator.GenerateByException(ex);
+			}
         }
 
         public void SetRequestCode(Request request)
@@ -162,6 +144,7 @@ namespace KpdApps.Orationi.Messaging.Core
             if (registeredPlugin is null)
             {
                 response.IsError = true;
+				// TODO: почему мы это возвращаем наружу? Зачем подрядчикам такое знать?
                 response.Error = $"Для requestCode = {requestCode}, не найден подходящий зарегистрированный плагин.{Environment.NewLine}Порядок поиска Workflows (1) — WorkflowActions (сортировка, 1) — PluginActionSet — PluginActionSetItems (сортировка, 1) — RegisteredPlugin";
                 return response;
             }
