@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using System.Xml.Linq;
 
@@ -24,20 +25,29 @@ namespace KpdApps.Orationi.Messaging.Common.Models
 
         private const int MaxSharePointFileNameLegth = 250;
 
-        public static void ValidateFileName(string fileName)
+        public static void ValidateFileName(string fileName, HttpRequestMessage request)
         {
             if (string.IsNullOrEmpty(fileName))
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(request.CreateResponse(
+                    HttpStatusCode.BadRequest,
+                    new Response { IsError = true, Error = "Передайте не пустое имя файла" })
+                );
 
             if (fileName.Length > MaxSharePointFileNameLegth)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(request.CreateResponse(
+                    HttpStatusCode.BadRequest,
+                    new Response { IsError = true, Error = $"Имя файла слишком длинное, максимум {MaxSharePointFileNameLegth} символов" })
+                );
 
             string[] forbidenExtensions = { ".exe", ".dll" };
 
             var fileExtension = Path.GetExtension(fileName);
 
             if (forbidenExtensions.Contains(fileExtension.ToLower()))
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(request.CreateResponse(
+                    HttpStatusCode.BadRequest,
+                    new Response { IsError = true, Error = $"Нельзя загружать файлы с расширением {fileExtension}" })
+                );
         }
 
         public string ToXmlString()
