@@ -9,6 +9,8 @@ using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
+using log4net;
+using log4net.Config;
 using Newtonsoft.Json;
 
 namespace KpdApps.Orationi.Messaging.Rest.Controllers
@@ -16,10 +18,13 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
     [RoutePrefix("api/rest/messaging")]
     public class MessagingController : ApiController, IMessagingService
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(MessagingController));
+
         private OrationiDatabaseContext _dbContext;
 
         public MessagingController()
         {
+            XmlConfigurator.Configure();
             _dbContext = new OrationiDatabaseContext();
         }
 
@@ -34,13 +39,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
+            log.Debug("Запуск");
+            log.Debug($"requestId: {requestId}");
+            log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId,out Response response, out var externalSystem))
             {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
+            log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetResponse(requestId);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
             return response;
         }
 
@@ -55,13 +67,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("sync")]
         public Response ExecuteRequest([FromBody]Request request)
         {
+            log.Debug("Запуск");
+            log.Debug($"request:\r\n{request}");
+            log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out Response response, out var externalSystem))
             {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
+            log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.Execute(request);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
             return response;
         }
 
@@ -69,13 +88,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("async")]
         public ResponseId ExecuteRequestAsync([FromBody]Request request)
         {
+            log.Debug("Запуск");
+            log.Debug($"request:\r\n{request}");
+            log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
             {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
+            log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.ExecuteAsync(request);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
             return response;
         }
 
@@ -90,76 +116,115 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("xsd/{requestCode}")]
         public ResponseXsd GetXsd(int requestCode)
         {
+            log.Debug("Запуск");
+            log.Debug($"requestCode: {requestCode}");
+            log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestCode, out ResponseXsd response, out var externalSystem))
             {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
+            log.Debug("Авторизация пройдена");
             var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetXsd(requestCode);
+            log.Debug($"Результат:\r\n{response}");
 
             if (response.IsError)
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, response));
             }
 
+            log.Debug("Звершение");
             return response;
         }
 
-		[HttpPost]
-		[Route("file/upload")]
-		public async Task<Response> FileUpload()
-		{
-			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
+        [HttpPost]
+        [Route("file/upload")]
+        public async Task<Response> FileUpload()
+        {
+            log.Debug("Запуск");
+            log.Debug($"Token: {GetTokenValue()}");
 
-			if (!isMimeMultipartContent)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.UnsupportedMediaType, 
-					new Response { IsError = true, Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart" })
-				);
+            var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
+            log.Debug($"isMimeMultipartContent: {isMimeMultipartContent}");
 
-			var provider = new MultipartMemoryStreamProvider();
-			await Request.Content.ReadAsMultipartAsync(provider);
+            if (!isMimeMultipartContent)
+            {
+                var errorResponse = new Response
+                {
+                    IsError = true,
+                    Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart"
+                };
+                log.Error(errorResponse);
 
-			if (provider.Contents.Count != 2)
-				throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType,errorResponse));
+            }
 
-			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
-			if (json == null)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.BadRequest,
-					new Response { IsError = true, Error = "В теле запроса нет части с Content-type: application/json" })
-				);
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
 
-			UploadFileRequest fileInfo = null;
-			byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
-			using (var stream = new MemoryStream(jsonAsArray))
-			{
-				var sr = new StreamReader(stream);
-				fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
-			}
+            log.Debug($"Contents count: {provider.Contents.Count}");
 
-			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
-				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            if (provider.Contents.Count != 2)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
-			if (file == null)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.BadRequest,
-					new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
-				);
+            HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+            if (json == null)
+            {
+                var errorResponse = new Response
+                {
+                    IsError = true,
+                    Error = "В теле запроса нет части с Content-type: application/json"
+                };
+                log.Error(errorResponse);
 
-			string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
-			UploadFileRequest.ValidateFileName(fileName);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+            }
+
+            UploadFileRequest fileInfo = null;
+            byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
+            using (var stream = new MemoryStream(jsonAsArray))
+            {
+                var sr = new StreamReader(stream);
+                fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
+            }
+            log.Debug($"request: {fileInfo}");
+
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequestCode, out Response response,
+                out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            log.Debug("Авторизация пройдена");
+            HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
+            if (file == null)
+            {
+                var errorResponse = new Response
+                {
+                    IsError = true,
+                    Error = "В теле запроса нет части с файлом"
+                };
+                log.Error(errorResponse);
+
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+            }
+
+            string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+            log.Debug($"fileName: {fileName}");
+            UploadFileRequest.ValidateFileName(fileName);
 
 
-			byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
+            byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
 
-			var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-			response = imp.FileUpload(fileInfo, fileName, fileAsArray);
-
-			return response;
-		}
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.FileUpload(fileInfo, fileName, fileAsArray);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
+            return response;
+        }
 
         [NonAction]
         private string GetTokenValue()
