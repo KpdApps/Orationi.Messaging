@@ -3,6 +3,7 @@ using System.Linq;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 
 namespace KpdApps.Orationi.Messaging.Core
 {
@@ -30,19 +31,19 @@ namespace KpdApps.Orationi.Messaging.Core
 			if (message is null)
 				return GetNullResponse(_requestId);
 
-			if (message.StatusCode == MessageStatusCodes.New)
+			if (message.StatusCode == (int)MessageStatusCodes.New)
 				return GetNewResponse(message);
 
-			if (message.StatusCode == MessageStatusCodes.Preparing)
+			if (message.StatusCode == (int)MessageStatusCodes.Preparing)
 				return GetPreparingResponse(message);
 
-			if (message.StatusCode == MessageStatusCodes.InProgress)
+			if (message.StatusCode == (int)MessageStatusCodes.InProgress)
 				return GetInProgressResponse(message);
 
-			if (message.StatusCode == MessageStatusCodes.Processed)
+			if (message.StatusCode == (int)MessageStatusCodes.Processed)
 				return GetInProcessedResponse(message);
 
-			if (message.StatusCode == MessageStatusCodes.Error)
+			if (message.StatusCode == (int)MessageStatusCodes.Error)
 				return GetErrorResponse(message);
 
 			// If we are here then someone added new status to DB and forgot to process it
@@ -131,14 +132,5 @@ namespace KpdApps.Orationi.Messaging.Core
 				Error = $"{exception.Message}, inner: {(exception.InnerException is null ? "no inner" : exception.InnerException.Message)}"
 			};
 		}
-	}
-
-	public static class MessageStatusCodes
-	{
-		public const int New = 0;
-		public const int Preparing = 1000;
-		public const int InProgress = 2000;
-		public const int Processed = 3000;
-		public const int Error = 9000;
 	}
 }
