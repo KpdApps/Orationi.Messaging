@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Xml.Linq;
 
@@ -20,34 +19,25 @@ namespace KpdApps.Orationi.Messaging.Common.Models
         [JsonProperty("FileType")]
         public string FileType { get; set; }
 
-        [JsonProperty("RequsetCode")]
-        public int RequsetCode { get; set; }
+        [JsonProperty("RequestCode")]
+        public int RequestCode { get; set; }
 
         private const int MaxSharePointFileNameLegth = 250;
 
-        public static void ValidateFileName(string fileName, HttpRequestMessage request)
+        public static void ValidateFileName(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
-                throw new HttpResponseException(request.CreateResponse(
-                    HttpStatusCode.BadRequest,
-                    new Response { IsError = true, Error = "Передайте не пустое имя файла" })
-                );
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             if (fileName.Length > MaxSharePointFileNameLegth)
-                throw new HttpResponseException(request.CreateResponse(
-                    HttpStatusCode.BadRequest,
-                    new Response { IsError = true, Error = $"Имя файла слишком длинное, максимум {MaxSharePointFileNameLegth} символов" })
-                );
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             string[] forbidenExtensions = { ".exe", ".dll" };
 
             var fileExtension = Path.GetExtension(fileName);
 
             if (forbidenExtensions.Contains(fileExtension.ToLower()))
-                throw new HttpResponseException(request.CreateResponse(
-                    HttpStatusCode.BadRequest,
-                    new Response { IsError = true, Error = $"Нельзя загружать файлы с расширением {fileExtension}" })
-                );
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
         }
 
         public string ToXmlString()
@@ -59,6 +49,11 @@ namespace KpdApps.Orationi.Messaging.Common.Models
             );
 
             return @"<?xml version=""1.0"" encoding=""utf-8""?>" + xmlBody.ToString(SaveOptions.DisableFormatting);
+        }
+
+        public override string ToString()
+        {
+            return $"\"ObjectId\" : \"{ObjectId}\",\r\n\"ObjectCode\" : \"{ObjectCode}\",\r\n\"FileType\" : \"{FileType}\",\r\n\"RequestCode\" : \"{RequestCode}\"";
         }
     }
 }
