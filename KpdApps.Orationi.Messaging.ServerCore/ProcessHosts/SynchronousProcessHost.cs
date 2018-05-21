@@ -38,9 +38,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                 arguments: null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
-            channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
-            log.Debug($"{QueueCode} [x] Ожидание синхронного запроса...");
             consumer.Received += Consumer_Received;
+            log.Debug($"{QueueCode} [x] Ожидание синхронного запроса...");
+            channel.BasicConsume(queue: QueueCode, autoAck: false, consumer: consumer);
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs ea)
