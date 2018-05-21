@@ -58,16 +58,16 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-				return ResponseGenerator.GenerateByException(ex);
+                return ResponseGenerator.GenerateByException(ex);
             }
         }
 
         public Response GetResponse(Guid requestId)
         {
-			Response resultResponse = new ResponseGenerator(_dbContext, requestId).GenerateByMessageAndRequestId();
-
-			return resultResponse;
-		}
+            Response resultResponse = new ResponseGenerator(_dbContext, requestId).GenerateByMessageAndRequestId();
+            
+            return resultResponse;
+        }
 
         public ResponseId ExecuteAsync(Request request)
         {
@@ -97,7 +97,7 @@ namespace KpdApps.Orationi.Messaging.Core
             catch (Exception ex)
             {
                 return ResponseGenerator.GenerateByException(ex);
-			}
+            }
         }
 
         public void SetRequestCode(Request request)
@@ -144,7 +144,7 @@ namespace KpdApps.Orationi.Messaging.Core
             if (registeredPlugin is null)
             {
                 response.IsError = true;
-				// TODO: почему мы это возвращаем наружу? Зачем подрядчикам такое знать?
+                // TODO: почему мы это возвращаем наружу? Зачем подрядчикам такое знать?
                 response.Error = $"Для requestCode = {requestCode}, не найден подходящий зарегистрированный плагин.{Environment.NewLine}Порядок поиска Workflows (1) — WorkflowActions (сортировка, 1) — PluginActionSet — PluginActionSetItems (сортировка, 1) — RegisteredPlugin";
                 return response;
             }
@@ -156,52 +156,52 @@ namespace KpdApps.Orationi.Messaging.Core
             response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
                 ?.GetXsd(assembly);
 
-			response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+            response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
                 ?.GetXsd(assembly);
 
             return response;
         }
 
-		public Response FileUpload(UploadFileRequest uploadFileRequest, string filename, byte[] fileAsArray)
-		{
-			var response = new Response();
+        public Response FileUpload(UploadFileRequest uploadFileRequest, string filename, byte[] fileAsArray)
+        {
+            var response = new Response();
 
-			// Создаем сообщение без тела
-			var uploadMessage = new Message
-			{
-				RequestBody = "wait for file",
-				RequestCodeId = uploadFileRequest.RequsetCode,
-				ExternalSystemId = _externalSystem.Id,
-				RequestUser = "Orationi.Messaging.Core",
-				IsSyncRequest = false
-			};
-			_dbContext.Messages.Add(uploadMessage);
-			_dbContext.SaveChanges();
-
-
-			// Сохраняем файл
-			FileStore fileStore = new FileStore
-			{
-				MessageId = uploadMessage.Id,
-				FileName = filename,
-				CreatedOn = DateTime.Now,
-				Data = fileAsArray.ToArray()
-			};
-			_dbContext.FileStores.Add(fileStore);
-			_dbContext.SaveChanges();
-
-			// Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
-			uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
-			_dbContext.SaveChanges();
+            // Создаем сообщение без тела
+            var uploadMessage = new Message
+            {
+                RequestBody = "wait for file",
+                RequestCodeId = uploadFileRequest.RequsetCode,
+                ExternalSystemId = _externalSystem.Id,
+                RequestUser = "Orationi.Messaging.Core",
+                IsSyncRequest = false
+            };
+            _dbContext.Messages.Add(uploadMessage);
+            _dbContext.SaveChanges();
 
 
-			RabbitClient client = new RabbitClient();
-			client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+            // Сохраняем файл
+            FileStore fileStore = new FileStore
+            {
+                MessageId = uploadMessage.Id,
+                FileName = filename,
+                CreatedOn = DateTime.Now,
+                Data = fileAsArray.ToArray()
+            };
+            _dbContext.FileStores.Add(fileStore);
+            _dbContext.SaveChanges();
 
-			response.Id = uploadMessage.Id;
-			response.IsError = false;
+            // Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
+            uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
+            _dbContext.SaveChanges();
 
-			return response;
-		}
+
+            RabbitClient client = new RabbitClient();
+            client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+
+            response.Id = uploadMessage.Id;
+            response.IsError = false;
+
+            return response;
+        }
     }
 }

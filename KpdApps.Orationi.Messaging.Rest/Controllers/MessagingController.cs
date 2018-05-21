@@ -106,60 +106,60 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             return response;
         }
 
-		[HttpPost]
-		[Route("file/upload")]
-		public async Task<Response> FileUpload()
-		{
-			var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
+        [HttpPost]
+        [Route("file/upload")]
+        public async Task<Response> FileUpload()
+        {
+            var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
 
-			if (!isMimeMultipartContent)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.UnsupportedMediaType, 
-					new Response { IsError = true, Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart" })
-				);
+            if (!isMimeMultipartContent)
+                throw new HttpResponseException(Request.CreateResponse(
+                    HttpStatusCode.UnsupportedMediaType, 
+                    new Response { IsError = true, Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart" })
+                );
 
-			var provider = new MultipartMemoryStreamProvider();
-			await Request.Content.ReadAsMultipartAsync(provider);
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
 
-			if (provider.Contents.Count != 2)
-				throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (provider.Contents.Count != 2)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-			HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
-			if (json == null)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.BadRequest,
-					new Response { IsError = true, Error = "В теле запроса нет части с Content-type: application/json" })
-				);
+            HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+            if (json == null)
+                throw new HttpResponseException(Request.CreateResponse(
+                    HttpStatusCode.BadRequest,
+                    new Response { IsError = true, Error = "В теле запроса нет части с Content-type: application/json" })
+                );
 
-			UploadFileRequest fileInfo = null;
-			byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
-			using (var stream = new MemoryStream(jsonAsArray))
-			{
-				var sr = new StreamReader(stream);
-				fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
-			}
+            UploadFileRequest fileInfo = null;
+            byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
+            using (var stream = new MemoryStream(jsonAsArray))
+            {
+                var sr = new StreamReader(stream);
+                fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
+            }
 
-			if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
-				throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequsetCode, out Response response, out var externalSystem))
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
 
-			HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
-			if (file == null)
-				throw new HttpResponseException(Request.CreateResponse(
-					HttpStatusCode.BadRequest,
-					new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
-				);
+            HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
+            if (file == null)
+                throw new HttpResponseException(Request.CreateResponse(
+                    HttpStatusCode.BadRequest,
+                    new Response { IsError = true, Error = "В теле запроса нет части с файлом" })
+                );
 
-			string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
-			UploadFileRequest.ValidateFileName(fileName);
+            string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+            UploadFileRequest.ValidateFileName(fileName, Request);
 
 
-			byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
+            byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
 
-			var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-			response = imp.FileUpload(fileInfo, fileName, fileAsArray);
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.FileUpload(fileInfo, fileName, fileAsArray);
 
-			return response;
-		}
+            return response;
+        }
 
         [NonAction]
         private string GetTokenValue()
