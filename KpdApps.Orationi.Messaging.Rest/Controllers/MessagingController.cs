@@ -227,13 +227,12 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                     Error = "В теле запроса нет части с файлом"
                 };
                 log.Error(errorResponse);
-
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
             }
 
             string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
             log.Debug($"fileName: {fileName}");
-            UploadFileRequest.ValidateFileName(fileName);
+            UploadFileRequest.ValidateFileName(fileName, Request);
 
 
             byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
@@ -241,7 +240,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.FileUpload(fileInfo, fileName, fileAsArray);
             log.Debug($"Результат:\r\n{response}");
-            log.Debug("Звершение");
+            log.Debug("Завершение");
             return response;
         }
 

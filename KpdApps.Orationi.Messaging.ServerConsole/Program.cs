@@ -1,15 +1,54 @@
-﻿using KpdApps.Orationi.Messaging.DataAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
 {
     class Program
     {
+        private static readonly bool ShouldProcessSingleRequestCode = true;
+        private static readonly int RequestCode = 60109;
+
         static void Main(string[] args)
         {
             ProcessHostManager processHostManager = new ProcessHostManager("localhost", "orationi", "orationi");
+
+            if (ShouldProcessSingleRequestCode)
+            {
+                SingleRequestCodeProcessing(processHostManager, RequestCode);
+            }
+            else
+            {
+                MultipleRequestCodesProcessing(processHostManager);
+            }
+
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Process single plugin. Method for debugging mostly.
+        /// </summary>
+        /// <param name="processHostManager">RabbitMQ Instance</param>
+        /// <param name="requestCode">Reqeust code number to be processed</param>
+        private static void SingleRequestCodeProcessing(ProcessHostManager processHostManager, int requestCode)
+        {
+            processHostManager.Add(requestCode, false);
+
+            Console.WriteLine($"Processing RequestCode {requestCode}");
+            Console.WriteLine("Press [enter] to stop.");
+            Console.ReadLine();
+
+            processHostManager.Remove(requestCode, false);
+        }
+
+        /// <summary>
+        /// Process all plugins in DB.
+        /// </summary>
+        /// <param name="processHostManager">RabbitMQ Instance</param>
+        private static void MultipleRequestCodesProcessing(ProcessHostManager processHostManager)
+        {
             List<(int RequestCode, bool IsSync)> plugins = plugins = new List<(int RequestCode, bool IsSync)>();
 
             using (var dbContext = new OrationiDatabaseContext())
@@ -21,13 +60,12 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
             }
 
             plugins.ForEach(p => processHostManager.Add(p.RequestCode, p.IsSync));
+
             Console.WriteLine(" Press [enter] to stop.");
             Console.ReadLine();
 
             //TODO: разобраться почему после нажатия Enter не происходит завершения работы хост менеджера
             plugins.ForEach(p => processHostManager.Remove(p.RequestCode, p.IsSync));
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
         }
     }
 }
