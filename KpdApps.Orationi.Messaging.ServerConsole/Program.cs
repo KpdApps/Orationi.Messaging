@@ -8,7 +8,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     class Program
     {
         private static readonly bool ShouldProcessSingleRequestCode = true;
-        private static readonly int RequestCode = 60109;
+        private static readonly int SingleProcessingRequestCode = 60109;
 
         static void Main(string[] args)
         {
@@ -16,7 +16,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
 
             if (ShouldProcessSingleRequestCode)
             {
-                SingleRequestCodeProcessing(processHostManager, RequestCode);
+                SingleRequestCodeProcessing(processHostManager, SingleProcessingRequestCode);
             }
             else
             {
