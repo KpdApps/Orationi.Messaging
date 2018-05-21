@@ -42,7 +42,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             log.Debug("Запуск");
             log.Debug($"requestId: {requestId}");
             log.Debug($"Token: {GetTokenValue()}");
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId,out Response response, out var externalSystem))
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId, out Response response, out var externalSystem))
             {
                 log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
@@ -151,23 +151,42 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
             if (!isMimeMultipartContent)
             {
-                var errorResponse = new Response
+                var errorResponse = new ResponseId
                 {
                     IsError = true,
                     Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart"
                 };
                 log.Error(errorResponse);
 
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType,errorResponse));
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType, errorResponse));
             }
 
             var provider = new MultipartMemoryStreamProvider();
-            await Request.Content.ReadAsMultipartAsync(provider);
+
+            try
+            {
+                await Request.Content.ReadAsMultipartAsync(provider);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
+                {
+                    IsError = true,
+                    Error = ex.Message
+                }));
+            }
 
             log.Debug($"Contents count: {provider.Contents.Count}");
 
             if (provider.Contents.Count != 2)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
+                {
+                    IsError = true,
+                    Error = "Тело запроса должно состоять из файла и json-объекта"
+                }));
+            }
 
             HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
             if (json == null)
@@ -202,7 +221,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
             if (file == null)
             {
-                var errorResponse = new Response
+                var errorResponse = new ResponseId
                 {
                     IsError = true,
                     Error = "В теле запроса нет части с файлом"
