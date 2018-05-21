@@ -187,7 +187,7 @@ namespace KpdApps.Orationi.Messaging.Core
 			var uploadMessage = new Message
 			{
 				RequestBody = "wait for file",
-				RequestCodeId = uploadFileRequest.RequsetCode,
+				RequestCodeId = uploadFileRequest.RequestCode,
 				ExternalSystemId = _externalSystem.Id,
 				RequestUser = "Orationi.Messaging.Core",
 				IsSyncRequest = false
