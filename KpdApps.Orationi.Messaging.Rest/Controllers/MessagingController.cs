@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -247,7 +248,11 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [NonAction]
         private string GetTokenValue()
         {
-            return Request.Headers.GetValues("Token").FirstOrDefault();
+            var token = Request.Headers.TryGetValues("Token", out IEnumerable<string> values)
+                ? values.FirstOrDefault()
+                : null;
+
+            return token;
         }
     }
 }
