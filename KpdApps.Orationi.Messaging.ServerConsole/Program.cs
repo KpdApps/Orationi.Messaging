@@ -12,19 +12,21 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
 
         static void Main(string[] args)
         {
-            ProcessHostManager processHostManager = new ProcessHostManager("localhost", "orationi", "orationi");
-
-            if (ShouldProcessSingleRequestCode)
+            using (ProcessHostManager processHostManager = new ProcessHostManager("localhost", "orationi", "orationi"))
             {
-                SingleRequestCodeProcessing(processHostManager, SingleProcessingRequestCode);
-            }
-            else
-            {
-                MultipleRequestCodesProcessing(processHostManager);
-            }
 
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+                if (ShouldProcessSingleRequestCode)
+                {
+                    SingleRequestCodeProcessing(processHostManager, SingleProcessingRequestCode);
+                }
+                else
+                {
+                    MultipleRequestCodesProcessing(processHostManager);
+                }
+
+                Console.WriteLine(" Press [enter] to exit.");
+                Console.ReadLine();
+            }
         }
 
         /// <summary>
