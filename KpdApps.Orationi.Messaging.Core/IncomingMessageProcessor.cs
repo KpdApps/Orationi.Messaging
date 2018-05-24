@@ -38,8 +38,10 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
-                client.Execute(message.RequestCodeId, message.Id);
+                using (RabbitClient client = new RabbitClient())
+                {
+                    client.Execute(message.RequestCodeId, message.Id);
+                }
 
                 _dbContext.Entry(message).Reload();
 
@@ -86,8 +88,10 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
-                client.PullMessage(message.RequestCodeId, message.Id);
+                using (RabbitClient client = new RabbitClient())
+                {
+                    client.PullMessage(message.RequestCodeId, message.Id);
+                }
 
                 ResponseId response = new ResponseId();
                 response.Id = message.Id;
@@ -154,7 +158,7 @@ namespace KpdApps.Orationi.Messaging.Core
 
             response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
                 ?.GetXsd(assembly);
-            
+
             response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
                 ?.GetXsd(assembly);
 
@@ -194,8 +198,10 @@ namespace KpdApps.Orationi.Messaging.Core
             _dbContext.SaveChanges();
 
 
-            RabbitClient client = new RabbitClient();
-            client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+            using (RabbitClient client = new RabbitClient())
+            {
+                client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+            }
 
             response.Id = uploadMessage.Id;
             response.IsError = false;

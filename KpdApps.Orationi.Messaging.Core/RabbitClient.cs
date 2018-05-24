@@ -126,14 +126,15 @@ namespace KpdApps.Orationi.Messaging.Core
 
         public void Close()
         {
-            _connection.Close();
+            if (_connection.IsOpen)
+            {
+                _connection.Close();
+            }
         }
 
         public void Dispose()
         {
-            if (_connection.IsOpen)
-                Close();
-
+            Close();
             _connection.Dispose();
         }
     }
