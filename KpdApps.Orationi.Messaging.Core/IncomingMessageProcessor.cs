@@ -78,6 +78,8 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 return new ResponseStatus
                 {
+                    StatusCode = (int?)null,
+                    StatusName = null,
                     IsError = true,
                     Error = $"Запрос {requestId} не найден!"
                 };
@@ -86,7 +88,9 @@ namespace KpdApps.Orationi.Messaging.Core
             return new ResponseStatus
             {
                 StatusCode = message.MessageStatusCode.Id,
-                StatusName = message.MessageStatusCode.Name
+                StatusName = message.MessageStatusCode.Name,
+                IsError = false,
+                Error = null
             };
         }
 

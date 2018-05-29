@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace KpdApps.Orationi.Messaging.Common.Models
 {
@@ -6,7 +7,7 @@ namespace KpdApps.Orationi.Messaging.Common.Models
     public class ResponseStatus : ResponseId
     {
         [DataMember]
-        public int StatusCode { get; set; }
+        public Nullable<int> StatusCode { get; set; }
 
         [DataMember]
         public string StatusName { get; set; }

@@ -34,7 +34,9 @@ namespace KpdApps.Orationi.Messaging.Core
             return new Response
             {
                 Id = message.Id,
-                Body = message.ResponseBody
+                Body = message.ResponseBody,
+                IsError = false,
+                Error = null
             };
         }
 
@@ -44,7 +46,8 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 Id = requestId,
                 IsError = true,
-                Error = $"Запрос {requestId} не найден!"
+                Error = $"Запрос {requestId} не найден!",
+                Body = null
             };
         }
 
@@ -53,7 +56,8 @@ namespace KpdApps.Orationi.Messaging.Core
             var resultResponse = new Response
             {
                 Id = message.Id,
-                IsError = true
+                IsError = true,
+                Body = null
             };
 
             ProcessingError processingError = _dbContext.ProcessingErrors.FirstOrDefault(pe => pe.MessageId == message.Id);
