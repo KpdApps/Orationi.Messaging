@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace KpdApps.Orationi.Messaging.Common.Models
 {
     [DataContract]
-    public class ResponseStatus : ResponseId
+    public class ResponseStatus : ResponseBase
     {
         [DataMember]
         public Nullable<int> StatusCode { get; set; }
