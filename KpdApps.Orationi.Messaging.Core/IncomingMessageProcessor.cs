@@ -71,6 +71,29 @@ namespace KpdApps.Orationi.Messaging.Core
             return resultResponse;
         }
 
+        public ResponseStatus GetStatus(Guid requestId)
+        {
+            var message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+            if (message is null)
+            {
+                return new ResponseStatus
+                {
+                    StatusCode = (int?)null,
+                    StatusName = null,
+                    IsError = true,
+                    Error = $"Запрос {requestId} не найден!"
+                };
+            }
+
+            return new ResponseStatus
+            {
+                StatusCode = message.MessageStatusCode.Id,
+                StatusName = message.MessageStatusCode.Name,
+                IsError = false,
+                Error = null
+            };
+        }
+
         public ResponseId ExecuteAsync(Request request)
         {
             try

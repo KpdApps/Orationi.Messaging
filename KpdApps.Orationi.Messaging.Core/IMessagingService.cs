@@ -15,7 +15,7 @@ namespace KpdApps.Orationi.Messaging.Core
         Response GetResponse(Guid requestId);
 
         [OperationContract]
-        Response GetStatus(Guid requestId);
+        ResponseStatus GetStatus(Guid requestId);
 
         [OperationContract]
         Response ExecuteRequest(Request request);

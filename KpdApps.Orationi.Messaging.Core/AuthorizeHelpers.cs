@@ -45,7 +45,7 @@ namespace KpdApps.Orationi.Messaging.Core
         }
 
         public static bool IsAuthorized<T>(
-			OrationiDatabaseContext dbContext,
+            OrationiDatabaseContext dbContext,
             string token,
             Guid messageId,
             out T response,
