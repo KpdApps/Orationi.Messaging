@@ -59,9 +59,23 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
         [HttpGet]
         [Route("status/{requestId}")]
-        public Response GetStatus(Guid requestId)
+        public ResponseStatus GetStatus(Guid requestId)
         {
-            throw new NotImplementedException();
+            log.Debug("Запуск");
+            log.Debug($"requestId: {requestId}");
+            log.Debug($"Token: {GetTokenValue()}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId, out ResponseStatus response, out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            log.Debug("Авторизация пройдена");
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetStatus(requestId);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
+            return response;
         }
 
         [HttpPost]
