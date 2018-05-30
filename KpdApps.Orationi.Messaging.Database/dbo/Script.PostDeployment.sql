@@ -16,3 +16,34 @@ go
 INSERT INTO [dbo].[WorkflowExecutionStepsStatusCodes] ([Id], [Name]) 
 VALUES (0, 'New'), (1000, 'InProgress'), (3000, 'Finished'), (9000, 'Error');
 go
+
+-- job по запуску удаления данных из таблицы 
+use msdb
+go
+EXEC dbo.sp_add_job
+    @job_name = N'Delete old records from CacheSPARKRequest',
+    @enabled = enabled;
+    
+    
+GO  
+EXEC sp_add_jobstep
+    @job_name = N'Delete old records from CacheSPARKRequest',  
+    @step_name = N'Delete records',
+    @database_name = 'OrationiMessageBus',
+    @command = N'exec [dbo].[sp_DeleteOldCacheSPARKRequests]',
+    @retry_attempts = 5,
+    @retry_interval = 5;
+GO  
+EXEC dbo.sp_add_schedule
+    @schedule_name = N'Every day',
+    @freq_type = 4,
+    @active_start_time = 233000;
+USE msdb ;  
+GO  
+EXEC sp_attach_schedule
+   @job_name = N'Delete old records from CacheSPARKRequest',
+   @schedule_name = N'Every day';
+GO  
+EXEC dbo.sp_add_jobserver
+    @job_name = N'Delete old records from CacheSPARKRequest';
+GO  
