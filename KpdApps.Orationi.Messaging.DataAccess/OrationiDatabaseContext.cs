@@ -47,9 +47,11 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<WorkflowExecutionStepsStatusCode> WorkflowExecutionStepsStatusCodes { get; set; }
 
-		public DbSet<FileStore> FileStores { get; set; }
+        public DbSet<FileStore> FileStores { get; set; }
 
-		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public DbSet<CacheSparkRequest> CacheSparkRequests { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -68,14 +70,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Configurations.Add(new WorkflowActionTypeConfiguration());
             modelBuilder.Configurations.Add(new WorkflowExecutionStepTypeConfiguration());
             modelBuilder.Configurations.Add(new WorkflowExecutionStepsStatusCodeTypeConfiguration());
-			modelBuilder.Configurations.Add(new FileStoreTypeConfiguration());
-        }
-
-        private void AddConfiguration<TConfiguration, TEntity>(DbModelBuilder modelBuilder)
-            where TConfiguration : EntityTypeConfiguration<TEntity>, new ()
-            where TEntity : class
-        {
-            modelBuilder.Configurations.Add(new TConfiguration());
+            modelBuilder.Configurations.Add(new FileStoreTypeConfiguration());
+            modelBuilder.Configurations.Add(new CacheSparkRequestTypeConfiguration());
         }
     }
 }

@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityConfigurations\CacheSparkRequestTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\FileStoreTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\GlobalSettingTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Models\ExternalSystemRequestCode.cs" />
     <Compile Include="Models\FileStore.cs" />
     <Compile Include="Models\GlobalSetting.cs" />
+    <Compile Include="Models\CacheSparkRequest.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageStatusCode.cs" />
     <Compile Include="Models\PluginActionSet.cs" />
