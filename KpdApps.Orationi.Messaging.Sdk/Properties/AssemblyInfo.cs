@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("KpdApps.Orationi.Messaging.Sdk")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("KpdApps Orationi Messaging Sdk Package")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("REC")]
 [assembly: AssemblyProduct("KpdApps.Orationi.Messaging.Sdk")]

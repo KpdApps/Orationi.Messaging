@@ -2,7 +2,7 @@
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Threading;
+using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.Core;
 using KpdApps.Orationi.Messaging.DataAccess;
@@ -22,9 +22,29 @@ namespace KpdApps.Orationi.Messaging.Soap
             XmlConfigurator.Configure();
         }
 
-        public Response GetStatus(Guid requestId)
+        public ResponseStatus GetStatus(Guid requestId)
         {
-            throw new NotImplementedException();
+            log.Debug("Запуск");
+            log.Debug($"Сообщение:\r\n{OperationContext.Current.RequestContext.RequestMessage}");
+            log.Debug($"requestId: {requestId}");
+            log.Debug($"Token: {WebOperationContext.Current.IncomingRequest.Headers["Token"]}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                requestId,
+                out ResponseStatus response,
+                out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+
+            log.Debug("Авторизация пройдена");
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.GetStatus(requestId);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
+            return response;
         }
 
         public Response ExecuteRequest(Request request)
@@ -144,6 +164,11 @@ namespace KpdApps.Orationi.Messaging.Soap
 
             log.Debug("Звершение");
             return response;
+        }
+
+        public Task<Response> FileUpload()
+        {
+            throw new NotImplementedException();
         }
     }
 }

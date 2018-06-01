@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Web;
+using System.Xml.Serialization;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
@@ -39,8 +38,10 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
-                client.Execute(message.RequestCodeId, message.Id);
+                using (RabbitClient client = new RabbitClient())
+                {
+                    client.Execute(message.RequestCodeId, message.Id);
+                }
 
                 _dbContext.Entry(message).Reload();
 
@@ -60,25 +61,37 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
+                return ResponseGenerator.GenerateByException(ex);
             }
         }
 
         public Response GetResponse(Guid requestId)
         {
-            Response response = new Response();
-            Message message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+            Response resultResponse = new ResponseGenerator(_dbContext, requestId).GenerateByMessageAndRequestId();
+            return resultResponse;
+        }
 
+        public ResponseStatus GetStatus(Guid requestId)
+        {
+            var message = _dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
             if (message is null)
             {
-                response.Id = requestId;
-                response.IsError = true;
-                response.Error = $"Request {requestId} not found";
-                return response;
+                return new ResponseStatus
+                {
+                    StatusCode = (int?)null,
+                    StatusName = null,
+                    IsError = true,
+                    Error = $"Запрос {requestId} не найден!"
+                };
             }
 
-            //TODO: Обработка статуса сообщения, если еще не обработано возвращаем статус / ошибку
-            return new Response() { Id = requestId, IsError = false, Error = null, Body = message.ResponseBody };
+            return new ResponseStatus
+            {
+                StatusCode = message.MessageStatusCode.Id,
+                StatusName = message.MessageStatusCode.Name,
+                IsError = false,
+                Error = null
+            };
         }
 
         public ResponseId ExecuteAsync(Request request)
@@ -98,8 +111,10 @@ namespace KpdApps.Orationi.Messaging.Core
                 _dbContext.Messages.Add(message);
                 _dbContext.SaveChanges();
 
-                RabbitClient client = new RabbitClient();
-                client.PullMessage(message.RequestCodeId, message.Id);
+                using (RabbitClient client = new RabbitClient())
+                {
+                    client.PullMessage(message.RequestCodeId, message.Id);
+                }
 
                 ResponseId response = new ResponseId();
                 response.Id = message.Id;
@@ -108,7 +123,7 @@ namespace KpdApps.Orationi.Messaging.Core
             }
             catch (Exception ex)
             {
-                return new Response() { IsError = true, Error = $"{ex.Message} {(ex.InnerException is null ? "" : ex.InnerException.Message)}" };
+                return ResponseGenerator.GenerateByException(ex);
             }
         }
 
@@ -120,7 +135,7 @@ namespace KpdApps.Orationi.Messaging.Core
                 RequestCodeAlias requestCodeAlias = _dbContext.RequestCodeAliases.FirstOrDefault(rca => rca.Alias == request.Type);
                 if (requestCodeAlias == null)
                 {
-                    throw new InvalidOperationException("Invalid request type.");
+                    throw new InvalidOperationException($"Invalid request type: {request.Type}.");
                 }
                 request.Code = requestCodeAlias.RequestCode;
             }
@@ -160,19 +175,59 @@ namespace KpdApps.Orationi.Messaging.Core
                 return response;
             }
 
-            var assembly = Assembly.Load(registeredPlugin
-                .PluginAssembly
-                .Assembly);
+            var assembly = Assembly.Load(registeredPlugin.PluginAssembly.Assembly);
 
-            var pluginType = assembly.GetType(registeredPlugin
-                .Class);
+            var pluginType = assembly.GetType(registeredPlugin.Class);
 
-            response.RequestContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
+            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
                 ?.GetXsd(assembly);
-            response.ResponseContract =
-                ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+
+            response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
                 ?.GetXsd(assembly);
+
+            return response;
+        }
+
+        public Response FileUpload(UploadFileRequest uploadFileRequest, string filename, byte[] fileAsArray)
+        {
+            var response = new Response();
+
+            // Создаем сообщение без тела
+            var uploadMessage = new Message
+            {
+                RequestBody = "wait for file",
+                RequestCodeId = uploadFileRequest.RequestCode,
+                ExternalSystemId = _externalSystem.Id,
+                RequestUser = "Orationi.Messaging.Core",
+                IsSyncRequest = false
+            };
+            _dbContext.Messages.Add(uploadMessage);
+            _dbContext.SaveChanges();
+
+
+            // Сохраняем файл
+            FileStore fileStore = new FileStore
+            {
+                MessageId = uploadMessage.Id,
+                FileName = filename,
+                CreatedOn = DateTime.Now,
+                Data = fileAsArray.ToArray()
+            };
+            _dbContext.FileStores.Add(fileStore);
+            _dbContext.SaveChanges();
+
+            // Добавляем тело сообщения, чтобы плагин смог найти файл и услугу
+            uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
+            _dbContext.SaveChanges();
+
+
+            using (RabbitClient client = new RabbitClient())
+            {
+                client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+            }
+
+            response.Id = uploadMessage.Id;
+            response.IsError = false;
 
             return response;
         }
