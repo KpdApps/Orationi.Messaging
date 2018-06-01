@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityConfigurations\FileStoreTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\GlobalSettingTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageTypeConfiguration.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="EntityConfigurations\WorkflowTypeConfiguration.cs" />
     <Compile Include="Models\ExternalSystem.cs" />
     <Compile Include="Models\ExternalSystemRequestCode.cs" />
+    <Compile Include="Models\FileStore.cs" />
     <Compile Include="Models\GlobalSetting.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageStatusCode.cs" />

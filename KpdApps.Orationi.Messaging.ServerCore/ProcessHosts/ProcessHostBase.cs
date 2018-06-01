@@ -47,11 +47,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             _requestcode = requestcode;
         }
 
-        ~ProcessHostBase()
-        {
-            this.Dispose();
-        }
-
         public void Dispose()
         {
             if (channel.CloseReason == null)
