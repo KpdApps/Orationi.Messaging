@@ -9,7 +9,8 @@ namespace KpdApps.Orationi.Messaging.Core
 {
     public static class AuthorizeHelpers
     {
-        public static bool IsAuthorized<T>(OrationiDatabaseContext dbContext,
+        public static bool IsAuthorized<T>(
+			OrationiDatabaseContext dbContext,
             string token,
             int requestCode,
             out T response,
@@ -43,31 +44,28 @@ namespace KpdApps.Orationi.Messaging.Core
             return false;
         }
 
-        public static bool IsAuthorized<T>(OrationiDatabaseContext dbContext,
+        public static bool IsAuthorized<T>(
+            OrationiDatabaseContext dbContext,
             string token,
-            Guid requestId,
+            Guid messageId,
             out T response,
             out ExternalSystem externalSystem)
             where T : ResponseBase, new()
         {
-            var message = dbContext.Messages.FirstOrDefault(m => m.Id == requestId);
+            var message = dbContext.Messages.FirstOrDefault(m => m.Id == messageId);
 
             if (message is null)
             {
                 response = new T
                 {
                     IsError = true,
-                    Error = $"Request {requestId} not found"
+                    Error = $"Request {messageId} not found"
                 };
                 externalSystem = null;
                 return false;
             }
 
-            return IsAuthorized<T>(dbContext,
-                token,
-                message.RequestCodeId,
-                out response,
-                out externalSystem);
+            return IsAuthorized<T>(dbContext, token, message.RequestCodeId, out response, out externalSystem);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using KpdApps.Orationi.Messaging.Core.Configurations.Rabbitmq;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.ServerCore.PluginHosts;
+using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
 using log4net;
 using log4net.Config;
 
@@ -35,13 +35,12 @@ namespace KpdApps.Orationi.Service.PluginHost
                         {
                             RequestCode = requestCode.Id,
                             IsSync = true
-                        }
-                        , new Plugin
+                        }, 
+                        new Plugin
                         {
                             RequestCode = requestCode.Id,
                             IsSync = false
                         }
-
                     });
                 }
             }

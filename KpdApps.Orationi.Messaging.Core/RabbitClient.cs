@@ -13,10 +13,8 @@ namespace KpdApps.Orationi.Messaging.Core
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly string _replyQueueName;
-        private readonly EventingBasicConsumer _consumer;
+        private readonly string _correlationId;
         private readonly BlockingCollection<string> _respQueue = new BlockingCollection<string>();
-        private readonly IBasicProperties _props;
         private readonly string _hostName;
         private readonly string _userName;
         private readonly string _password;
@@ -34,32 +32,21 @@ namespace KpdApps.Orationi.Messaging.Core
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _replyQueueName = _channel.QueueDeclare().QueueName;
-            _consumer = new EventingBasicConsumer(_channel);
 
-            _props = _channel.CreateBasicProperties();
-            var correlationId = Guid.NewGuid().ToString();
-            _props.CorrelationId = correlationId;
-            _props.ReplyTo = _replyQueueName;
-
-            _consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body;
-                var response = Encoding.UTF8.GetString(body);
-                if (ea.BasicProperties.CorrelationId == correlationId)
-                {
-                    _respQueue.Add(response);
-                }
-            };
+            _correlationId = Guid.NewGuid().ToString();
         }
 
         public string Execute(int requestCode, Guid messageId)
         {
-            RabbitRequest request = new RabbitRequest();
-            request.MessageId = messageId;
-            request.RequestCode = requestCode;
+            RabbitRequest request = new RabbitRequest
+            {
+                MessageId = messageId,
+                RequestCode = requestCode
+            };
 
             string message = JsonConvert.SerializeObject(request);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+
             string queueName = $"queue-{requestCode}-1";
 
             _channel.QueueDeclare(queue: queueName,
@@ -68,16 +55,33 @@ namespace KpdApps.Orationi.Messaging.Core
                 autoDelete: false,
                 arguments: null);
 
-            var messageBytes = Encoding.UTF8.GetBytes(message);
+            IBasicProperties props = _channel.CreateBasicProperties();
+            props.CorrelationId = _correlationId;
+            string replyQueueName = _channel.QueueDeclare($"response-{requestCode}-1-{messageId.ToString()}").QueueName;
+            props.ReplyTo = replyQueueName;
+
+            
+
             _channel.BasicPublish(
                 exchange: "",
                 routingKey: queueName,
-                basicProperties: _props,
+                basicProperties: props,
                 body: messageBytes);
 
+            EventingBasicConsumer consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body;
+                var response = Encoding.UTF8.GetString(body);
+                if (ea.BasicProperties.CorrelationId == _correlationId)
+                {
+                    _respQueue.Add(response);
+                }
+            };
+
             _channel.BasicConsume(
-                consumer: _consumer,
-                queue: _replyQueueName,
+                consumer: consumer,
+                queue: replyQueueName,
                 autoAck: true);
 
             return _respQueue.Take();
@@ -122,14 +126,15 @@ namespace KpdApps.Orationi.Messaging.Core
 
         public void Close()
         {
-            _connection.Close();
+            if (_connection.IsOpen)
+            {
+                _connection.Close();
+            }
         }
 
         public void Dispose()
         {
-            if (_connection.IsOpen)
-                _connection.Close();
-
+            Close();
             _connection.Dispose();
         }
     }
