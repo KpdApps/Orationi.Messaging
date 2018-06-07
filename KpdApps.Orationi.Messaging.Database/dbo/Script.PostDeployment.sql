@@ -21,16 +21,16 @@ go
 use msdb
 go
 EXEC dbo.sp_add_job
-    @job_name = N'Delete old records from CacheSPARKRequest',
+    @job_name = N'Delete old records from CacheRequestResponse',
     @enabled = enabled;
     
     
 GO  
 EXEC sp_add_jobstep
-    @job_name = N'Delete old records from CacheSPARKRequest',  
+    @job_name = N'Delete old records from CacheRequestResponse',  
     @step_name = N'Delete records',
     @database_name = 'OrationiMessageBus',
-    @command = N'exec [dbo].[sp_DeleteOldCacheSPARKRequests]',
+    @command = N'exec [dbo].[sp_DeleteOldCacheRequestResponse]',
     @retry_attempts = 5,
     @retry_interval = 5;
 GO  
@@ -41,9 +41,9 @@ EXEC dbo.sp_add_schedule
 USE msdb ;  
 GO  
 EXEC sp_attach_schedule
-   @job_name = N'Delete old records from CacheSPARKRequest',
+   @job_name = N'Delete old records from CacheRequestResponse',
    @schedule_name = N'Every day';
 GO  
 EXEC dbo.sp_add_jobserver
-    @job_name = N'Delete old records from CacheSPARKRequest';
+    @job_name = N'Delete old records from CacheRequestResponse';
 GO  

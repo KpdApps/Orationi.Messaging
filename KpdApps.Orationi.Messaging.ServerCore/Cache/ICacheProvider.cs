@@ -6,6 +6,6 @@
 
         string TryGetValue(string key);
 
-        void SetValue(string key, string value);
+        void SetValue(string key, string value, int expirePeriod);
     }
 }

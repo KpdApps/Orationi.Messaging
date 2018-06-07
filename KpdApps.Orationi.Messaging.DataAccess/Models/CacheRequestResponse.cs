@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
-    public class CacheSparkRequest
+    public class CacheRequestResponse
     {
         public Guid Id { get; set; }
 
@@ -12,6 +12,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string Value { get; set; }
 
-        public DateTime Created { get; set; }
+        public DateTime ExpireDate { get; set; }
     }
 }

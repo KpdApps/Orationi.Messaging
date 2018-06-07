@@ -49,7 +49,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<FileStore> FileStores { get; set; }
 
-        public DbSet<CacheSparkRequest> CacheSparkRequests { get; set; }
+        public DbSet<CacheRequestResponse> CacheRequestResponse { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -71,7 +71,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Configurations.Add(new WorkflowExecutionStepTypeConfiguration());
             modelBuilder.Configurations.Add(new WorkflowExecutionStepsStatusCodeTypeConfiguration());
             modelBuilder.Configurations.Add(new FileStoreTypeConfiguration());
-            modelBuilder.Configurations.Add(new CacheSparkRequestTypeConfiguration());
+            modelBuilder.Configurations.Add(new CacheRequestResponseTypeConfiguration());
         }
     }
 }

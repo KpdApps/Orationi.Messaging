@@ -29,28 +29,34 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Cache
         public string TryGetValue(string key)
         {
             var value = _dbContext
-                .CacheSparkRequests
+                .CacheRequestResponse
                 .FirstOrDefault(c => c.Key == key.ToLower())
                 ?.Value;
 
             return value;
         }
 
-        public void SetValue(string key, string value)
+        /// <summary>
+        /// Сохранение значения по ключу в кэш
+        /// </summary>
+        /// <param name="key">Ключ</param>
+        /// <param name="value">Значение</param>
+        /// <param name="expirePeriod">Период актуальности (дни)</param>
+        public void SetValue(string key, string value, int expirePeriod)
         {
-            CacheSparkRequest cacheEntity = _dbContext
-                .CacheSparkRequests
+            CacheRequestResponse cacheEntity = _dbContext
+                .CacheRequestResponse
                 .FirstOrDefault(c => c.Key == key.ToLower());
 
             if (cacheEntity is null)
             {
-                cacheEntity = new CacheSparkRequest
+                cacheEntity = new CacheRequestResponse
                 {
                     Key = key.ToLower(),
                     Value = value.ToLower(),
-                    Created = DateTime.Now
+                    ExpireDate = DateTime.Now.AddDays(expirePeriod)
                 };
-                _dbContext.CacheSparkRequests.Add(cacheEntity);
+                _dbContext.CacheRequestResponse.Add(cacheEntity);
             }
             else
             {

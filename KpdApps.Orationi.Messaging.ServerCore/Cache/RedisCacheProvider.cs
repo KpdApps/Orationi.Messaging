@@ -14,7 +14,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Cache
             throw new NotImplementedException();
         }
 
-        public void SetValue(string key, string value)
+        public void SetValue(string key, string value, int expirePeriod)
         {
             throw new NotImplementedException();
         }

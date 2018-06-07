@@ -4,9 +4,9 @@ using KpdApps.Orationi.Messaging.DataAccess.Models;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations
 {
-    class CacheSparkRequestTypeConfiguration : EntityTypeConfiguration<CacheSparkRequest>
+    class CacheRequestResponseTypeConfiguration : EntityTypeConfiguration<CacheRequestResponse>
     {
-        public CacheSparkRequestTypeConfiguration()
+        public CacheRequestResponseTypeConfiguration()
         {
             Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);

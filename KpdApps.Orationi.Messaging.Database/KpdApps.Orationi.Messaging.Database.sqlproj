@@ -82,7 +82,7 @@
     <Build Include="dbo\Tables\WorkflowExecutionStepsStatusCodes.sql" />
     <Build Include="dbo\Tables\WorkflowExecutionSteps.sql" />
     <Build Include="dbo\Tables\FileStore.sql" />
-    <Build Include="dbo\Tables\CacheSPARKRequest.sql" />
+    <Build Include="dbo\Tables\CacheRequestResponse.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\Script.PostDeployment.sql" />
