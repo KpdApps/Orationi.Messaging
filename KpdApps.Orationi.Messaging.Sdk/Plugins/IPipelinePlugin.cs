@@ -8,20 +8,18 @@
         IPipelineExecutionContext Context { get; }
 
         /// <summary>
-        /// Uri to Message contract in plugin-assembly.
-        /// Required for first plugin in pipeline.
-        /// </summary>
-        string MessageContractUri { get; }
-
-        /// <summary>
         /// Uri to request contract uri in plugin-assembly.
         /// </summary>
-        string RequestContractUri { get; }
+        string RequestContractInUri { get; }
+
+        string RequestContractOutUri { get; }
+
+        string ResponseContractInUri { get; }
 
         /// <summary>
         /// Uri to response contract uri in plugin-assembly.
         /// </summary>
-        string ResponseContractUri { get; }
+        string ResponseContractOutUri { get; }
 
         /// <summary>
         /// List of used Global Settings.

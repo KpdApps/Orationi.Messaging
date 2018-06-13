@@ -179,10 +179,10 @@ namespace KpdApps.Orationi.Messaging.Core
 
             var pluginType = assembly.GetType(registeredPlugin.Class);
 
-            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractAttribute)))
+            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractInAttribute)))
                 ?.GetXsd(assembly);
 
-            response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractAttribute)))
+            response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractOutAttribute)))
                 ?.GetXsd(assembly);
 
             return response;

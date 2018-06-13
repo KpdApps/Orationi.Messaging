@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ContractAttribute.cs" />
-    <Compile Include="Attributes\RequestContractAttribute.cs" />
-    <Compile Include="Attributes\ResponseContractAttribute.cs" />
+    <Compile Include="Attributes\RequestContractOutAttribute.cs" />
+    <Compile Include="Attributes\RequestContractInAttribute.cs" />
+    <Compile Include="Attributes\ResponseContractInAttribute.cs" />
+    <Compile Include="Attributes\ResponseContractOutAttribute.cs" />
     <Compile Include="IPipelineExecutionContext.cs" />
     <Compile Include="Plugins\BasePipelinePlugin.cs" />
     <Compile Include="Plugins\IPipelinePlugin.cs" />
