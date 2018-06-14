@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KpdApps.Orationi.Messaging.DataAccess;
+﻿using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Cache
 {

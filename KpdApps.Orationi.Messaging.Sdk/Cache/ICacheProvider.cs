@@ -1,4 +1,4 @@
-﻿namespace KpdApps.Orationi.Messaging.ServerCore.Cache
+﻿namespace KpdApps.Orationi.Messaging.Sdk.Cache
 {
     public interface ICacheProvider
     {

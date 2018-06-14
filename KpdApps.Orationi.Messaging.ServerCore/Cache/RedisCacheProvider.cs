@@ -1,4 +1,5 @@
 ﻿using System;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Cache
 {

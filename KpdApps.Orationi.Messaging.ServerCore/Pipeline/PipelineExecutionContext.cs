@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
 using KpdApps.Orationi.Messaging.ServerCore.Cache;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline

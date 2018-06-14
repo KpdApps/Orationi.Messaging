@@ -2,6 +2,7 @@
 using System.Linq;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Cache
 {
@@ -30,7 +31,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Cache
         {
             var value = _dbContext
                 .CacheRequestResponse
-                .FirstOrDefault(c => c.Key == key.ToLower())
+                .FirstOrDefault(c => c.Key == key)
                 ?.Value;
 
             return value;
@@ -46,21 +47,21 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Cache
         {
             CacheRequestResponse cacheEntity = _dbContext
                 .CacheRequestResponse
-                .FirstOrDefault(c => c.Key == key.ToLower());
+                .FirstOrDefault(c => c.Key == key);
 
             if (cacheEntity is null)
             {
                 cacheEntity = new CacheRequestResponse
                 {
-                    Key = key.ToLower(),
-                    Value = value.ToLower(),
+                    Key = key,
+                    Value = value,
                     ExpireDate = DateTime.Now.AddDays(expirePeriod)
                 };
                 _dbContext.CacheRequestResponse.Add(cacheEntity);
             }
             else
             {
-                cacheEntity.Value = value.ToLower();
+                cacheEntity.Value = value;
             }
 
             _dbContext.SaveChanges();

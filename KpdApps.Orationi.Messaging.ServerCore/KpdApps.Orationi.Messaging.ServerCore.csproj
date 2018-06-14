@@ -62,7 +62,6 @@
     <Compile Include="AssembliesPreLoader.cs" />
     <Compile Include="Cache\CacheProviderFactory.cs" />
     <Compile Include="Cache\DatabaseCacheProvider.cs" />
-    <Compile Include="Cache\ICacheProvider.cs" />
     <Compile Include="Cache\RedisCacheProvider.cs" />
     <Compile Include="Pipeline\IExecutableStep.cs" />
     <Compile Include="Pipeline\PipelineExecutionContext.cs" />
