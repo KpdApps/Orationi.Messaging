@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
 
 namespace KpdApps.Orationi.Messaging.Sdk
 {
@@ -27,6 +28,9 @@ namespace KpdApps.Orationi.Messaging.Sdk
 
         IDictionary GlobalSettings { get; }
 
-		byte[] GetFile(Guid messageId, out string filename);
-	}
+        byte[] GetFile(Guid messageId, out string filename);
+
+        ICacheProvider CacheProvider { get; }
+
+    }
 }
