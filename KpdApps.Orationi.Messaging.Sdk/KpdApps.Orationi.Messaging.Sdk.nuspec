@@ -6,8 +6,8 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/KpdApps/KpdApps.Common.MsCrm2015/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/KpdApps/KpdApps.Common.MsCrm2015</projectUrl>
+    <licenseUrl>https://github.com/KpdApps/Orationi.Messaging/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/KpdApps/Orationi.Messaging</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2018</copyright>
