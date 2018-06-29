@@ -7,36 +7,40 @@ namespace KpdApps.Orationi.Messaging.Sdk.Plugins
     {
         public IPipelineExecutionContext Context { get; set; }
 
-        public virtual string MessageContractUri { get; protected set; }
+        public virtual string RequestContractInUri { get; }
 
-        public virtual string RequestContractUri { get; protected set; }
+        public virtual string RequestContractOutUri { get; }
 
-        public virtual string ResponseContractUri { get; protected set; }
+        public virtual string ResponseContractInUri { get; }
+
+        public virtual string ResponseContractOutUri { get; }
 
         public virtual string[] GlobalSettingsList => new string[] { };
 
         public virtual string[] LocalSettingsList => new string[] { };
 
-        public BasePipelinePlugin(IPipelineExecutionContext context)
+        protected BasePipelinePlugin(IPipelineExecutionContext context)
         {
             Context = context;
-            RequestContractUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(RequestContractAttribute)))?.Uri;
-            ResponseContractUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(ResponseContractAttribute)))?.Uri;
+            RequestContractInUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(RequestContractInAttribute)))?.Uri;
+            RequestContractOutUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(RequestContractOutAttribute)))?.Uri;
+            ResponseContractInUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(ResponseContractInAttribute)))?.Uri;
+            ResponseContractOutUri = ((ContractAttribute)GetType().GetCustomAttribute(typeof(ResponseContractOutAttribute)))?.Uri;
         }
 
         public virtual void AfterExecution()
         {
-            if (!string.IsNullOrEmpty(ResponseContractUri) && !string.IsNullOrEmpty(Context.ResponseBody))
+            if (!string.IsNullOrEmpty(ResponseContractOutUri) && !string.IsNullOrEmpty(Context.ResponseBody))
             {
-                XsdValidator.ValidateXml(Context.ResponseBody, new[] { ResponseContractUri }, this.GetType());
+                XsdValidator.ValidateXml(Context.ResponseBody, new[] { ResponseContractOutUri }, this.GetType());
             }
         }
 
         public virtual void BeforeExecution()
         {
-            if (!string.IsNullOrEmpty(RequestContractUri) && !string.IsNullOrEmpty(Context.RequestBody))
+            if (!string.IsNullOrEmpty(RequestContractInUri) && !string.IsNullOrEmpty(Context.RequestBody))
             {
-                XsdValidator.ValidateXml(Context.RequestBody, new[] { RequestContractUri }, this.GetType());
+                XsdValidator.ValidateXml(Context.RequestBody, new[] { RequestContractInUri }, this.GetType());
             }
         }
 
