@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using KpdApps.Orationi.Messaging.Sdk.Cache;
+using KpdApps.Orationi.Messaging.ServerCore.Cache;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
@@ -36,27 +38,30 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private IWorkflowExecutionContext _workflowExecutionContext;
 
-		private DbSet<FileStore> _fileStores;
+        private DbSet<FileStore> _fileStores;
+
+        public ICacheProvider CacheProvider { get; }
 
         internal PipelineExecutionContext(IWorkflowExecutionContext workflowExecutionContext, OrationiDatabaseContext dbContext)
         {
             PipelineValues = new Dictionary<string, object>();
             PluginStepSettings = new Dictionary<string, object>();
             _workflowExecutionContext = workflowExecutionContext;
-			_fileStores = dbContext.FileStores;
+            _fileStores = dbContext.FileStores;
+            CacheProvider = CacheProviderFactory.Create(dbContext);
         }
 
-		public byte[] GetFile(Guid messageId, out string filename)
-		{
-			var fileStore = _fileStores.FirstOrDefault(f => f.MessageId == messageId);
+        public byte[] GetFile(Guid messageId, out string filename)
+        {
+            var fileStore = _fileStores.FirstOrDefault(f => f.MessageId == messageId);
 
-			if (fileStore == null)
-				throw new ArgumentNullException($"Не нашли файл, связанный с сообщением {messageId}");
+            if (fileStore == null)
+                throw new ArgumentNullException($"Не нашли файл, связанный с сообщением {messageId}");
 
-			filename = fileStore.FileName;
+            filename = fileStore.FileName;
 
-			// Массив - ссылочный тип, не хотим давать ссылку на объект в БД.
-			return fileStore.Data.ToArray();
-		}
+            // Массив - ссылочный тип, не хотим давать ссылку на объект в БД.
+            return fileStore.Data.ToArray();
+        }
     }
 }
