@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[CacheRequestResponse]
 (
     [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT (newid()), 
-    [Key] NVARCHAR(MAX) NOT NULL, 
+    [Key] NVARCHAR(256) NOT NULL, 
     [Value] NVARCHAR(MAX) NOT NULL, 
     [ExpireDate] DATETIME NOT NULL
 )
@@ -16,7 +16,7 @@ go
 CREATE PROCEDURE [dbo].[sp_DeleteOldCacheRequestResponse]
 as
 begin
-    declare @currentDateTime datetime = curDate();
+    declare @currentDateTime datetime = getdate();
 
     delete from [dbo].[CacheRequestREsponse]
         where [ExpireDate] <= @currentDateTime;

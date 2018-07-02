@@ -22,9 +22,7 @@ use msdb
 go
 EXEC dbo.sp_add_job
     @job_name = N'Delete old records from CacheRequestResponse',
-    @enabled = enabled;
-    
-    
+    @enabled = 1;    
 GO  
 EXEC sp_add_jobstep
     @job_name = N'Delete old records from CacheRequestResponse',  
@@ -37,13 +35,13 @@ GO
 EXEC dbo.sp_add_schedule
     @schedule_name = N'Every day',
     @freq_type = 4,
-    @active_start_time = 233000;
-USE msdb ;  
-GO  
+	@freq_interval = 1,
+    @active_start_time = 233000;  
+GO
 EXEC sp_attach_schedule
    @job_name = N'Delete old records from CacheRequestResponse',
    @schedule_name = N'Every day';
 GO  
 EXEC dbo.sp_add_jobserver
     @job_name = N'Delete old records from CacheRequestResponse';
-GO  
+GO
