@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -41,8 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ContractAttribute.cs" />
-    <Compile Include="Attributes\RequestContractInAttribute.cs" />
     <Compile Include="Attributes\RequestContractOutAttribute.cs" />
+    <Compile Include="Attributes\RequestContractInAttribute.cs" />
     <Compile Include="Attributes\ResponseContractInAttribute.cs" />
     <Compile Include="Attributes\ResponseContractOutAttribute.cs" />
     <Compile Include="Cache\ICacheProvider.cs" />
@@ -51,6 +57,9 @@
     <Compile Include="Plugins\IPipelinePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XsdValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

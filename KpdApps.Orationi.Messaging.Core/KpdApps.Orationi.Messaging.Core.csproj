@@ -36,6 +36,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="KpdApps.Orationi.Messaging.Sdk, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KpdApps.Orationi.Messaging.Sdk.1.0.18\lib\net461\KpdApps.Orationi.Messaging.Sdk.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
     </Reference>
@@ -81,10 +84,6 @@
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj">
       <Project>{312dd07c-f632-4dbf-9153-aa6e9dbebbc7}</Project>
       <Name>KpdApps.Orationi.Messaging.DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\KpdApps.Orationi.Messaging.Sdk\KpdApps.Orationi.Messaging.Sdk.csproj">
-      <Project>{523EE427-C005-4846-AC19-58BDD5FDD26B}</Project>
-      <Name>KpdApps.Orationi.Messaging.Sdk</Name>
     </ProjectReference>
     <ProjectReference Include="..\KpdApps.Orationi.Messaging.ServerCore\KpdApps.Orationi.Messaging.ServerCore.csproj">
       <Project>{44B48E39-FFA6-463A-94C8-70141F5F2717}</Project>
