@@ -15,6 +15,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations
 
             Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            Property(p => p.Created)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string ResponseBody { get; set; }
 
+        public DateTime Created { get; set; }
+
         public string ExecutionVariables { get; set; }
 
         [ForeignKey("Message")]

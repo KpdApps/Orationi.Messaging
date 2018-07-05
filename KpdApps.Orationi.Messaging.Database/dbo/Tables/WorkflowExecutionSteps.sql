@@ -7,6 +7,7 @@
     [ResponseBody]       NVARCHAR (MAX)   NULL,
     [ExecutionVariables] NVARCHAR (MAX)   NULL,
     [MessageId] UNIQUEIDENTIFIER NULL, 
+    [Created] DATETIME NOT NULL DEFAULT (getdate()), 
     CONSTRAINT [PK_WorkflowExecutionSteps] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_WorkflowExecutionSteps_PluginActionSets] FOREIGN KEY ([PluginActionSetId]) REFERENCES [dbo].[PluginActionSets] ([Id]),
     CONSTRAINT [FK_WorkflowExecutionSteps_WorkflowExecutionStepsStatusCodes] FOREIGN KEY ([StatusCode]) REFERENCES [dbo].[WorkflowExecutionStepsStatusCodes] ([Id]),
