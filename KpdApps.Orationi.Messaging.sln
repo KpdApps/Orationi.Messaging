@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Common", "KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj", "{F3A60582-96A6-449A-9EB6-92F876EC14E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.PluginHost", "KpdApps.Orationi.Service.PluginHost\KpdApps.Orationi.Messaging.PluginHost.csproj", "{B67325CA-FBCD-4731-A395-1A8B57932FE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.PluginHost", "KpdApps.Orationi.Messaging.PluginHost\KpdApps.Orationi.Messaging.PluginHost.csproj", "{B67325CA-FBCD-4731-A395-1A8B57932FE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C492BE02-4A7E-4FE8-829A-0B1ED73E8ACC}"
 EndProject
