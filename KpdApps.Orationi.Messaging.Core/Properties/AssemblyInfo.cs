@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KpdApps.Orationi.Messaging.Core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("KpdApps Orationi Messaging Core")]
+[assembly: AssemblyDescription("Core assembly of KpdApps Orationi Messaging")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KpdApps.Orationi.Messaging.Core")]
+[assembly: AssemblyCompany("KpdApps Ltd.")]
+[assembly: AssemblyProduct("KpdApps Orationi Messaging")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

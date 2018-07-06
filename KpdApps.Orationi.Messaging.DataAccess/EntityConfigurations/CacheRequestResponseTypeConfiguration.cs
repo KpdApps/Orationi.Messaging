@@ -8,7 +8,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EntityConfigurations
     {
         public CacheRequestResponseTypeConfiguration()
         {
-            Property(p => p.Id)
+            ToTable("dbo.CacheRequestResponse")
+            .Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
         }
     }

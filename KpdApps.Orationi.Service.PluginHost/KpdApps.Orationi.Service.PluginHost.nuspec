@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/KpdApps/Orationi.Messaging/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/KpdApps/Orationi.Messaging</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright © 2018</copyright>
+    <releaseNotes>
+      1.1.x
+        + Cache;
+
+      1.0.x
+        + Interaction with RabbitMQ;
+        + Dynamic loading of plug-ins;
+        + Execute Workflow, data transfer inside Pipeline;
+    </releaseNotes>
+  </metadata>
+</package>
