@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B67325CA-FBCD-4731-A395-1A8B57932FE4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>KpdApps.Orationi.Service.PluginHost</RootNamespace>
-    <AssemblyName>KpdApps.Orationi.Service.PluginHost</AssemblyName>
+    <RootNamespace>KpdApps.Orationi.Messaging.PluginHost</RootNamespace>
+    <AssemblyName>KpdApps.Orationi.Messaging.PluginHost</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
