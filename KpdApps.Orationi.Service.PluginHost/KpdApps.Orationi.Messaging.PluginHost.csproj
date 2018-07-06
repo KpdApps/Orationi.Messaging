@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="KpdApps.Orationi.Service.PluginHost.nuspec" />
+    <None Include="KpdApps.Orationi.Messaging.PluginHost.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
