@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 
 namespace KpdApps.Orationi.Messaging.ServerCore
@@ -11,92 +12,123 @@ namespace KpdApps.Orationi.Messaging.ServerCore
     public static class AssembliesPreLoader
     {
         private const string AssembliesTempFolderName = "Plugins";
-        private static readonly Regex AssembliesNamingTemplate = new Regex("^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}-\\d+\\.dll$");
         private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public static void Execute()
         {
-            OrationiDatabaseContext _dbContext = new OrationiDatabaseContext();
+            using (var dbContext = new OrationiDatabaseContext())
+            {
+                var assemblies = dbContext.PluginAsseblies.ToList();
 
-            var assemblies = (from pasi in _dbContext.PluginActionSetItems
-                              join rp in _dbContext.RegisteredPlugins on pasi.RegisteredPluginId equals rp.Id
-                              join pa in _dbContext.PluginAsseblies on rp.AssemblyId equals pa.Id
-                              select new
-                              {
-                                  Id = pa.Id,
-                                  AssemblyBinary = pa.Assembly,
-                                  Modified = pa.Modified
-                              }
-                             ).Distinct().ToList();
+                foreach (var assembly in assemblies)
+                {
+                    Execute(assembly.Id);
+                }
+            }
+        }
 
+        /// <summary>
+        /// Удаляет все данные из папки cref="AssembliesTempFolderName" и саму папку/>
+        /// </summary>
+        public static void DeleteOldAssembly()
+        {
             string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
 
             if (Directory.Exists(tmpAssembliesPath))
             {
-                DirectoryInfo di = new DirectoryInfo(tmpAssembliesPath);
-                foreach (FileInfo file in di.GetFiles())
-                {
-                    if (AssembliesNamingTemplate.IsMatch(file.Name))
-                    {
-                        file.Delete();
-                    }
-                }
+                Directory.Delete(tmpAssembliesPath, true);
             }
-            else
-            {
-                Directory.CreateDirectory(tmpAssembliesPath);
-            }
-
-            foreach (var assembly in assemblies)
-            {
-                long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
-                string asseblyName = Path.Combine(tmpAssembliesPath, $"{assembly.Id}-{unixTimeSec}.dll");
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(asseblyName)))
-                {
-                    writer.Write(assembly.AssemblyBinary, 0, assembly.AssemblyBinary.Length);
-                }
-            }
+            Directory.CreateDirectory(tmpAssembliesPath);
         }
 
         public static void Execute(Guid assemblyId)
         {
-            OrationiDatabaseContext _dbContext = new OrationiDatabaseContext();
-
-            var assemblies = (from pa in _dbContext.PluginAsseblies
-                              where pa.Id == assemblyId
-                              select new
-                              {
-                                  Id = pa.Id,
-                                  AssemblyBinary = pa.Assembly,
-                                  Modified = pa.Modified
-                              }
-                             ).ToList().Distinct();
-
-            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
-            Directory.CreateDirectory(tmpAssembliesPath);
-            foreach (var assembly in assemblies)
+            using (var dbContext = new OrationiDatabaseContext())
             {
-                long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
-                string asseblyName = Path.Combine(tmpAssembliesPath, $"{assembly.Id}-{unixTimeSec}.dll");
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(asseblyName)))
+                var pluginAssembly = dbContext.PluginAsseblies.FirstOrDefault(pa => pa.Id == assemblyId);
+                if (pluginAssembly is null)
                 {
-                    writer.Write(assembly.AssemblyBinary, 0, assembly.AssemblyBinary.Length);
+                    throw new InvalidOperationException($"Не найдена сборка с Id - {assemblyId}");
                 }
+
+                var pluginAssemblyInfo = PluginAssemblyInfo.Create(pluginAssembly);
+
+                if (!pluginAssemblyInfo.IsFolderExists)
+                {
+                    Directory.CreateDirectory(pluginAssemblyInfo.BaseFolder);
+                }
+
+                AppDomain.CurrentDomain.AppendPrivatePath(pluginAssemblyInfo.BaseFolder);
+
+                var zipAssemblyPackage= $"{pluginAssemblyInfo.FullPath}.zip";
+
+                using (var writer = new BinaryWriter(File.OpenWrite(zipAssemblyPackage)))
+                {
+                    writer.Write(pluginAssembly.Assembly, 0, pluginAssembly.Assembly.Length);
+                }
+
+                ZipFile.ExtractToDirectory(zipAssemblyPackage, pluginAssemblyInfo.BaseFolder);
+                
+                File.Delete(zipAssemblyPackage);
             }
         }
-
+        
         internal static string WarmupAssembly(PipelineStepDescription stepDescription)
         {
-            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
-            long unixTimeSec = ((DateTimeOffset)stepDescription.Modified).ToUnixTimeSeconds();
-            string assemblyName = Path.Combine(tmpAssembliesPath, $"{stepDescription.AssemblyId}-{unixTimeSec}.dll");
-
-            if (!File.Exists(assemblyName))
+            var pluginAssemblyInfo = PluginAssemblyInfo.Create(stepDescription);
+            
+            if (!pluginAssemblyInfo.IsAssemblyExist)
             {
                 Execute(stepDescription.AssemblyId);
             }
 
-            return assemblyName;
+            return pluginAssemblyInfo.FullPath;
+        }
+
+        private class PluginAssemblyInfo
+        {
+            public static PluginAssemblyInfo Create(PipelineStepDescription stepDescription)
+            {
+                long unixTimeSec = ((DateTimeOffset)stepDescription.Modified).ToUnixTimeSeconds();
+
+                var folder = Path.Combine(BasePath,
+                    AssembliesTempFolderName,
+                    $"{stepDescription.AssemblyId}-{unixTimeSec}");
+
+                var fullPath = Path.Combine(folder,
+                    $"{stepDescription.AssemblyName}.dll");
+
+                return new PluginAssemblyInfo
+                {
+                    BaseFolder = folder,
+                    FullPath = fullPath
+                };
+            }
+
+            public static PluginAssemblyInfo Create(PluginAssembly assembly)
+            {
+                long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
+
+                var folder = Path.Combine(BasePath,
+                    AssembliesTempFolderName,
+                    $"{assembly.Id}-{unixTimeSec}");
+
+                var fullPath = Path.Combine(folder,
+                    $"{assembly.Name}.dll");
+
+                return new PluginAssemblyInfo
+                {
+                    BaseFolder = folder,
+                    FullPath = fullPath
+                };
+            }
+
+            public string BaseFolder { get; set; }
+            public string FullPath { get; set; }
+
+            public bool IsAssemblyExist => File.Exists(FullPath);
+
+            public bool IsFolderExists => Directory.Exists(BaseFolder);
         }
     }
 }

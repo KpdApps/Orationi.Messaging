@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     internal class PipelineStepDescription
     {
         public Guid AssemblyId { get; set; }
+
+        public string AssemblyName { get; set; }
 
         public string Class { get; set; }
 
