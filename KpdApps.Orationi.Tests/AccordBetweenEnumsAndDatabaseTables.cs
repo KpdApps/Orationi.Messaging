@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.ServerCore.Pipeline;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
