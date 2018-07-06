@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             _hostname = hostname;
             _username = username;
             _password = password;
+
+            AppDomain.CurrentDomain.AppendPrivatePath(ConfigurationManager.AppSettings["PrivateBinPath"]);
 
             AssembliesPreLoader.Execute();
 
