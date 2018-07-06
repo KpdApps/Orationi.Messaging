@@ -66,6 +66,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                                   select new PipelineStepDescription
                                   {
                                       AssemblyId = pa.Id,
+                                      AssemblyName = pa.Name,
                                       Class = rp.Class,
                                       Order = pasi.Order,
                                       IsAsynchronous = false,

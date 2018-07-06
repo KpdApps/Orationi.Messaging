@@ -11,7 +11,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore
 {
     public static class AssembliesPreLoader
     {
-        private const string AssembliesTempFolderName = "Plugins";
+        private const string AssembliesFolderName = "Plugins";
         private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public static void Execute()
@@ -32,13 +32,12 @@ namespace KpdApps.Orationi.Messaging.ServerCore
         /// </summary>
         public static void DeleteOldAssembly()
         {
-            string tmpAssembliesPath = Path.Combine(BasePath, AssembliesTempFolderName);
+            string assembliesPath = Path.Combine(BasePath, AssembliesFolderName);
 
-            if (Directory.Exists(tmpAssembliesPath))
+            if (Directory.Exists(assembliesPath))
             {
-                Directory.Delete(tmpAssembliesPath, true);
+                Directory.Delete(assembliesPath, true);
             }
-            Directory.CreateDirectory(tmpAssembliesPath);
         }
 
         public static void Execute(Guid assemblyId)
@@ -92,8 +91,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                 long unixTimeSec = ((DateTimeOffset)stepDescription.Modified).ToUnixTimeSeconds();
 
                 var folder = Path.Combine(BasePath,
-                    AssembliesTempFolderName,
-                    $"{stepDescription.AssemblyId}-{unixTimeSec}");
+                    AssembliesFolderName,
+                    $"{stepDescription.AssemblyName}-{unixTimeSec}");
 
                 var fullPath = Path.Combine(folder,
                     $"{stepDescription.AssemblyName}.dll");
@@ -110,8 +109,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore
                 long unixTimeSec = ((DateTimeOffset)assembly.Modified).ToUnixTimeSeconds();
 
                 var folder = Path.Combine(BasePath,
-                    AssembliesTempFolderName,
-                    $"{assembly.Id}-{unixTimeSec}");
+                    AssembliesFolderName,
+                    $"{assembly.Name}-{unixTimeSec}");
 
                 var fullPath = Path.Combine(folder,
                     $"{assembly.Name}.dll");
