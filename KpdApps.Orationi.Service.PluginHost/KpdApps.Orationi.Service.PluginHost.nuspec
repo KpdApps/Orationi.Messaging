@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
@@ -10,6 +10,15 @@
     <projectUrl>https://github.com/KpdApps/Orationi.Messaging</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright ©  2018</copyright>
+    <copyright>Copyright © 2018</copyright>
+    <releaseNotes>
+      1.1.x
+        + Cache;
+
+      1.0.x
+        + Interaction with RabbitMQ;
+        + Dynamic loading of plug-ins;
+        + Execute Workflow, data transfer inside Pipeline;
+    </releaseNotes>
   </metadata>
 </package>
