@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="KpdApps.Orationi.Messaging.Soap.nuspec" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
