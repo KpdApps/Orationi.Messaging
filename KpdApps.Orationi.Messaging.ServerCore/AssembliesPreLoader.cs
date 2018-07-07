@@ -18,19 +18,22 @@ namespace KpdApps.Orationi.Messaging.ServerCore
         {
             using (var dbContext = new OrationiDatabaseContext())
             {
-                var assemblies = dbContext.PluginAsseblies.ToList();
+                var assembliesIdList = dbContext
+                    .PluginAsseblies
+                    .Select(pa => pa.Id)
+                    .ToList();
 
-                foreach (var assembly in assemblies)
+                foreach (var assemblyId in assembliesIdList)
                 {
-                    Execute(assembly.Id);
+                    Execute(assemblyId);
                 }
             }
         }
 
         /// <summary>
-        /// Удаляет все данные из папки cref="AssembliesTempFolderName" и саму папку/>
+        /// Удаляет все данные из папки cref="AssembliesTempFolderName" и саму папку, а после загружает все актуальные сборки/>
         /// </summary>
-        public static void DeleteOldAssembly()
+        public static void Reload()
         {
             string assembliesPath = Path.Combine(BasePath, AssembliesFolderName);
 
@@ -38,6 +41,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore
             {
                 Directory.Delete(assembliesPath, true);
             }
+
+            Execute();
         }
 
         public static void Execute(Guid assemblyId)

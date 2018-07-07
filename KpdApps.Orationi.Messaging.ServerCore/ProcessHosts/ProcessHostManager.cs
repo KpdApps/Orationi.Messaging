@@ -30,7 +30,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             _username = username;
             _password = password;
 
-            AssembliesPreLoader.DeleteOldAssembly();
+            AssembliesPreLoader.Reload();
 
             var token = _shutdown.Token;
             Task.Run(
