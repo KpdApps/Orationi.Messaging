@@ -71,22 +71,19 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         public void LoadWorkflowActions()
         {
-            using (OrationiDatabaseContext dbContext = new OrationiDatabaseContext())
-            {
-                _workflowActions = (from w in dbContext.Workflows
-                                    join wa in dbContext.WorkflowActions
-                                         on w.Id equals wa.WorkflowId
-                                    where
-                                         w.RequestCodeId == _requestCode
-                                    orderby w.Id, wa.Order
-                                    select new WorkflowAction
-                                    {
-                                        WorkflowId = w.Id,
-                                        PluginActionSetId = wa.PluginActionSetId,
-                                        Order = wa.Order,
-                                    }
-                                   ).ToList();
-            }
+            _workflowActions = (from w in _dbContext.Workflows
+                                join wa in _dbContext.WorkflowActions
+                                     on w.Id equals wa.WorkflowId
+                                where
+                                     w.RequestCodeId == _requestCode
+                                orderby w.Id, wa.Order
+                                select new WorkflowAction
+                                {
+                                    WorkflowId = w.Id,
+                                    PluginActionSetId = wa.PluginActionSetId,
+                                    Order = wa.Order,
+                                }
+                               ).ToList();
         }
 
         public void Dispose()
