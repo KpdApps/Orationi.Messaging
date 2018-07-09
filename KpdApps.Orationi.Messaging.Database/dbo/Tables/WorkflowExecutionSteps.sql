@@ -5,7 +5,7 @@
     [StatusCode]         INT              CONSTRAINT [DF_WorkflowExecutionSteps_StatusCode] DEFAULT ((0)) NOT NULL,
     [RequestBody]        NVARCHAR (MAX)   NULL,
     [ResponseBody]       NVARCHAR (MAX)   NULL,
-    [ExecutionVariables] NVARCHAR (MAX)   NULL,
+    [PipelineValues] NVARCHAR (MAX)   NULL,
     [MessageId] UNIQUEIDENTIFIER NULL, 
     [Created] DATETIME NOT NULL DEFAULT (getdate()), 
     CONSTRAINT [PK_WorkflowExecutionSteps] PRIMARY KEY CLUSTERED ([Id] ASC),

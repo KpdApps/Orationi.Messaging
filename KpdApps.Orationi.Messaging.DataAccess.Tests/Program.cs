@@ -87,7 +87,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.EF.Tests
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine(
-                        $"WorkflowExecutionStep: {workflowExecutionStep.Id} | {workflowExecutionStep.WorkflowId} | {workflowExecutionStep.PluginActionSetId} | {workflowExecutionStep.StatusCode} | {workflowExecutionStep.RequestBody} | {workflowExecutionStep.ResponseBody} | {workflowExecutionStep.ExecutionVariables};");
+                        $"WorkflowExecutionStep: {workflowExecutionStep.Id} | {workflowExecutionStep.WorkflowId} | {workflowExecutionStep.PluginActionSetId} | {workflowExecutionStep.StatusCode} | {workflowExecutionStep.RequestBody} | {workflowExecutionStep.ResponseBody} | {workflowExecutionStep.PipelineValues};");
                     var workflow = workflowExecutionStep.Workflow;
                     var pluginActionSet = workflowExecutionStep.PluginActionSet;
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;

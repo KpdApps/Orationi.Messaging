@@ -57,14 +57,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
             }
             catch (Exception ex)
             {
-                log.Error($"Exception message:\r\n{ex.Message}");
-                log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
-                    log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
-                }
-
+                log.Fatal("Во время выполнения работы WorkflowProcessor произошла ошибка", ex);
                 _message.ErrorMessage = ex.Message;
                 SetMessageStatus(MessageStatusCodes.Error);
             }

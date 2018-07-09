@@ -23,7 +23,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public DateTime Created { get; set; }
 
-        public string ExecutionVariables { get; set; }
+        public string PipelineValues { get; set; }
 
         [ForeignKey("Message")]
         public Nullable<Guid> MessageId { get; set; }

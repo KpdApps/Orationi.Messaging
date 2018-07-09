@@ -17,40 +17,26 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private Guid _workflowId;
         private Guid _messageId;
-        private int _requestCode;
         private Guid _pluginActionSetId;
-
         private IPipelineExecutionContext _pipelineExecutionContext;
-
         private OrationiDatabaseContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
 
         public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, Workflow.WorkflowAction workflowAction)
         {
             _pipelineExecutionContext = pipelineExecutionContext;
-
             _messageId = pipelineExecutionContext.MessageId;
-            _requestCode = pipelineExecutionContext.RequestCode;
-
             _workflowId = workflowAction.WorkflowId;
             _pluginActionSetId = workflowAction.PluginActionSetId;
             Init();
         }
 
-        ~PipelineProcessor()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
-            if (_dbContext != null)
-            {
-                _dbContext.Dispose();
-            }
+            _dbContext?.Dispose();
         }
 
-        public void Init()
+        private void Init()
         {
             log.Debug("Инициализация...");
             _dbContext = new OrationiDatabaseContext();
@@ -110,27 +96,20 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                     }
 
                     string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
-
                     Assembly assembly = Assembly.LoadFrom(assemblyName);
                     Type type = assembly.GetType(stepDescription.Class);
-
                     ExecutePlugin(type);
 
                     workflowExecutionStep.RequestBody = _pipelineExecutionContext.RequestBody;
                     workflowExecutionStep.ResponseBody = _pipelineExecutionContext.ResponseBody;
+                    workflowExecutionStep.PipelineValues =
+                        JsonConvert.SerializeObject(_pipelineExecutionContext.PipelineValues);
                     workflowExecutionStep.StatusCode = (int) PipelineStatusCodes.Finished;
                     _dbContext.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Exception message:\r\n{ex.Message}");
-                    log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
-                    if (ex.InnerException != null)
-                    {
-                        log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
-                        log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
-                    }
-
+                    log.Fatal("Во время выполнения работы PipelineProcessor произошла ошибка", ex);
                     workflowExecutionStep.StatusCode = (int)PipelineStatusCodes.Error;
                     _dbContext.SaveChanges();
                     throw;
@@ -152,13 +131,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
             catch (Exception ex)
             {
-                log.Error($"Exception message:\r\n{ex.Message}");
-                log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
-                    log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
-                }
+                log.Fatal("Во время выполнения работы плагина произошла ошибка", ex);
                 
                 ProcessingError pe = new ProcessingError
                 {
