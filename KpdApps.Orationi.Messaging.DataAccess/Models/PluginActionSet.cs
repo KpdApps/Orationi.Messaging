@@ -8,7 +8,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
     {
         public PluginActionSet()
         {
-            WorkflowExecutionSteps = new List<WorkflowExecutionStep>();
             PluginActionSetItems = new List<PluginActionSetItem>();
             WorkflowActions = new List<WorkflowAction>();
         }
@@ -17,8 +16,6 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-
-        public virtual List<WorkflowExecutionStep> WorkflowExecutionSteps { get; set; }
 
         public virtual List<PluginActionSetItem> PluginActionSetItems { get; set; }
 
