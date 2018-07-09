@@ -17,18 +17,19 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private Guid _workflowId;
         private Guid _messageId;
-        private Guid _pluginActionSetId;
         private IPipelineExecutionContext _pipelineExecutionContext;
         private OrationiDatabaseContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
 
-        public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, Workflow.WorkflowAction workflowAction)
+        public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, WorkflowAction workflowAction)
         {
+            _dbContext = new OrationiDatabaseContext();
+
             _pipelineExecutionContext = pipelineExecutionContext;
             _messageId = pipelineExecutionContext.MessageId;
             _workflowId = workflowAction.WorkflowId;
-            _pluginActionSetId = workflowAction.PluginActionSetId;
-            Init();
+            
+            InitializeStepsDescriptions(workflowAction);
         }
 
         public void Dispose()
@@ -36,29 +37,27 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             _dbContext?.Dispose();
         }
 
-        private void Init()
+        private void InitializeStepsDescriptions(WorkflowAction workflowAction)
         {
-            log.Debug("Инициализация...");
-            _dbContext = new OrationiDatabaseContext();
+            log.Debug($"Загрузка плагинов для WorkflowAction с Id - ({workflowAction.Id})");
+            _stepsDescriptions = _dbContext
+                .PluginActionSets
+                .Where(pas => pas.Id == workflowAction.PluginActionSetId)
+                .SelectMany(pas => pas.PluginActionSetItems)
+                .OrderBy(pasi => pasi.Order)
+                .Select(pasi => new PipelineStepDescription
+                {
+                    AssemblyId = pasi.RegisteredPlugin.AssemblyId,
+                    AssemblyName = pasi.RegisteredPlugin.PluginAssembly.Name,
+                    Class = pasi.RegisteredPlugin.Class,
+                    Order = pasi.Order,
+                    Modified = pasi.RegisteredPlugin.PluginAssembly.Modified,
+                    ConfigurationString = pasi.Configuration,
+                    PlaginActionSetItemId = pasi.Id
 
-            _stepsDescriptions = (from pas in _dbContext.PluginActionSets
-                                  join pasi in _dbContext.PluginActionSetItems on pas.Id equals pasi.PluginActionSetId
-                                  join rp in _dbContext.RegisteredPlugins
-                                      on pasi.RegisteredPluginId equals rp.Id
-                                  join pa in _dbContext.PluginAsseblies
-                                      on rp.AssemblyId equals pa.Id
-                                  where pas.Id == _pluginActionSetId
-                                  orderby pasi.Order
-                                  select new PipelineStepDescription
-                                  {
-                                      AssemblyId = pa.Id,
-                                      AssemblyName = pa.Name,
-                                      Class = rp.Class,
-                                      Order = pasi.Order,
-                                      IsAsynchronous = false,
-                                      Modified = pa.Modified,
-                                      ConfigurationString = pasi.Configuration,
-                                  }).ToList();
+                })
+                .ToList();
+            log.Debug($"Загрузка завершена. Загружено записей - ({_stepsDescriptions.Count})");
         }
 
         public void Run()
@@ -69,7 +68,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                 var workflowExecutionStep = new WorkflowExecutionStep
                 {
                     WorkflowId = _workflowId,
-                    PluginActionSetId = _pluginActionSetId,
+                    PluginActionSetItemId = stepDescription.PlaginActionSetItemId,
                     StatusCode = (int)PipelineStatusCodes.New,
                     MessageId = (Guid?)_messageId
                 };

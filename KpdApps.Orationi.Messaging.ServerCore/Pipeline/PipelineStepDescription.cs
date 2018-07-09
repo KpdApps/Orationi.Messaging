@@ -17,5 +17,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public bool IsAsynchronous { get; set; }
 
         public string ConfigurationString { get; set; }
+
+        public Guid PlaginActionSetItemId { get; set; }
     }
 }

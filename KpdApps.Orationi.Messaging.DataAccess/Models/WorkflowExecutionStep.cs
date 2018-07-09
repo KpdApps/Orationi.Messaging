@@ -13,7 +13,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         public Guid WorkflowId { get; set; }
 
         [ForeignKey("PluginActionSetItem")]
-        public Guid PluginActionSetItemId { get; set; }
+        public Nullable<Guid> PluginActionSetItemId { get; set; }
 
         public int StatusCode { get; set; }
 

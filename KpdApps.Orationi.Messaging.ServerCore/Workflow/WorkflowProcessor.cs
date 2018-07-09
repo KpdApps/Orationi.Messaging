@@ -14,13 +14,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
 
         private Guid _messageId;
         private int _requestCode;
-
         private Message _message;
-
         private WorkflowExecutionContext _workflowExecutionContext;
-
-        private List<WorkflowAction> _workflowActions;
-
         private OrationiDatabaseContext _dbContext;
 
         public WorkflowProcessor(Guid messageId, int requestCode)
@@ -34,18 +29,21 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
         {
             try
             {
-                 _message = _dbContext.Messages.FirstOrDefault(m => m.Id == _messageId);
+                 _message = _dbContext.Messages.First(m => m.Id == _messageId);
                  _message.AttemptCount++;
                  _message.StatusCode = (int)MessageStatusCodes.Preparing;
                 _dbContext.SaveChanges();
 
-                 LoadWorkflowActions();
+                var workflowActions = _dbContext
+                    .WorkflowActions
+                    .Where(wa => wa.Workflow.RequestCodeId == _requestCode)
+                    .ToList();
 
                  List<GlobalSetting> globalSettings = _dbContext.GlobalSettings.ToList();
                  _workflowExecutionContext = new WorkflowExecutionContext(_message, globalSettings);
 
                 SetMessageStatus(MessageStatusCodes.InProgress);
-                foreach (WorkflowAction workflowAction in _workflowActions)
+                foreach (var workflowAction in workflowActions)
                 {
                     PipelineExecutionContext pipelineExecutionContext = new PipelineExecutionContext(_workflowExecutionContext, _dbContext);
                     PipelineProcessor pipeline = new PipelineProcessor(pipelineExecutionContext, workflowAction);
@@ -67,23 +65,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Workflow
         {
             _message.StatusCode = (int)statusCode;
             _dbContext.SaveChanges();
-        }
-
-        public void LoadWorkflowActions()
-        {
-            _workflowActions = (from w in _dbContext.Workflows
-                                join wa in _dbContext.WorkflowActions
-                                     on w.Id equals wa.WorkflowId
-                                where
-                                     w.RequestCodeId == _requestCode
-                                orderby w.Id, wa.Order
-                                select new WorkflowAction
-                                {
-                                    WorkflowId = w.Id,
-                                    PluginActionSetId = wa.PluginActionSetId,
-                                    Order = wa.Order,
-                                }
-                               ).ToList();
         }
 
         public void Dispose()

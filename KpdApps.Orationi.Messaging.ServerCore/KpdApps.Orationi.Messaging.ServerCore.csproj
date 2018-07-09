@@ -84,7 +84,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workflow\IWorkflowExecutionContext.cs" />
     <Compile Include="Workflow\MessageStatusCodes.cs" />
-    <Compile Include="Workflow\WorkflowAction.cs" />
     <Compile Include="Workflow\WorkflowExecutionContext.cs" />
     <Compile Include="Workflow\WorkflowProcessor.cs" />
   </ItemGroup>
