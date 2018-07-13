@@ -16,7 +16,7 @@ namespace KpdApps.Orationi.Tests
         {
             using (var dbContext = new OrationiDatabaseContext())
             {
-                var workflowExecutionStepsStatusCodes = dbContext
+                var workflowExecutionStepsStatusCodes = dbCon(BuildFailTest)text
                     .WorkflowExecutionStepsStatusCodes
                     .ToList();
 
