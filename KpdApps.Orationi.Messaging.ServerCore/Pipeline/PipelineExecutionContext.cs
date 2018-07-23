@@ -49,6 +49,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             _workflowExecutionContext = workflowExecutionContext;
             _fileStores = dbContext.FileStores;
             CacheProvider = CacheProviderFactory.Create(dbContext);
+            RequestBody = _workflowExecutionContext.MessageBody;
         }
 
         public byte[] GetFile(Guid messageId, out string filename)
