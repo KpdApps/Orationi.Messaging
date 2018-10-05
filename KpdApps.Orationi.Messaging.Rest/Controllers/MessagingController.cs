@@ -224,7 +224,9 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 using (var stream = new MemoryStream(jsonAsArray))
                 {
                     var sr = new StreamReader(stream);
-                    fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
+                    var rawJsonStr = sr.ReadToEnd();
+                    log.Debug($"Raw JSON string: {rawJsonStr}");
+                    fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(rawJsonStr);
                 }
             }
             catch (Exception ex)
@@ -236,8 +238,6 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                     Error = ex.Message
                 }));
             }
-
-            log.Debug($"json: {fileInfo}");
 
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequestCode, out Response response,
                 out var externalSystem))
