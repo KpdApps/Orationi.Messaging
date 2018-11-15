@@ -36,18 +36,12 @@ namespace KpdApps.Orationi.Messaging.Core
             _correlationId = Guid.NewGuid().ToString();
         }
 
-        public string Execute(int requestCode, Guid messageId)
+        public string Execute(RabbitRequest request)
         {
-            RabbitRequest request = new RabbitRequest
-            {
-                MessageId = messageId,
-                RequestCode = requestCode
-            };
-
             string message = JsonConvert.SerializeObject(request);
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
 
-            string queueName = $"queue-{requestCode}-1";
+            string queueName = $"queue-{request.RequestCode}-1";
 
             _channel.QueueDeclare(queue: queueName,
                 durable: true,
@@ -57,7 +51,7 @@ namespace KpdApps.Orationi.Messaging.Core
 
             IBasicProperties props = _channel.CreateBasicProperties();
             props.CorrelationId = _correlationId;
-            string replyQueueName = _channel.QueueDeclare($"response-{requestCode}-1-{messageId.ToString()}").QueueName;
+            string replyQueueName = _channel.QueueDeclare($"response-{request.RequestCode}-1-{request.MessageId.ToString()}").QueueName;
             props.ReplyTo = replyQueueName;
 
             
@@ -87,14 +81,14 @@ namespace KpdApps.Orationi.Messaging.Core
             return _respQueue.Take();
         }
 
-        public void PullMessage(int requestCode, Guid messageId)
+        public void PullMessage(RabbitRequest request)
         {
             var factory = new ConnectionFactory() { HostName = _hostName, UserName = _userName, Password = _password };
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
                 {
-                    string queueName = $"queue-{requestCode}-0";
+                    string queueName = $"queue-{request.RequestCode}-0";
 
                     channel.QueueDeclare(queue: queueName,
                                          durable: true,
@@ -104,12 +98,6 @@ namespace KpdApps.Orationi.Messaging.Core
 
                     var properties = channel.CreateBasicProperties();
                     properties.Persistent = true;
-
-                    RabbitRequest request = new RabbitRequest()
-                    {
-                        MessageId = messageId,
-                        RequestCode = requestCode
-                    };
 
                     string message = JsonConvert.SerializeObject(request);
 

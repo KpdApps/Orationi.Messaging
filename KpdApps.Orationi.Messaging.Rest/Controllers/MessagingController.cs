@@ -124,7 +124,21 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("request")]
         public ResponseId SendRequest([FromBody]Request request)
         {
-            throw new NotImplementedException();
+            log.Debug("Запуск");
+            log.Debug($"request:\r\n{request}");
+            log.Debug($"Token: {GetTokenValue()}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            log.Debug("Авторизация пройдена");
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteAsync(request, true);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
+            return response;
         }
 
         [HttpGet]
