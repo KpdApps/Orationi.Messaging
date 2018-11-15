@@ -51,6 +51,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess
 
         public DbSet<CacheRequestResponse> CacheRequestResponse { get; set; }
 
+        public DbSet<CallbackSettings> CallbackSettings { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -72,6 +74,7 @@ namespace KpdApps.Orationi.Messaging.DataAccess
             modelBuilder.Configurations.Add(new WorkflowExecutionStepsStatusCodeTypeConfiguration());
             modelBuilder.Configurations.Add(new FileStoreTypeConfiguration());
             modelBuilder.Configurations.Add(new CacheRequestResponseTypeConfiguration());
+            modelBuilder.Configurations.Add(new CallbackSettingsTypeConfiguration());
         }
     }
 }

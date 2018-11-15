@@ -1,12 +1,11 @@
 ﻿using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
+using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk.Cache;
 using KpdApps.Orationi.Messaging.ServerCore.Cache;
 
@@ -38,7 +37,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private IWorkflowExecutionContext _workflowExecutionContext;
 
-        private DbSet<FileStore> _fileStores;
+        private readonly OrationiDatabaseContext _dbContext;
 
         public ICacheProvider CacheProvider { get; }
 
@@ -47,14 +46,14 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             PipelineValues = new Dictionary<string, object>();
             PluginStepSettings = new Dictionary<string, object>();
             _workflowExecutionContext = workflowExecutionContext;
-            _fileStores = dbContext.FileStores;
+            _dbContext = dbContext;
             CacheProvider = CacheProviderFactory.Create(dbContext);
             RequestBody = _workflowExecutionContext.MessageBody;
         }
 
         public byte[] GetFile(Guid messageId, out string filename)
         {
-            var fileStore = _fileStores.FirstOrDefault(f => f.MessageId == messageId);
+            var fileStore = _dbContext.FileStores.FirstOrDefault(f => f.MessageId == messageId);
 
             if (fileStore == null)
                 throw new ArgumentNullException($"Не нашли файл, связанный с сообщением {messageId}");
@@ -63,6 +62,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
             // Массив - ссылочный тип, не хотим давать ссылку на объект в БД.
             return fileStore.Data.ToArray();
+        }
+
+        public CallbackSettings TryGetCallbackSettings(Guid messageId, out int? requestCode)
+        {
+            var message = _dbContext.Messages.FirstOrDefault(m => m.Id == messageId);
+            requestCode = message?.RequestCodeId;
+            return message?.ExternalSystem?.CallbackSettings;
         }
     }
 }

@@ -83,6 +83,7 @@
     <Build Include="dbo\Tables\WorkflowExecutionSteps.sql" />
     <Build Include="dbo\Tables\FileStore.sql" />
     <Build Include="dbo\Tables\CacheRequestResponse.sql" />
+    <Build Include="dbo\Tables\CallbackSettings.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\Script.PostDeployment.sql" />
