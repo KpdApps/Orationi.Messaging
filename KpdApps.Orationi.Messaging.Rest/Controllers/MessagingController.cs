@@ -121,7 +121,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         }
 
         [HttpPost]
-        [Route("request")]
+        [Route("callbackrequest")]
         public ResponseId SendRequest([FromBody]Request request)
         {
             log.Debug("Запуск");
@@ -135,7 +135,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
             log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-            response = imp.ExecuteAsync(request, true);
+            response = imp.ExecuteWithCallback(request);
             log.Debug($"Результат:\r\n{response}");
             log.Debug("Звершение");
             return response;
@@ -217,17 +217,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 }));
             }
 
-            HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
-            if (json == null)
+            HttpContent json = null;
+            try
             {
-                var errorResponse = new Response
+                var contentList = provider.Contents.ToList();
+                json = contentList.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
                 {
                     IsError = true,
-                    Error = "В теле запроса нет части с Content-type: application/json"
-                };
-                log.Error(errorResponse);
-
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+                    Error = ex.Message
+                }));
             }
 
             UploadFileRequest fileInfo = null;

@@ -117,7 +117,7 @@ namespace KpdApps.Orationi.Messaging.Soap
 
             log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-            response = imp.ExecuteAsync(request, true);
+            response = imp.ExecuteWithCallback(request);
             log.Debug($"Результат:\r\n{response}");
             log.Debug("Звершение");
             return response;

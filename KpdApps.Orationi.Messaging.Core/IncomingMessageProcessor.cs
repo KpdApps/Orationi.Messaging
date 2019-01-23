@@ -107,7 +107,8 @@ namespace KpdApps.Orationi.Messaging.Core
                     RequestCodeId = request.Code,
                     ExternalSystemId = _externalSystem.Id,
                     RequestUser = request.UserName,
-                    IsSyncRequest = false
+                    IsSyncRequest = false,
+                    IsCallback = isCallback
                 };
 
                 _dbContext.Messages.Add(message);
@@ -118,8 +119,7 @@ namespace KpdApps.Orationi.Messaging.Core
                     client.PullMessage(new RabbitRequest
                     {
                         RequestCode = message.RequestCodeId,
-                        MessageId = message.Id,
-                        IsCallback = isCallback
+                        MessageId = message.Id
                     });
                 }
 
@@ -134,6 +134,17 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 return ResponseGenerator.GenerateByException(ex);
             }
+        }
+
+        public ResponseId ExecuteWithCallback(Request request)
+        {
+            var responseId = ExecuteAsync(request, true);
+            _dbContext.CallbackMessages.Add(new CallbackMessage
+            {
+                MessageId = responseId.Id
+            });
+
+            return responseId;
         }
 
         public void SetRequestCode(Request request)
