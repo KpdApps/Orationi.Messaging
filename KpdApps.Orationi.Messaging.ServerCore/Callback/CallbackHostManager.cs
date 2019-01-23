@@ -8,6 +8,7 @@ using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using log4net;
+using log4net.Config;
 using RestSharp;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Callback
@@ -21,6 +22,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 
         public CallbackHostManager(double checkFrequency)
         {
+            XmlConfigurator.Configure();
             _checkFrequency = checkFrequency;
             if (_checkFrequency < 0 || _checkFrequency > 3600)
             {
@@ -85,6 +87,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                     Thread.Sleep(TimeSpan.FromSeconds(_checkFrequency));
                 }
             }
+            Log.Info("Завершение работы обработчика callback-сообщений");
         }
 
         private void ProcessCallbackMessage(CallbackMessage callbackMessage, OrationiDatabaseContext dbContext)
@@ -117,12 +120,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
         {
             var callbackSettings = message.ExternalSystem.CallbackSettings;
             var client = new RestClient(callbackSettings.RequestTargetUrl);
-            var request = new RestRequest(Method.POST)
+            var request = new RestRequest(Method.POST);
+
+            if (callbackSettings.NeedAuthentification)
             {
-                Credentials = new NetworkCredential(
-                    callbackSettings.UrlAccessUserName, 
-                    callbackSettings.UrlAccessUserPassword)
-            };
+                request.Credentials = new NetworkCredential(callbackSettings.UrlAccessUserName, callbackSettings.UrlAccessUserPassword);
+            }
+
             var callbackRequest = new CallbackRequest
             {
                 MessageId = message.Id,
