@@ -2,19 +2,23 @@
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
 using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
+using log4net;
 using RestSharp;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 {
-    public class CallbackHostManager
+    public class CallbackHostManager : IDisposable
     {
         private CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly double _checkFrequency;
+        private bool _isRunning = false;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CallbackHostManager));
 
         public CallbackHostManager(double checkFrequency)
         {
@@ -29,12 +33,17 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 
         public void Start()
         {
-            Run(_cts.Token);
+            Task.Run(() => Run(_cts.Token));
+            _isRunning = true;
         }
 
         public void Stop()
         {
-            _cts.Cancel();
+            if (_isRunning)
+            {
+                _cts.Cancel();
+                _isRunning = false;
+            }
         }
 
         private void Run(CancellationToken cancellationToken)
@@ -70,8 +79,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                 }
                 catch (Exception ex)
                 {
-                    // при попытке установления соединения, произошла ошибка такая-то такая-то, залогировать это
-                    // и уйти в таймаут
+                    Log.Error($"При обработке пакета callback-сообщений возникло исключение {ex.GetType().Name}: {ex.Message}");
                 }
                 finally
                 {
@@ -89,15 +97,13 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                 + $" Callback-настроек для внешней системы {callbackMessage.Message.ExternalSystem.SystemName}");
             }
 
-            CallbackResponse callbackResponse = null;
-
             switch (callbackSettings.MethodType.ToLower())
             {
                 case "rest":
-                    callbackResponse = RestSending(callbackMessage.Message);
+                    RestSending(callbackMessage.Message);
                     break;
                 case "soap":
-                    callbackResponse = SoapSending(callbackMessage.Message);
+                    SoapSending(callbackMessage.Message);
                     break;
                 default:
                     throw new InvalidOperationException($"Для типа отправки {callbackSettings.MethodType} отсутствует обработчик");
@@ -108,7 +114,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
             dbContext.SaveChanges();
         }
 
-        private CallbackResponse RestSending(Message message)
+        private void RestSending(Message message)
         {
             var callbackSettings = message.ExternalSystem.CallbackSettings;
             var client = new RestClient(callbackSettings.RequestTargetUrl);
@@ -132,20 +138,23 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 
             if (response.Data is null)
             {
-                throw new InvalidOperationException($"На Callback-запрос не получен ответ, или ответ был пустым");
+                throw new InvalidOperationException("На Callback-запрос не получен ответ, или ответ был пустым");
             }
 
             if (response.Data.IsError)
             {
                 throw new InvalidOperationException($"На Callback-запрос получен ответ с ошибкой: {response.Data.ErorrMessage}");
             }
-
-            return response.Data;
         }
 
         private CallbackResponse SoapSending(Message message)
         {
             throw new NotImplementedException("SoapSending не реализован");
+        }
+
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }
