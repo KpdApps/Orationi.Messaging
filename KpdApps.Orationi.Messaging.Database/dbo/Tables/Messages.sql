@@ -14,20 +14,14 @@
     [ErrorMessage]   NVARCHAR (MAX)   NULL,
     [IsSyncRequest]  BIT              CONSTRAINT [DF__Messages__IsSync__49C3F6B7] DEFAULT ((1)) NOT NULL,
     [AttemptCount]   INT              CONSTRAINT [DF__Messages__Attemp__4AB81AF0] DEFAULT ((0)) NOT NULL,
+    [IsCallback] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [PK__Messages__3214EC0777BFA700] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Messages_MessageStatusCode] FOREIGN KEY ([StatusCode]) REFERENCES [dbo].[MessageStatusCode] ([Id]),
     CONSTRAINT [FK_Messages_RequestCodes] FOREIGN KEY ([RequestCodeId]) REFERENCES [dbo].[RequestCodes] ([Id]),
 	CONSTRAINT [FK_Messages_ExternalSystems] FOREIGN KEY ([ExternalSystemId]) REFERENCES [dbo].[ExternalSystems]([Id])
 );
-
-
-
-
-
-
-
-
 GO
+
 CREATE TRIGGER [dbo].[MessagesModified] ON [dbo].[Messages]
 AFTER INSERT, UPDATE 
 AS
@@ -37,3 +31,20 @@ AS
   INNER JOIN inserted
   AS i
   ON m.Id = i.Id;
+go
+
+create trigger TG_Messages_Update_StatusCode on [dbo].[Messages]
+after update as if update([StatusCode])
+begin
+	update a1
+		set [CanBeSend] = 1,
+		[StatusCode] = 2000,
+		[Modified] = getdate()
+	from [dbo].[CallbackMessages] a1
+	inner join [dbo].[Messages] a2 on a2.[Id] = a1.[MessageId]
+	inner join [inserted] a3 on a3.[Id] = a2.[Id]
+	where
+		a2.[IsCallback] = 1
+		and
+		a3.[StatusCode] in (3000, 9000);
+end;
