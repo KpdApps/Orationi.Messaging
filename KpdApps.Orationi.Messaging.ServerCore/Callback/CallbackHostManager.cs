@@ -14,10 +14,17 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
     public class CallbackHostManager
     {
         private CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly double _checkFrequency;
 
-        public CallbackHostManager()
+        public CallbackHostManager(double checkFrequency)
         {
-
+            _checkFrequency = checkFrequency;
+            if (_checkFrequency < 0 || _checkFrequency > 3600)
+            {
+                throw new InvalidOperationException(
+                    "Частота проверки callback-сообщений для их последующей отправки должна быть задана"
+                    + " в диапазоне [0, 3600] секунд");
+            }
         }
 
         public void Start()
@@ -68,7 +75,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                 }
                 finally
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                    Thread.Sleep(TimeSpan.FromSeconds(_checkFrequency));
                 }
             }
         }

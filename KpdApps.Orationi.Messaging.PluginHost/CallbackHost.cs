@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System.Configuration;
+using System.ServiceProcess;
 using KpdApps.Orationi.Messaging.ServerCore.Callback;
 using log4net;
 using log4net.Config;
@@ -12,7 +13,8 @@ namespace KpdApps.Orationi.Messaging.PluginHost
         public CallbackHost()
         {
             XmlConfigurator.Configure();
-            _callbackHostManager = new CallbackHostManager();
+            _callbackHostManager = new CallbackHostManager(
+                double.Parse(ConfigurationManager.AppSettings["CheckFrequencyCallbackMessages"]));
         }
 
         protected override void OnStart(string[] args)
