@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KpdApps.Orationi.Messaging.DataAccess;
+using KpdApps.Orationi.Messaging.ServerCore.Callback;
 using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
 
 namespace KpdApps.Orationi.Messaging.ServerConsole
@@ -13,6 +14,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
 
         static void Main(string[] args)
         {
+            /*
             using (ProcessHostManager processHostManager = new ProcessHostManager("localhost", "orationi", "orationi"))
             {
 
@@ -24,6 +26,14 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
                 {
                     MultipleRequestCodesProcessing(processHostManager);
                 }
+
+                Console.WriteLine(" Press [enter] to exit.");
+                Console.ReadLine();
+            }
+            */
+            using (var callbackHostManager = new CallbackHostManager(30))
+            {
+                callbackHostManager.Start();
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
