@@ -8,6 +8,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public string MethodType { get; set; }
 
+        public string RequestTargetUrl { get; set; }
+
         public string UrlAccessUserName { get; set; }
 
         public string UrlAccessUserPassword { get; set; }
