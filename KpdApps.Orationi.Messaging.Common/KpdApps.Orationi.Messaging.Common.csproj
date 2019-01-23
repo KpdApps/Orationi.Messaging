@@ -53,6 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\CallbackRequest.cs" />
+    <Compile Include="Models\CallbackResponse.cs" />
     <Compile Include="Models\RabbitRequest.cs" />
     <Compile Include="Models\Request.cs" />
     <Compile Include="Models\ResponseStatus.cs" />
