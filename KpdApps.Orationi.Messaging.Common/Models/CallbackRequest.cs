@@ -7,7 +7,7 @@ namespace KpdApps.Orationi.Messaging.Common.Models
     {
         public Guid MessageId { get; set; }
 
-        public int RequestCode { get; set; }
+        public int Code { get; set; }
 
         public string Body { get; set; }
 

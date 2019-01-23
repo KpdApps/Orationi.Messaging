@@ -121,7 +121,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
             var callbackRequest = new CallbackRequest
             {
                 MessageId = message.Id,
-                RequestCode = message.RequestCodeId,
+                Code = message.RequestCodeId,
                 Body = message.ResponseBody,
                 IsError = message.StatusCode == (int)MessageStatusCodes.Error,
                 ErrorMessage = message.ErrorMessage
