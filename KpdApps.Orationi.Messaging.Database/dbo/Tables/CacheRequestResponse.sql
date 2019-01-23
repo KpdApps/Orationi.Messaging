@@ -18,7 +18,7 @@ as
 begin
     declare @currentDateTime datetime = getdate();
 
-    delete from [dbo].[CacheRequestREsponse]
+    delete from [dbo].[CacheRequestResponse]
         where [ExpireDate] <= @currentDateTime;
 end
 go
