@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.Sdk.Cache;
 using KpdApps.Orationi.Messaging.ServerCore.Cache;
 
@@ -62,13 +61,6 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
             // Массив - ссылочный тип, не хотим давать ссылку на объект в БД.
             return fileStore.Data.ToArray();
-        }
-
-        public CallbackSettings TryGetCallbackSettings(Guid messageId, out int? requestCode)
-        {
-            var message = _dbContext.Messages.FirstOrDefault(m => m.Id == messageId);
-            requestCode = message?.RequestCodeId;
-            return message?.ExternalSystem?.CallbackSettings;
         }
     }
 }
