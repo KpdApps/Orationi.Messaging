@@ -12,7 +12,8 @@ namespace KpdApps.Orationi.Messaging.PluginHost
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new PluginHost()
+                new PluginHost(),
+                new CallbackHost()
             };
             ServiceBase.Run(ServicesToRun);
         }

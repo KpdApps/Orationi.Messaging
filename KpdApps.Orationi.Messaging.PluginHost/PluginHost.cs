@@ -18,7 +18,7 @@ namespace KpdApps.Orationi.Messaging.PluginHost
         public PluginHost()
         {
             XmlConfigurator.Configure();
-            var sopWatch = Stopwatch.StartNew();
+            var stopWatch = Stopwatch.StartNew();
             log.Debug("Инициализация...");
             InitializeComponent();
             var rabbitmqConfig = RabbitmqConfigurationSection.GetConfiguration();
@@ -44,8 +44,8 @@ namespace KpdApps.Orationi.Messaging.PluginHost
                     });
                 }
             }
-            sopWatch.Stop();
-            log.Debug($"Инициализация выполнилась за {sopWatch.Elapsed.TotalSeconds} секунд");
+            stopWatch.Stop();
+            log.Debug($"Инициализация выполнилась за {stopWatch.Elapsed.TotalSeconds} секунд");
         }
 
         protected override void OnStart(string[] args)
