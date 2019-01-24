@@ -34,7 +34,7 @@ AS
 go
 
 create trigger TG_Messages_Update_StatusCode on [dbo].[Messages]
-after update as if update([StatusCode])
+after insert, update as if update([StatusCode])
 begin
 	update a1
 		set [CanBeSend] = 1,
