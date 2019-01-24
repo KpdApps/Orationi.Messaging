@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using KpdApps.Orationi.Messaging.Common.Models;
@@ -10,14 +9,15 @@ using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 using log4net;
 using log4net.Config;
 using RestSharp;
+using RestSharp.Authenticators;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 {
     public class CallbackHostManager : IDisposable
     {
-        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly double _checkFrequency;
-        private bool _isRunning = false;
+        private bool _isRunning;
         private static readonly ILog Log = LogManager.GetLogger(typeof(CallbackHostManager));
 
         public CallbackHostManager(double checkFrequency)
@@ -30,12 +30,14 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                     "Частота проверки callback-сообщений для их последующей отправки должна быть задана"
                     + " в диапазоне [0, 3600] секунд");
             }
+            Log.Info("CallbackHostManager инициализация закончена");
         }
 
         public void Start()
         {
-            Task.Run(() => Run(_cts.Token));
+            Task.Run(() => Executor(_cts.Token));
             _isRunning = true;
+            Log.Info("CallbackHostManager запуск");
         }
 
         public void Stop()
@@ -44,10 +46,11 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
             {
                 _cts.Cancel();
                 _isRunning = false;
+                Log.Info("CallbackHostManager остановка");
             }
         }
 
-        private void Run(CancellationToken cancellationToken)
+        private void Executor(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -73,6 +76,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                                 callbackMessage.StatusCode = (int)MessageStatusCodes.Error;
                                 callbackMessage.ErrorMessage = ex.Message;
                                 callbackMessage.CanBeSend = false;
+                                callbackMessage.Modified = DateTime.Now;
                                 dbContext.SaveChanges();
                             }
                         });
@@ -113,6 +117,8 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 
             callbackMessage.StatusCode = (int)MessageStatusCodes.Processed;
             callbackMessage.CanBeSend = false;
+            callbackMessage.WasSend = true;
+            callbackMessage.Modified = DateTime.Now;
             dbContext.SaveChanges();
         }
 
@@ -124,7 +130,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
 
             if (callbackSettings.NeedAuthentification)
             {
-                request.Credentials = new NetworkCredential(callbackSettings.UrlAccessUserName, callbackSettings.UrlAccessUserPassword);
+                client.Authenticator = new HttpBasicAuthenticator(
+                    callbackSettings.UrlAccessUserName, 
+                    callbackSettings.UrlAccessUserPassword);
             }
 
             var callbackRequest = new CallbackRequest
@@ -150,7 +158,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
             }
         }
 
-        private CallbackResponse SoapSending(Message message)
+        private void SoapSending(Message message)
         {
             throw new NotImplementedException("SoapSending не реализован");
         }
