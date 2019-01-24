@@ -76,6 +76,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
                                 callbackMessage.StatusCode = (int)MessageStatusCodes.Error;
                                 callbackMessage.ErrorMessage = ex.Message;
                                 callbackMessage.CanBeSend = false;
+                                callbackMessage.WasSend = false;
                                 callbackMessage.Modified = DateTime.Now;
                                 dbContext.SaveChanges();
                             }
@@ -119,6 +120,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Callback
             callbackMessage.CanBeSend = false;
             callbackMessage.WasSend = true;
             callbackMessage.Modified = DateTime.Now;
+            callbackMessage.ErrorMessage = null;
             dbContext.SaveChanges();
         }
 

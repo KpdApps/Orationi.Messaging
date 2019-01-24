@@ -143,6 +143,7 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 MessageId = responseId.Id
             });
+            _dbContext.SaveChanges();
 
             return responseId;
         }
