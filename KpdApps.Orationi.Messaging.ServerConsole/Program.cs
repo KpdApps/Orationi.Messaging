@@ -35,9 +35,12 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
             {
                 callbackHostManager.Start();
 
-                Console.WriteLine(" Press [enter] to exit.");
+                Console.WriteLine("Press [Enter] to stop service");
                 Console.ReadLine();
             }
+
+            Console.WriteLine("Press [Enter] to exit.");
+            Console.ReadLine();
         }
 
         /// <summary>
