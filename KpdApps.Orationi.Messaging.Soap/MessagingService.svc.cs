@@ -11,6 +11,7 @@ using log4net.Config;
 
 namespace KpdApps.Orationi.Messaging.Soap
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class MessagingService : IMessagingService
     {
         public static readonly ILog log = LogManager.GetLogger(typeof(MessagingService));

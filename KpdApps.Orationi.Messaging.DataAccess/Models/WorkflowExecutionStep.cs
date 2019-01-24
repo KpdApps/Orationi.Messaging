@@ -12,8 +12,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
         [ForeignKey("Workflow")]
         public Guid WorkflowId { get; set; }
 
-        [ForeignKey("PluginActionSet")]
-        public Guid PluginActionSetId { get; set; }
+        [ForeignKey("PluginActionSetItem")]
+        public Nullable<Guid> PluginActionSetItemId { get; set; }
 
         public int StatusCode { get; set; }
 
@@ -23,14 +23,14 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public DateTime Created { get; set; }
 
-        public string ExecutionVariables { get; set; }
+        public string PipelineValues { get; set; }
 
         [ForeignKey("Message")]
         public Nullable<Guid> MessageId { get; set; }
 
         public virtual Workflow Workflow { get; set; }
 
-        public virtual PluginActionSet PluginActionSet { get; set; }
+        public virtual PluginActionSetItem PluginActionSetItem { get; set; }
 
         public virtual WorkflowExecutionStepsStatusCode WorkflowExecutionStepsStatusCode { get; set; }
 

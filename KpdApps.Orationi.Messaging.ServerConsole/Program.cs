@@ -9,6 +9,7 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
     {
         private static readonly bool ShouldProcessSingleRequestCode = true;
         private static readonly int SingleProcessingRequestCode = 60109;
+        private static readonly bool IsSync = true;
 
         static void Main(string[] args)
         {
@@ -36,13 +37,13 @@ namespace KpdApps.Orationi.Messaging.ServerConsole
         /// <param name="requestCode">Reqeust code number to be processed</param>
         private static void SingleRequestCodeProcessing(ProcessHostManager processHostManager, int requestCode)
         {
-            processHostManager.Add(requestCode, false);
+            processHostManager.Add(requestCode, IsSync);
 
             Console.WriteLine($"Processing RequestCode {requestCode}");
             Console.WriteLine("Press [enter] to stop.");
             Console.ReadLine();
 
-            processHostManager.Remove(requestCode, false);
+            processHostManager.Remove(requestCode, IsSync);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
             _username = username;
             _password = password;
 
-            AssembliesPreLoader.Execute();
+            AssembliesPreLoader.Reload();
 
             var token = _shutdown.Token;
             Task.Run(

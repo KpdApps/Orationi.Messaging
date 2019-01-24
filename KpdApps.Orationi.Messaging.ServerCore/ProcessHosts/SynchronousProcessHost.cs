@@ -70,9 +70,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                     log.Debug($" [{QueueCode}] ({message})");
                     response = JsonConvert.SerializeObject("Success");
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    log.Error($" [{QueueCode}] " + e.Message);
+                    log.Fatal($"[{QueueCode}] ({ex.Message})", ex);
                     response = JsonConvert.SerializeObject("Error");
                 }
                 finally

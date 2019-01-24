@@ -7,7 +7,7 @@ using KpdApps.Orationi.Messaging.ServerCore.ProcessHosts;
 using log4net;
 using log4net.Config;
 
-namespace KpdApps.Orationi.Service.PluginHost
+namespace KpdApps.Orationi.Messaging.PluginHost
 {
     public partial class PluginHost : ServiceBase
     {
@@ -35,7 +35,7 @@ namespace KpdApps.Orationi.Service.PluginHost
                         {
                             RequestCode = requestCode.Id,
                             IsSync = true
-                        }, 
+                        },
                         new Plugin
                         {
                             RequestCode = requestCode.Id,

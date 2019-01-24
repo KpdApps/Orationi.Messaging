@@ -74,9 +74,9 @@ namespace KpdApps.Orationi.Messaging.ServerCore.ProcessHosts
                     log.Debug($" [{QueueCode}] ({message})");
                     rabbitRequest.RequestCode++;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    log.Error($" [{QueueCode}] " + e.Message);
+                    log.Fatal($"[{QueueCode}] ({ex.Message})", ex);
                 }
                 finally
                 {

@@ -1,4 +1,4 @@
-﻿namespace KpdApps.Orationi.Service.PluginHost
+﻿namespace KpdApps.Orationi.Messaging.PluginHost
 {
     internal class Plugin
     {

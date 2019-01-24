@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 {
     internal class PipelineStepDescription
     {
         public Guid AssemblyId { get; set; }
+
+        public string AssemblyName { get; set; }
 
         public string Class { get; set; }
 
@@ -17,5 +17,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
         public bool IsAsynchronous { get; set; }
 
         public string ConfigurationString { get; set; }
+
+        public Guid PlaginActionSetItemId { get; set; }
     }
 }

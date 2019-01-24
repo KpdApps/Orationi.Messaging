@@ -17,61 +17,47 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
 
         private Guid _workflowId;
         private Guid _messageId;
-        private int _requestCode;
-        private Guid _pluginActionSetId;
-
         private IPipelineExecutionContext _pipelineExecutionContext;
-
         private OrationiDatabaseContext _dbContext;
         private List<PipelineStepDescription> _stepsDescriptions;
 
-        public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, Workflow.WorkflowAction workflowAction)
+        public PipelineProcessor(IPipelineExecutionContext pipelineExecutionContext, WorkflowAction workflowAction)
         {
+            _dbContext = new OrationiDatabaseContext();
+
             _pipelineExecutionContext = pipelineExecutionContext;
-
             _messageId = pipelineExecutionContext.MessageId;
-            _requestCode = pipelineExecutionContext.RequestCode;
-
             _workflowId = workflowAction.WorkflowId;
-            _pluginActionSetId = workflowAction.PluginActionSetId;
-            Init();
-        }
-
-        ~PipelineProcessor()
-        {
-            Dispose();
+            
+            InitializeStepsDescriptions(workflowAction);
         }
 
         public void Dispose()
         {
-            if (_dbContext != null)
-            {
-                _dbContext.Dispose();
-            }
+            _dbContext?.Dispose();
         }
 
-        public void Init()
+        private void InitializeStepsDescriptions(WorkflowAction workflowAction)
         {
-            log.Debug("Инициализация...");
-            _dbContext = new OrationiDatabaseContext();
+            log.Debug($"Загрузка плагинов для WorkflowAction с Id - ({workflowAction.Id})");
+            _stepsDescriptions = _dbContext
+                .PluginActionSets
+                .Where(pas => pas.Id == workflowAction.PluginActionSetId)
+                .SelectMany(pas => pas.PluginActionSetItems)
+                .OrderBy(pasi => pasi.Order)
+                .Select(pasi => new PipelineStepDescription
+                {
+                    AssemblyId = pasi.RegisteredPlugin.AssemblyId,
+                    AssemblyName = pasi.RegisteredPlugin.PluginAssembly.Name,
+                    Class = pasi.RegisteredPlugin.Class,
+                    Order = pasi.Order,
+                    Modified = pasi.RegisteredPlugin.PluginAssembly.Modified,
+                    ConfigurationString = pasi.Configuration,
+                    PlaginActionSetItemId = pasi.Id
 
-            _stepsDescriptions = (from pas in _dbContext.PluginActionSets
-                                  join pasi in _dbContext.PluginActionSetItems on pas.Id equals pasi.PluginActionSetId
-                                  join rp in _dbContext.RegisteredPlugins
-                                      on pasi.RegisteredPluginId equals rp.Id
-                                  join pa in _dbContext.PluginAsseblies
-                                      on rp.AssemblyId equals pa.Id
-                                  where pas.Id == _pluginActionSetId
-                                  orderby pasi.Order
-                                  select new PipelineStepDescription
-                                  {
-                                      AssemblyId = pa.Id,
-                                      Class = rp.Class,
-                                      Order = pasi.Order,
-                                      IsAsynchronous = false,
-                                      Modified = pa.Modified,
-                                      ConfigurationString = pasi.Configuration,
-                                  }).ToList();
+                })
+                .ToList();
+            log.Debug($"Загрузка завершена. Загружено записей - ({_stepsDescriptions.Count})");
         }
 
         public void Run()
@@ -82,7 +68,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                 var workflowExecutionStep = new WorkflowExecutionStep
                 {
                     WorkflowId = _workflowId,
-                    PluginActionSetId = _pluginActionSetId,
+                    PluginActionSetItemId = stepDescription.PlaginActionSetItemId,
                     StatusCode = (int)PipelineStatusCodes.New,
                     MessageId = (Guid?)_messageId
                 };
@@ -109,27 +95,20 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
                     }
 
                     string assemblyName = AssembliesPreLoader.WarmupAssembly(stepDescription);
-
                     Assembly assembly = Assembly.LoadFrom(assemblyName);
                     Type type = assembly.GetType(stepDescription.Class);
-
                     ExecutePlugin(type);
 
                     workflowExecutionStep.RequestBody = _pipelineExecutionContext.RequestBody;
                     workflowExecutionStep.ResponseBody = _pipelineExecutionContext.ResponseBody;
+                    workflowExecutionStep.PipelineValues =
+                        JsonConvert.SerializeObject(_pipelineExecutionContext.PipelineValues);
                     workflowExecutionStep.StatusCode = (int) PipelineStatusCodes.Finished;
                     _dbContext.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Exception message:\r\n{ex.Message}");
-                    log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
-                    if (ex.InnerException != null)
-                    {
-                        log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
-                        log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
-                    }
-
+                    log.Fatal("Во время выполнения работы PipelineProcessor произошла ошибка", ex);
                     workflowExecutionStep.StatusCode = (int)PipelineStatusCodes.Error;
                     _dbContext.SaveChanges();
                     throw;
@@ -151,13 +130,7 @@ namespace KpdApps.Orationi.Messaging.ServerCore.Pipeline
             }
             catch (Exception ex)
             {
-                log.Error($"Exception message:\r\n{ex.Message}");
-                log.Error($"Exception stack trace:\r\n{ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    log.Error($"Inner exception message:\r\n{ex.InnerException.Message}");
-                    log.Error($"Inner exception stack trace:\r\n{ex.InnerException.StackTrace}");
-                }
+                log.Fatal("Во время выполнения работы плагина произошла ошибка", ex);
                 
                 ProcessingError pe = new ProcessingError
                 {

@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess", "KpdApps.Orationi.Messaging.DataAccess\KpdApps.Orationi.Messaging.DataAccess.csproj", "{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.DataAccess.Tests", "KpdApps.Orationi.Messaging.DataAccess.Tests\KpdApps.Orationi.Messaging.DataAccess.Tests.csproj", "{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Core", "KpdApps.Orationi.Messaging.Core\KpdApps.Orationi.Messaging.Core.csproj", "{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Soap", "KpdApps.Orationi.Messaging.Soap\KpdApps.Orationi.Messaging.Soap.csproj", "{CE3B7962-E67A-4A23-990F-1EDF177072A1}"
@@ -27,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.Common", "KpdApps.Orationi.Messaging.Common\KpdApps.Orationi.Messaging.Common.csproj", "{F3A60582-96A6-449A-9EB6-92F876EC14E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Service.PluginHost", "KpdApps.Orationi.Service.PluginHost\KpdApps.Orationi.Service.PluginHost.csproj", "{B67325CA-FBCD-4731-A395-1A8B57932FE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KpdApps.Orationi.Messaging.PluginHost", "KpdApps.Orationi.Messaging.PluginHost\KpdApps.Orationi.Messaging.PluginHost.csproj", "{B67325CA-FBCD-4731-A395-1A8B57932FE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C492BE02-4A7E-4FE8-829A-0B1ED73E8ACC}"
 EndProject
@@ -59,10 +57,6 @@ Global
 		{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7D346E4-FD15-4D7C-A63F-3170DFD81C54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,7 +90,6 @@ Global
 		{B6B08523-A8F8-4D3E-8E32-B6877473C465} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
 		{44B48E39-FFA6-463A-94C8-70141F5F2717} = {7F5AFE18-B490-45EB-865D-EA84C9A9A3A8}
 		{312DD07C-F632-4DBF-9153-AA6E9DBEBBC7} = {3BEB7DA4-4816-4542-9F8F-0B8D5D1FFDF7}
-		{B7D346E4-FD15-4D7C-A63F-3170DFD81C54} = {3BEB7DA4-4816-4542-9F8F-0B8D5D1FFDF7}
 		{DB7F7A03-92BF-4C73-B8D3-02B49CDE97CA} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{CE3B7962-E67A-4A23-990F-1EDF177072A1} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
 		{CB0A3C63-6536-4B2C-8E09-4FA016FF227D} = {4761BF27-601E-43A2-AF74-4003D39FECC7}
