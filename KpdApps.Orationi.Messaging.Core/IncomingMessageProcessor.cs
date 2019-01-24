@@ -175,15 +175,17 @@ namespace KpdApps.Orationi.Messaging.Core
                 return response;
             }
 
-            var assembly = Assembly.Load(registeredPlugin.PluginAssembly.Assembly);
+            using (var contractInspector = new ContractInspector(registeredPlugin))
+            {
+                var proxyObj = contractInspector.Inspect();
+                if (proxyObj.IsError)
+                {
+                    throw new InvalidOperationException(proxyObj.Exception.Message, proxyObj.Exception);
+                }
 
-            var pluginType = assembly.GetType(registeredPlugin.Class);
-
-            response.RequestContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(RequestContractInAttribute)))
-                ?.GetXsd(assembly);
-
-            response.ResponseContract = ((ContractAttribute)pluginType.GetCustomAttribute(typeof(ResponseContractOutAttribute)))
-                ?.GetXsd(assembly);
+                response.RequestContract = proxyObj.RequestContract;
+                response.ResponseContract = proxyObj.ResponseContract;
+            }
 
             return response;
         }

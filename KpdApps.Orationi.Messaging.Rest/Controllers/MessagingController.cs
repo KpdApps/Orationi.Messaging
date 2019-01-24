@@ -217,13 +217,27 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             }
 
             UploadFileRequest fileInfo = null;
-            byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
-            using (var stream = new MemoryStream(jsonAsArray))
+            try
             {
-                var sr = new StreamReader(stream);
-                fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(sr.ReadToEnd());
+                log.Debug("Чтение json объекта с метаданными загружаемого файла");
+                byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
+                using (var stream = new MemoryStream(jsonAsArray))
+                {
+                    var sr = new StreamReader(stream);
+                    var rawJsonStr = sr.ReadToEnd();
+                    log.Debug($"Raw JSON string: {rawJsonStr}");
+                    fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(rawJsonStr);
+                }
             }
-            log.Debug($"request: {fileInfo}");
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
+                {
+                    IsError = true,
+                    Error = ex.Message
+                }));
+            }
 
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequestCode, out Response response,
                 out var externalSystem))
@@ -251,9 +265,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
 
             byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
-
-            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-            response = imp.FileUpload(fileInfo, fileName, fileAsArray);
+            try
+            {
+                var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+                response = imp.FileUpload(fileInfo, fileName, fileAsArray);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
+                {
+                    IsError = true,
+                    Error = ex.Message
+                }));
+            }
             log.Debug($"Результат:\r\n{response}");
             log.Debug("Завершение");
             return response;

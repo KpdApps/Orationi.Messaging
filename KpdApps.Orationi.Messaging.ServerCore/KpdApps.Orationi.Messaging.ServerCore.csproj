@@ -36,8 +36,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="KpdApps.Orationi.Messaging.Sdk, Version=1.0.32.0, Culture=neutral, PublicKeyToken=bb1725d7ab21a9c8, processorArchitecture=MSIL">
-      <HintPath>..\packages\KpdApps.Orationi.Messaging.Sdk.1.0.32\lib\net461\KpdApps.Orationi.Messaging.Sdk.dll</HintPath>
+    <Reference Include="KpdApps.Orationi.Messaging.Sdk, Version=1.1.36.0, Culture=neutral, PublicKeyToken=bb1725d7ab21a9c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\KpdApps.Orationi.Messaging.Sdk.1.1.36\lib\net461\KpdApps.Orationi.Messaging.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
