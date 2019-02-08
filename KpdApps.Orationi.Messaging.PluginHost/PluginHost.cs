@@ -29,7 +29,7 @@ namespace KpdApps.Orationi.Messaging.PluginHost
             {
                 foreach (var requestCode in dbContext.RequestCodes)
                 {
-                    log.Debug($"Загрузка синхронного/асинхронного обработчиков для кода запроса \"{requestCode.Id}\"");
+                    //log.Debug($"Загрузка синхронного/асинхронного обработчиков для кода запроса \"{requestCode.Id}\"");
                     plugins.AddRange(new[] {
                         new Plugin
                         {
@@ -52,7 +52,7 @@ namespace KpdApps.Orationi.Messaging.PluginHost
         {
             plugins.ForEach(p =>
             {
-                log.Debug($"Запуск {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
+                //log.Debug($"Запуск {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
                 processHostManager.Add(p.RequestCode, p.IsSync);
             });
             log.Info("Служба запущена");
@@ -62,7 +62,7 @@ namespace KpdApps.Orationi.Messaging.PluginHost
         {
             plugins.ForEach(p =>
             {
-                log.Debug($"Остановка {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
+                //log.Debug($"Остановка {(p.IsSync ? "синхронного" : "асинхронного")} обработчика для кода запроса \"{p.RequestCode}\"");
                 processHostManager.Remove(p.RequestCode, p.IsSync);
             });
             log.Info("Служба остановлена");
