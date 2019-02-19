@@ -212,12 +212,24 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
 
             string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
             Log.Debug($"fileName: {fileName}");
-            UploadFileRequest.ValidateFileName(fileName, Request);
-
-
-            byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
             try
             {
+                UploadFileRequest.ValidateFileName(fileName);
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ResponseId
+                {
+                    IsError = true,
+                    Error = $"При валидации имени произошла ошибка: {ex.Message}"
+                };
+                Log.Error(errorResponse);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+            }
+            
+            try
+            {
+                byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
                 var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
                 response = imp.FileUpload(fileInfo, fileName, fileAsArray);
             }
