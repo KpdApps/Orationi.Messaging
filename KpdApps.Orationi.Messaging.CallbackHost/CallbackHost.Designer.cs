@@ -1,6 +1,6 @@
-﻿namespace KpdApps.Orationi.Messaging.PluginHost
+﻿namespace KpdApps.Orationi.Messaging.CallbackHost
 {
-    partial class PluginHost
+    partial class CallbackHost
     {
         /// <summary> 
         /// Required designer variable.

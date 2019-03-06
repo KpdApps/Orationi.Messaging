@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using KpdApps.Orationi.Messaging.Common.Models;
@@ -19,9 +17,8 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
     [RoutePrefix("api/rest/messaging")]
     public class MessagingController : ApiController, IMessagingService
     {
-        public static readonly ILog log = LogManager.GetLogger(typeof(MessagingController));
-
-        private OrationiDatabaseContext _dbContext;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MessagingController));
+        private readonly OrationiDatabaseContext _dbContext;
 
         public MessagingController()
         {
@@ -40,20 +37,20 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("{requestId}")]
         public Response GetResponse(Guid requestId)
         {
-            log.Debug("Запуск");
-            log.Debug($"requestId: {requestId}");
-            log.Debug($"Token: {GetTokenValue()}");
+            Log.Debug("Запуск");
+            Log.Debug($"requestId: {requestId}");
+            Log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId, out Response response, out var externalSystem))
             {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
-            log.Debug("Авторизация пройдена");
+            Log.Debug("Авторизация пройдена");
             IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetResponse(requestId);
-            log.Debug($"Результат:\r\n{response}");
-            log.Debug("Звершение");
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Звершение");
             return response;
         }
 
@@ -61,96 +58,47 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("status/{requestId}")]
         public ResponseStatus GetStatus(Guid requestId)
         {
-            log.Debug("Запуск");
-            log.Debug($"requestId: {requestId}");
-            log.Debug($"Token: {GetTokenValue()}");
+            Log.Debug("Запуск");
+            Log.Debug($"requestId: {requestId}");
+            Log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestId, out ResponseStatus response, out var externalSystem))
             {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
-            log.Debug("Авторизация пройдена");
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            Log.Debug("Авторизация пройдена");
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetStatus(requestId);
-            log.Debug($"Результат:\r\n{response}");
-            log.Debug("Звершение");
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Звершение");
             return response;
-        }
-
-        [HttpPost]
-        [Route("sync")]
-        public Response ExecuteRequest([FromBody]Request request)
-        {
-            log.Debug("Запуск");
-            log.Debug($"request:\r\n{request}");
-            log.Debug($"Token: {GetTokenValue()}");
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out Response response, out var externalSystem))
-            {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
-            }
-
-            log.Debug("Авторизация пройдена");
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-            response = imp.Execute(request);
-            log.Debug($"Результат:\r\n{response}");
-            log.Debug("Звершение");
-            return response;
-        }
-
-        [HttpPost]
-        [Route("async")]
-        public ResponseId ExecuteRequestAsync([FromBody]Request request)
-        {
-            log.Debug("Запуск");
-            log.Debug($"request:\r\n{request}");
-            log.Debug($"Token: {GetTokenValue()}");
-            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
-            {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
-            }
-
-            log.Debug("Авторизация пройдена");
-            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
-            response = imp.ExecuteAsync(request);
-            log.Debug($"Результат:\r\n{response}");
-            log.Debug("Звершение");
-            return response;
-        }
-
-        [HttpPost]
-        [Route("request")]
-        public ResponseId SendRequest([FromBody]Request request)
-        {
-            throw new NotImplementedException();
         }
 
         [HttpGet]
         [Route("xsd/{requestCode}")]
         public ResponseXsd GetXsd(int requestCode)
         {
-            log.Debug("Запуск");
-            log.Debug($"requestCode: {requestCode}");
-            log.Debug($"Token: {GetTokenValue()}");
+            Log.Debug("Запуск");
+            Log.Debug($"requestCode: {requestCode}");
+            Log.Debug($"Token: {GetTokenValue()}");
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), requestCode, out ResponseXsd response, out var externalSystem))
             {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
-            log.Debug("Авторизация пройдена");
+            Log.Debug("Авторизация пройдена");
             var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
             response = imp.GetXsd(requestCode);
-            log.Debug($"Результат:\r\n{response}");
+            Log.Debug($"Результат:\r\n{response}");
 
             if (response.IsError)
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, response));
             }
 
-            log.Debug("Звершение");
+            Log.Debug("Звершение");
             return response;
         }
 
@@ -158,11 +106,11 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
         [Route("file/upload")]
         public async Task<Response> FileUpload()
         {
-            log.Debug("Запуск");
-            log.Debug($"Token: {GetTokenValue()}");
+            Log.Debug("Запуск");
+            Log.Debug($"Token: {GetTokenValue()}");
 
             var isMimeMultipartContent = Request.Content.IsMimeMultipartContent();
-            log.Debug($"isMimeMultipartContent: {isMimeMultipartContent}");
+            Log.Debug($"isMimeMultipartContent: {isMimeMultipartContent}");
 
             if (!isMimeMultipartContent)
             {
@@ -171,7 +119,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                     IsError = true,
                     Error = "Некорректный Content-Type, ожидаем на вход MimeMultipart"
                 };
-                log.Error(errorResponse);
+                Log.Error(errorResponse);
 
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType, errorResponse));
             }
@@ -184,7 +132,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message);
+                Log.Error(ex.Message);
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
                 {
                     IsError = true,
@@ -192,7 +140,7 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 }));
             }
 
-            log.Debug($"Contents count: {provider.Contents.Count}");
+            Log.Debug($"Contents count: {provider.Contents.Count}");
 
             if (provider.Contents.Count != 2)
             {
@@ -203,35 +151,38 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                 }));
             }
 
-            HttpContent json = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
-            if (json == null)
+            HttpContent json = null;
+            try
             {
-                var errorResponse = new Response
+                var contentList = provider.Contents.ToList();
+                json = contentList.FirstOrDefault(c => c.Headers.ContentType.MediaType == "application/json");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
                 {
                     IsError = true,
-                    Error = "В теле запроса нет части с Content-type: application/json"
-                };
-                log.Error(errorResponse);
-
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+                    Error = ex.Message
+                }));
             }
 
             UploadFileRequest fileInfo = null;
             try
             {
-                log.Debug("Чтение json объекта с метаданными загружаемого файла");
+                Log.Debug("Чтение json объекта с метаданными загружаемого файла");
                 byte[] jsonAsArray = json.ReadAsByteArrayAsync().Result;
                 using (var stream = new MemoryStream(jsonAsArray))
                 {
                     var sr = new StreamReader(stream);
                     var rawJsonStr = sr.ReadToEnd();
-                    log.Debug($"Raw JSON string: {rawJsonStr}");
+                    Log.Debug($"Raw JSON string: {rawJsonStr}");
                     fileInfo = JsonConvert.DeserializeObject<UploadFileRequest>(rawJsonStr);
                 }
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message);
+                Log.Error(ex.Message);
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
                 {
                     IsError = true,
@@ -242,11 +193,11 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
             if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), fileInfo.RequestCode, out Response response,
                 out var externalSystem))
             {
-                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
             }
 
-            log.Debug("Авторизация пройдена");
+            Log.Debug("Авторизация пройдена");
             HttpContent file = provider.Contents.FirstOrDefault(c => c.Headers.ContentType.MediaType != "application/json");
             if (file == null)
             {
@@ -255,39 +206,114 @@ namespace KpdApps.Orationi.Messaging.Rest.Controllers
                     IsError = true,
                     Error = "В теле запроса нет части с файлом"
                 };
-                log.Error(errorResponse);
+                Log.Error(errorResponse);
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
             }
 
             string fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
-            log.Debug($"fileName: {fileName}");
-            UploadFileRequest.ValidateFileName(fileName, Request);
-
-
-            byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
+            Log.Debug($"fileName: {fileName}");
             try
             {
+                UploadFileRequest.ValidateFileName(fileName);
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ResponseId
+                {
+                    IsError = true,
+                    Error = $"При валидации имени произошла ошибка: {ex.Message}"
+                };
+                Log.Error(errorResponse);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, errorResponse));
+            }
+            
+            try
+            {
+                byte[] fileAsArray = file.ReadAsByteArrayAsync().Result;
                 var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
                 response = imp.FileUpload(fileInfo, fileName, fileAsArray);
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message);
+                Log.Error(ex.Message);
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, new ResponseId
                 {
                     IsError = true,
                     Error = ex.Message
                 }));
             }
-            log.Debug($"Результат:\r\n{response}");
-            log.Debug("Завершение");
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Завершение");
+            return response;
+        }
+
+        [HttpPost]
+        [Route("callbackrequest")]
+        public ResponseId SendRequest(Request request)
+        {
+            Log.Debug("Запуск");
+            Log.Debug($"request:\r\n{request}");
+            Log.Debug($"Token: {GetTokenValue()}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
+            {
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            Log.Debug("Авторизация пройдена");
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteWithCallback(request);
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Звершение");
+            return response;
+        }
+
+        [HttpPost]
+        [Route("async")]
+        public ResponseId ExecuteRequestAsync(Request request)
+        {
+            Log.Debug("Запуск");
+            Log.Debug($"request:\r\n{request}");
+            Log.Debug($"Token: {GetTokenValue()}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out ResponseId response, out var externalSystem))
+            {
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            Log.Debug("Авторизация пройдена");
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteAsync(request);
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Звершение");
+            return response;
+        }
+
+        [HttpPost]
+        [Route("sync")]
+        public Response ExecuteRequest(Request request)
+        {
+            Log.Debug("Запуск");
+            Log.Debug($"request:\r\n{request}");
+            Log.Debug($"Token: {GetTokenValue()}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext, GetTokenValue(), request.Code, out Response response, out var externalSystem))
+            {
+                Log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, response));
+            }
+
+            Log.Debug("Авторизация пройдена");
+            var imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.Execute(request);
+            Log.Debug($"Результат:\r\n{response}");
+            Log.Debug("Звершение");
             return response;
         }
 
         [NonAction]
         private string GetTokenValue()
         {
-            var token = Request.Headers.TryGetValues("Token", out IEnumerable<string> values)
+            var token = Request.Headers.TryGetValues("Token", out var values)
                 ? values.FirstOrDefault()
                 : null;
 

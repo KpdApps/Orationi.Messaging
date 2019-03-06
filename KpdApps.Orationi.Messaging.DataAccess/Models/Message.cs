@@ -38,6 +38,8 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public int AttemptCount { get; set; }
 
+        public bool IsCallback { get; set; }
+
         public virtual RequestCode RequestCode { get; set; }
 
         public virtual ExternalSystem ExternalSystem { get; set; }

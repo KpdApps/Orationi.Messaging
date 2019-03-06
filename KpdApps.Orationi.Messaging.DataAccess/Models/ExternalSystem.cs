@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KpdApps.Orationi.Messaging.DataAccess.Models
 {
@@ -21,5 +22,9 @@ namespace KpdApps.Orationi.Messaging.DataAccess.Models
 
         public virtual List<Message> Messages { get; set; }
 
+        [ForeignKey("CallbackSettings")]
+        public Nullable<Guid> CallbackSettingId { get; set; }
+
+        public virtual CallbackSettings CallbackSettings { get; set; }
     }
 }
