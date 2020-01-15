@@ -2,7 +2,6 @@
 using System.Linq;
 using KpdApps.Orationi.Messaging.Common.Models;
 using KpdApps.Orationi.Messaging.DataAccess;
-using KpdApps.Orationi.Messaging.DataAccess.Models;
 using KpdApps.Orationi.Messaging.ServerCore.Workflow;
 
 namespace KpdApps.Orationi.Messaging.Core
@@ -23,13 +22,22 @@ namespace KpdApps.Orationi.Messaging.Core
 
         public Response GenerateByMessageAndRequestId()
         {
-            Message message = _dbContext.Messages.FirstOrDefault(m => m.Id == _requestId);
+            var message = _dbContext
+                .Messages
+                .Where(m => m.Id == _requestId)
+                .Select(m => new { 
+                    m.Id,
+                    m.ResponseBody,
+                    m.StatusCode,
+                    m.ErrorMessage
+                })
+                .FirstOrDefault();
 
             if (message is null)
                 return GetNullResponse(_requestId);
 
             if (message.StatusCode == (int)MessageStatusCodes.Error)
-                return GetErrorResponse(message);
+                return GetErrorResponse(message.Id, message.ErrorMessage);
 
             return new Response
             {
@@ -51,22 +59,15 @@ namespace KpdApps.Orationi.Messaging.Core
             };
         }
 
-        private Response GetErrorResponse(Message message)
+        private Response GetErrorResponse(Guid messageId, string errorMessage)
         {
-            var resultResponse = new Response
+            return new Response
             {
-                Id = message.Id,
+                Id = messageId,
                 IsError = true,
-                Body = null
-            };
-
-            ProcessingError processingError = _dbContext.ProcessingErrors.FirstOrDefault(pe => pe.MessageId == message.Id);
-            if (processingError != null)
-            {
-                resultResponse.Error = processingError.Error;
-            }
-
-            return resultResponse;
+                Body = null,
+                Error = errorMessage
+            };            
         }
 
         public static Response GenerateByException(Exception exception)
