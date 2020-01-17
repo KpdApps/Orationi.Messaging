@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityConfigurations\CacheRequestResponseTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\CallbackMessageTypeConfiguration.cs" />
+    <Compile Include="EntityConfigurations\CallbackSettingsTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\FileStoreTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\GlobalSettingTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\MessageStatusCodeEntityConfiguration.cs" />
@@ -64,6 +66,8 @@
     <Compile Include="EntityConfigurations\WorkflowExecutionStepsStatusCodeTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\WorkflowExecutionStepTypeConfiguration.cs" />
     <Compile Include="EntityConfigurations\WorkflowTypeConfiguration.cs" />
+    <Compile Include="Models\CallbackMessage.cs" />
+    <Compile Include="Models\CallbackSettings.cs" />
     <Compile Include="Models\ExternalSystem.cs" />
     <Compile Include="Models\ExternalSystemRequestCode.cs" />
     <Compile Include="Models\FileStore.cs" />

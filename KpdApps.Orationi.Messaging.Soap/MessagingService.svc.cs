@@ -101,7 +101,26 @@ namespace KpdApps.Orationi.Messaging.Soap
 
         public ResponseId SendRequest(Request request)
         {
-            throw new NotImplementedException();
+            log.Debug("Запуск");
+            log.Debug($"request:\r\n{request}");
+            log.Debug($"Token: {WebOperationContext.Current.IncomingRequest.Headers["Token"]}");
+            if (!AuthorizeHelpers.IsAuthorized(_dbContext,
+                WebOperationContext.Current.IncomingRequest.Headers["Token"],
+                request.Code,
+                out ResponseId response,
+                out var externalSystem))
+            {
+                log.Error($"Авторизация не пройдена. Причина: {response.Error}");
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Forbidden;
+                return response;
+            }
+
+            log.Debug("Авторизация пройдена");
+            IncomingMessageProcessor imp = new IncomingMessageProcessor(_dbContext, externalSystem);
+            response = imp.ExecuteWithCallback(request);
+            log.Debug($"Результат:\r\n{response}");
+            log.Debug("Звершение");
+            return response;
         }
 
         public ResponseId ExecuteRequestAsync(Request request)

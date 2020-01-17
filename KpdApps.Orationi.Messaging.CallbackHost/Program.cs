@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 
-namespace KpdApps.Orationi.Messaging.PluginHost
+namespace KpdApps.Orationi.Messaging.CallbackHost
 {
     static class Program
     {
@@ -8,7 +8,7 @@ namespace KpdApps.Orationi.Messaging.PluginHost
         {
             var servicesToRun = new ServiceBase[]
             {
-                new PluginHost()
+                new CallbackHost()
             };
             ServiceBase.Run(servicesToRun);
         }

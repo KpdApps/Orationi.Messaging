@@ -24,8 +24,6 @@ namespace KpdApps.Orationi.Messaging.Core
         {
             try
             {
-                Response response = new Response();
-
                 SetRequestCode(request);
                 Message message = new Message
                 {
@@ -40,12 +38,16 @@ namespace KpdApps.Orationi.Messaging.Core
 
                 using (RabbitClient client = new RabbitClient())
                 {
-                    client.Execute(message.RequestCodeId, message.Id);
+                    client.Execute(new RabbitRequest
+                        {
+                            RequestCode = message.RequestCodeId,
+                            MessageId = message.Id
+                        });
                 }
 
                 _dbContext.Entry(message).Reload();
 
-                response = new Response
+                var response = new Response
                 {
                     Id = message.Id,
                     Body = message.ResponseBody
@@ -94,7 +96,7 @@ namespace KpdApps.Orationi.Messaging.Core
             };
         }
 
-        public ResponseId ExecuteAsync(Request request)
+        public ResponseId ExecuteAsync(Request request, bool isCallback = false)
         {
             try
             {
@@ -105,7 +107,8 @@ namespace KpdApps.Orationi.Messaging.Core
                     RequestCodeId = request.Code,
                     ExternalSystemId = _externalSystem.Id,
                     RequestUser = request.UserName,
-                    IsSyncRequest = false
+                    IsSyncRequest = false,
+                    IsCallback = isCallback
                 };
 
                 _dbContext.Messages.Add(message);
@@ -113,11 +116,17 @@ namespace KpdApps.Orationi.Messaging.Core
 
                 using (RabbitClient client = new RabbitClient())
                 {
-                    client.PullMessage(message.RequestCodeId, message.Id);
+                    client.PullMessage(new RabbitRequest
+                    {
+                        RequestCode = message.RequestCodeId,
+                        MessageId = message.Id
+                    });
                 }
 
-                ResponseId response = new ResponseId();
-                response.Id = message.Id;
+                ResponseId response = new ResponseId
+                {
+                    Id = message.Id
+                };
 
                 return response;
             }
@@ -125,6 +134,18 @@ namespace KpdApps.Orationi.Messaging.Core
             {
                 return ResponseGenerator.GenerateByException(ex);
             }
+        }
+
+        public ResponseId ExecuteWithCallback(Request request)
+        {
+            var responseId = ExecuteAsync(request, true);
+            _dbContext.CallbackMessages.Add(new CallbackMessage
+            {
+                MessageId = responseId.Id
+            });
+            _dbContext.SaveChanges();
+
+            return responseId;
         }
 
         public void SetRequestCode(Request request)
@@ -206,7 +227,6 @@ namespace KpdApps.Orationi.Messaging.Core
             _dbContext.Messages.Add(uploadMessage);
             _dbContext.SaveChanges();
 
-
             // Сохраняем файл
             FileStore fileStore = new FileStore
             {
@@ -222,10 +242,13 @@ namespace KpdApps.Orationi.Messaging.Core
             uploadMessage.RequestBody = uploadFileRequest.ToXmlString();
             _dbContext.SaveChanges();
 
-
             using (RabbitClient client = new RabbitClient())
             {
-                client.PullMessage(uploadMessage.RequestCodeId, uploadMessage.Id);
+                client.PullMessage(new RabbitRequest
+                {
+                    RequestCode = uploadMessage.RequestCodeId,
+                    MessageId = uploadMessage.Id
+                });
             }
 
             response.Id = uploadMessage.Id;
